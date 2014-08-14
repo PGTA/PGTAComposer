@@ -7,6 +7,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <limits>
+#include <cmath>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +23,17 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+uint32_t MainWindow::probabilityToPercent(const uint32_t probability)
+{
+    return ceil((static_cast<double>(probability) / UINT_MAX) * 100);
+}
+
+uint32_t MainWindow::percentToProbability(const uint32_t percent)
+{
+    return (static_cast<double>(percent) / 100) * UINT_MAX;
+}
+
 
 QString MainWindow::getFileName(const std::string fileName)
 {
@@ -51,11 +64,6 @@ void MainWindow::saveTrackFile()
     google::protobuf::ShutdownProtobufLibrary();
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),getFileName(fileName));
     ui->statusbar->showMessage("Track file saved!");
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-   saveTrackFile();
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -124,6 +132,7 @@ void MainWindow::on_actionOpen_triggered()
 
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),getFileName(fileName));
     refreshListView();
+    refreshGroupsView();
 }
 
 void MainWindow::refreshListView(){
@@ -135,6 +144,32 @@ void MainWindow::refreshListView(){
         listModel->appendRow(items);
     }
     ui->listView->setModel(listModel);
+}
+
+void MainWindow::refreshGroupsView()
+{
+    QStandardItemModel* groupsModel = new QStandardItemModel();
+    groupsModel->invisibleRootItem()->setDropEnabled(false);
+    int numGroups = trackGroups.size();
+    for (auto groupID = 0; groupID < numGroups; ++groupID)
+    {
+        std::ostringstream groupName;
+        groupName << "Group " << groupID+1;
+        QStandardItem *groupItem = new QStandardItem(QString::fromStdString(groupName.str()));
+
+        for(auto sampleID : trackGroups.at(groupID)->sampleindex())
+        {
+            QString sampleName = getFileName(trackSamples.at(sampleID)->filepath());
+            QStandardItem *sampleItem = new QStandardItem(sampleName);
+            sampleItem->setEditable(false);
+            sampleItem->setDropEnabled(false);
+            groupItem->appendRow(sampleItem);
+        }
+        groupItem->setEditable(false);
+        groupItem->setDropEnabled(true);
+        groupsModel->invisibleRootItem()->appendRow(groupItem);
+    }
+    ui->treeView->setModel(groupsModel);
 }
 
 void MainWindow::on_listView_clicked(const QModelIndex &index)
@@ -149,7 +184,7 @@ void MainWindow::listViewClickHandler(const QModelIndex &index) {
     ui->sample_path_edit->setText(qs);
     qs = QString::number(selectedSample->frequency());
     ui->sample_frequency_edit->setText(qs);
-    qs = QString::number(selectedSample->probability());
+    qs = QString::number(probabilityToPercent(selectedSample->probability()));
     ui->sample_prob_edit->setText(qs);
     qs = QString::number(selectedSample->volumemultiplier());
     ui->sample_vol_edit->setText(qs);
@@ -164,7 +199,8 @@ void MainWindow::on_save_sample_button_clicked()
 
     PGTA::Track_Sample* selectedSample = trackSamples[selectedSampleIndex];
 
-    int new_frequency, new_prob;
+    int new_frequency;
+    uint32_t new_prob;
     float new_vol;
     QString new_path;
 
@@ -172,7 +208,7 @@ void MainWindow::on_save_sample_button_clicked()
     {
         new_path = ui->sample_path_edit->text();
         new_frequency = ui->sample_frequency_edit->text().toInt();
-        new_prob = ui->sample_prob_edit->text().toUInt();
+        new_prob = percentToProbability(ui->sample_prob_edit->text().toUInt());
         new_vol = ui->sample_vol_edit->text().toFloat();
     } catch (int e)
     {
@@ -184,6 +220,8 @@ void MainWindow::on_save_sample_button_clicked()
     selectedSample->set_frequency(new_frequency);
     selectedSample->set_probability(new_prob);
     selectedSample->set_volumemultiplier(new_vol);
+
+    refreshListView();
 
     ui->statusbar->showMessage("Sample saved!");
 
@@ -231,5 +269,6 @@ void MainWindow::on_remove_sample_button_clicked()
     }
 
     refreshListView();
+    refreshGroupsView();
 
 }

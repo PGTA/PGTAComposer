@@ -19,7 +19,6 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_pushButton_clicked();
 
     void on_actionOpen_triggered();
 
@@ -44,9 +43,12 @@ private:
     int selectedSampleIndex;
     std::string fileName;
     void refreshListView();
+    void refreshGroupsView();
     void saveTrackFile();
     void listViewClickHandler(const QModelIndex &index);
     QString getFileName(const std::string fileName);
+    uint32_t probabilityToPercent(const uint32_t probability);
+    uint32_t percentToProbability(const uint32_t percent);
 };
 
 #endif // MAINWINDOW_H
