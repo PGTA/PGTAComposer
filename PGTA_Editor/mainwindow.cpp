@@ -22,26 +22,54 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+QString MainWindow::getFileName(const std::string fileName)
 {
+   const std::size_t slashIndex = fileName.find_last_of("\\/");
+   return QString::fromStdString(fileName.substr(slashIndex+1));
+}
+
+void MainWindow::saveTrackFile()
+{
+    if (fileName.length() == 0)
+    {
+        QString file = QFileDialog::getSaveFileName(this,tr("Save Track File"),"",tr("Track files (*.track)"));
+        if (file.isEmpty()) {
+            ui->statusbar->showMessage("Error saving track file!");
+            return;
+        }
+        fileName = file.toStdString();
+    }
+
     std::fstream output(fileName, std::ios::out | std::ios::trunc | std::ios::binary);
     if (!newTrack.SerializePartialToOstream(&output))
     {
-        ui->statusbar->showMessage("failed to write track");
-        return ;
+        ui->statusbar->showMessage("Error saving track file!");
+        return;
     }
 
     //delete all global object allocated by libprotobuf
     google::protobuf::ShutdownProtobufLibrary();
-
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),getFileName(fileName));
     ui->statusbar->showMessage("Track file saved!");
-
 }
 
+void MainWindow::on_pushButton_clicked()
+{
+   saveTrackFile();
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    saveTrackFile();
+}
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open TrackFile"),"",tr("Track files (*.track)"));
+    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
     if (fileList.size() <= 0) {
         return;
     }
@@ -50,12 +78,14 @@ void MainWindow::on_actionOpen_triggered()
     oldTrack.Clear();
     trackSamples.clear();
     trackGroups.clear();
+
     ui->sample_path_edit->setText("");
     ui->sample_frequency_edit->setText("");
     ui->sample_prob_edit->setText("");
     ui->sample_vol_edit->setText("");
 
     fileName = fileList.first().toStdString().c_str();
+
     std::fstream input(fileName, std::ios::in | std::ios::binary);
     if (!input)
     {
@@ -92,23 +122,18 @@ void MainWindow::on_actionOpen_triggered()
         }
     }
 
-
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),getFileName(fileName));
     refreshListView();
-
 }
 
 void MainWindow::refreshListView(){
     QStandardItemModel* listModel = new QStandardItemModel();
-
-    for (int i = 0; i < trackSamples.size(); i++)
+    for (auto *sample : trackSamples)
     {
-        std::ostringstream sampleName;
-        sampleName << "Sample " << i + 1;
-        QStandardItem* items = new QStandardItem(QString::fromStdString(sampleName.str()));
+        QStandardItem *items = new QStandardItem(getFileName(sample->filepath()));
         items->setEditable(false);
         listModel->appendRow(items);
     }
-
     ui->listView->setModel(listModel);
 }
 
@@ -146,16 +171,16 @@ void MainWindow::on_save_sample_button_clicked()
     try
     {
         new_path = ui->sample_path_edit->text();
-        new_frequency = std::stoi(ui->sample_frequency_edit->text().toUtf8().constData());
-        new_prob = std::stoi(ui->sample_prob_edit->text().toUtf8().constData());
-        new_vol = std::atof(ui->sample_vol_edit->text().toUtf8().constData());
+        new_frequency = ui->sample_frequency_edit->text().toInt();
+        new_prob = ui->sample_prob_edit->text().toUInt();
+        new_vol = ui->sample_vol_edit->text().toFloat();
     } catch (int e)
     {
         ui->statusbar->showMessage("Invalid Sample Parameters!");
         return;
     }
 
-    selectedSample->set_filepath(new_path.toUtf8().constData());
+    selectedSample->set_filepath(new_path.toStdString());
     selectedSample->set_frequency(new_frequency);
     selectedSample->set_probability(new_prob);
     selectedSample->set_volumemultiplier(new_vol);

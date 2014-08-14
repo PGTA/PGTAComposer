@@ -20,7 +20,12 @@ public:
     
 private slots:
     void on_pushButton_clicked();
+
     void on_actionOpen_triggered();
+
+    void on_actionNew_triggered();
+
+    void on_actionSave_triggered();
 
     void on_listView_clicked(const QModelIndex &index);
 
@@ -39,7 +44,9 @@ private:
     int selectedSampleIndex;
     std::string fileName;
     void refreshListView();
+    void saveTrackFile();
     void listViewClickHandler(const QModelIndex &index);
+    QString getFileName(const std::string fileName);
 };
 
 #endif // MAINWINDOW_H

@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui \
+            widgets
 
 TARGET = PGTA_Editor
 TEMPLATE = app
@@ -16,7 +17,7 @@ SOURCES += main.cpp\
 
 QMAKE_CXXFLAGS += -std=c++0x
 
-LIBS += /usr/local/lib/libprotobuf.so
+LIBS += -lprotobuf
 
 HEADERS  += mainwindow.h \
     Track.pb.h
