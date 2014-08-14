@@ -7,7 +7,7 @@
 QT       += core gui \
             widgets
 
-TARGET = PGTA_Editor
+TARGET = pgta_composer
 TEMPLATE = app
 
 
@@ -25,4 +25,4 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 OTHER_FILES += \
-    PGTA_Editor.pro.user
+    pgta_composer.pro.user
