@@ -8,6 +8,8 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <stdint.h>
+#include <memory>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     ui->setupUi(this);
     selectedSampleIndex = -1;
+    QStandardItemModel* groupsModel = new QStandardItemModel();
+    ui->treeView->setModel(groupsModel);
 }
 
 MainWindow::~MainWindow()
@@ -41,8 +45,70 @@ QString MainWindow::getFileName(const std::string fileName)
    return QString::fromStdString(fileName.substr(slashIndex+1));
 }
 
+int MainWindow::nameToSampleID(const std::string fileName)
+{
+    int numSamples = trackSamples.size();
+    for (int i = 0; i < numSamples; ++i)
+    {
+        const PGTA::Track_Sample *sample = trackSamples.at(i);
+        if (getFileName(sample->filepath()).toStdString() == fileName)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void MainWindow::setGroupsFromView()
+{
+    oldTrack = newTrack;
+    newTrack.Clear();
+    trackSamples.clear();
+    trackGroups.clear();
+
+    for (int i = 0; i< oldTrack.samples().size(); ++i)
+    {
+        // PROTOBUF STUFF
+        const PGTA::Track_Sample oldSample = oldTrack.samples().Get(i);
+        trackSamples.push_back(newTrack.add_samples());
+        trackSamples[i]->set_filepath(oldSample.filepath());
+        trackSamples[i]->set_starttime(oldSample.starttime());
+        trackSamples[i]->set_frequency(oldSample.frequency());
+        trackSamples[i]->set_probability(oldSample.probability());
+        trackSamples[i]->set_volumemultiplier(oldSample.volumemultiplier());
+    }
+
+    QAbstractItemModel *model = ui->treeView->model();
+    int numGroups = model->rowCount();
+    for (int i = 0; i < numGroups; ++i)
+    {
+        // PROTOBUF STUFF
+        trackGroups.push_back(newTrack.add_groups());
+        // READING STUFF FROM VIEW
+        QModelIndex parentIndex = model->index(i,0);
+        int numSamples = model->rowCount(parentIndex);
+        // CREATE NEW GROUP
+        for (int j = 0; j < numSamples; ++j)
+        {
+            QModelIndex sampleIndex = model->index(j,0,parentIndex);
+            QString fileName = sampleIndex.data().toString();
+            int sampleID = nameToSampleID(fileName.toStdString());
+            if (sampleID == -1)
+            {
+                continue;
+            }
+            // ADD SAMPLE TO GROUP
+            trackGroups[i]->add_sampleindex(sampleID);
+        }
+    }
+    refreshGroupsView();
+}
+
 void MainWindow::saveTrackFile()
 {
+    // Update Groups based on current Qt model
+    setGroupsFromView();
+
     if (fileName.length() == 0)
     {
         QString file = QFileDialog::getSaveFileName(this,tr("Save Track File"),"",tr("Track files (*.track)"));
@@ -68,7 +134,38 @@ void MainWindow::saveTrackFile()
 
 void MainWindow::on_actionNew_triggered()
 {
+    newTrack.Clear();
+    oldTrack.Clear();
+    trackSamples.clear();
+    trackGroups.clear();
+    fileName = "";
+    clearSamplePropertiesFields();
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),QString::fromStdString("untitled.track"));
+    refreshListView();
+    refreshGroupsView();
 }
+
+
+void MainWindow::on_add_group_clicked()
+{
+    std::ostringstream groupName;
+    groupName << "Group " << ui->treeView->model()->rowCount()+1;
+    QStandardItem *groupItem = new QStandardItem(QString::fromStdString(groupName.str()));
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel*>(ui->treeView->model());
+    groupItem->setEditable(false);
+    groupItem->setDropEnabled(true);
+    model->invisibleRootItem()->appendRow(groupItem);
+}
+
+void MainWindow::on_remove_group_selection_clicked()
+{
+    if (selectedGroupElementIndex.isValid())
+    {
+        ui->treeView->model()->removeRow(selectedGroupElementIndex.row(),selectedGroupElementIndex.parent());
+    }
+    selectedGroupElementIndex = QModelIndex(); // reset to invalid
+}
+
 
 void MainWindow::on_actionSave_triggered()
 {
@@ -87,10 +184,7 @@ void MainWindow::on_actionOpen_triggered()
     trackSamples.clear();
     trackGroups.clear();
 
-    ui->sample_path_edit->setText("");
-    ui->sample_frequency_edit->setText("");
-    ui->sample_prob_edit->setText("");
-    ui->sample_vol_edit->setText("");
+    clearSamplePropertiesFields();
 
     fileName = fileList.first().toStdString().c_str();
 
@@ -115,6 +209,7 @@ void MainWindow::on_actionOpen_triggered()
         const PGTA::Track_Sample oldSample = oldTrack.samples().Get(i);
         trackSamples.push_back(newTrack.add_samples());
         trackSamples[i]->set_filepath(oldSample.filepath());
+        trackSamples[i]->set_starttime(oldSample.starttime());
         trackSamples[i]->set_frequency(oldSample.frequency());
         trackSamples[i]->set_probability(oldSample.probability());
         trackSamples[i]->set_volumemultiplier(oldSample.volumemultiplier());
@@ -148,6 +243,7 @@ void MainWindow::refreshListView(){
 
 void MainWindow::refreshGroupsView()
 {
+    // read what is on the screen
     QStandardItemModel* groupsModel = new QStandardItemModel();
     groupsModel->invisibleRootItem()->setDropEnabled(false);
     int numGroups = trackGroups.size();
@@ -177,11 +273,29 @@ void MainWindow::on_listView_clicked(const QModelIndex &index)
     listViewClickHandler(index);
 }
 
+void MainWindow::on_treeView_clicked(const QModelIndex &index)
+{
+    selectedGroupElementIndex = index;
+    return;
+}
+
+void MainWindow::clearSamplePropertiesFields()
+{
+    QString qs("");
+    ui->sample_path_edit->setText(qs);
+    ui->sample_start_time->setText(qs);
+    ui->sample_frequency_edit->setText(qs);
+    ui->sample_prob_edit->setText(qs);
+    ui->sample_vol_edit->setText(qs);
+}
+
 void MainWindow::listViewClickHandler(const QModelIndex &index) {
     selectedSampleIndex = index.row();
     PGTA::Track_Sample* selectedSample = trackSamples[selectedSampleIndex];
     QString qs(selectedSample->filepath().c_str());
     ui->sample_path_edit->setText(qs);
+    qs = QString::number(selectedSample->starttime());
+    ui->sample_start_time->setText(qs);
     qs = QString::number(selectedSample->frequency());
     ui->sample_frequency_edit->setText(qs);
     qs = QString::number(probabilityToPercent(selectedSample->probability()));
@@ -201,12 +315,14 @@ void MainWindow::on_save_sample_button_clicked()
 
     int new_frequency;
     uint32_t new_prob;
+    unsigned long start_time;
     float new_vol;
     QString new_path;
 
     try
     {
         new_path = ui->sample_path_edit->text();
+        start_time = ui->sample_start_time->text().toULong();
         new_frequency = ui->sample_frequency_edit->text().toInt();
         new_prob = percentToProbability(ui->sample_prob_edit->text().toUInt());
         new_vol = ui->sample_vol_edit->text().toFloat();
@@ -217,6 +333,7 @@ void MainWindow::on_save_sample_button_clicked()
     }
 
     selectedSample->set_filepath(new_path.toStdString());
+    selectedSample->set_starttime(start_time);
     selectedSample->set_frequency(new_frequency);
     selectedSample->set_probability(new_prob);
     selectedSample->set_volumemultiplier(new_vol);
@@ -238,37 +355,64 @@ void MainWindow::on_add_sample_button_clicked()
 
 void MainWindow::on_remove_sample_button_clicked()
 {
+    // Update Groups based on the current Qt model
+    setGroupsFromView();
+
     QModelIndex currentIndex = ui->listView->currentIndex();
+
+    if (currentIndex.row() < 0)
+    {
+        return;
+    }
 
     oldTrack = newTrack;
     newTrack.Clear();
     trackSamples.clear();
     trackGroups.clear();
 
-    for (int i = 0; i< oldTrack.samples().size(); i++)
+    for (int i = 0; i< oldTrack.samples().size(); ++i)
     {
         if (i == currentIndex.row()){
             continue;
         }
+        int index = i;
+        if (index > currentIndex.row())
+        {
+            --index;
+        }
         const PGTA::Track_Sample oldSample = oldTrack.samples().Get(i);
         trackSamples.push_back(newTrack.add_samples());
-        trackSamples[i]->set_filepath(oldSample.filepath());
-        trackSamples[i]->set_frequency(oldSample.frequency());
-        trackSamples[i]->set_probability(oldSample.probability());
-        trackSamples[i]->set_volumemultiplier(oldSample.volumemultiplier());
+        trackSamples[index]->set_filepath(oldSample.filepath());
+        trackSamples[index]->set_starttime(oldSample.starttime());
+        trackSamples[index]->set_frequency(oldSample.frequency());
+        trackSamples[index]->set_probability(oldSample.probability());
+        trackSamples[index]->set_volumemultiplier(oldSample.volumemultiplier());
     }
 
-    for (int i = 0; i< oldTrack.groups().size(); i++)
+    for (int i = 0; i < oldTrack.groups().size(); i++)
     {
         const PGTA::Track_Group oldGroup = oldTrack.groups().Get(i);
-        trackGroups.push_back(newTrack.add_groups());
+        std::unique_ptr<PGTA::Track_Group> newGroup(new PGTA::Track::Group());
 
         for (int j = 0; j < oldGroup.sampleindex().size(); j++) {
-            trackGroups[i]->add_sampleindex(oldGroup.sampleindex().Get(j));
+            int index = oldGroup.sampleindex().Get(j);
+            if (index == currentIndex.row())
+            {
+                continue;
+            }
+            if (index > currentIndex.row())
+            {
+                --index;
+            }
+            newGroup->add_sampleindex(index);
+        }
+        if (newGroup->sampleindex_size() > 0)
+        {
+            trackGroups.push_back(newGroup.get());
+            newTrack.mutable_groups()->AddAllocated(newGroup.release());
         }
     }
-
+    clearSamplePropertiesFields();
     refreshListView();
     refreshGroupsView();
-
 }

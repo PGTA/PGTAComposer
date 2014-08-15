@@ -498,8 +498,8 @@
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>110</y>
+         <x>360</x>
+         <y>30</y>
          <width>131</width>
          <height>31</height>
         </rect>
@@ -511,8 +511,8 @@
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>150</y>
+         <x>360</x>
+         <y>70</y>
          <width>131</width>
          <height>31</height>
         </rect>
@@ -534,8 +534,8 @@
       <widget class="QLineEdit" name="sample_prob_edit">
        <property name="geometry">
         <rect>
-         <x>180</x>
-         <y>110</y>
+         <x>530</x>
+         <y>30</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -544,8 +544,8 @@
       <widget class="QLineEdit" name="sample_vol_edit">
        <property name="geometry">
         <rect>
-         <x>180</x>
-         <y>150</y>
+         <x>530</x>
+         <y>70</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -572,6 +572,29 @@
        </property>
        <property name="text">
         <string>Save Sample</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="sample_start_time">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>110</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_7">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>81</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Start Time:</string>
        </property>
       </widget>
      </widget>
@@ -659,7 +682,7 @@
         <x>10</x>
         <y>270</y>
         <width>681</width>
-        <height>241</height>
+        <height>211</height>
        </rect>
       </property>
       <property name="dragDropMode">
@@ -672,6 +695,32 @@
        <bool>false</bool>
       </attribute>
      </widget>
+     <widget class="QPushButton" name="remove_group_selection">
+      <property name="geometry">
+       <rect>
+        <x>560</x>
+        <y>490</y>
+        <width>121</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Remove Selected</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="add_group">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>490</y>
+        <width>121</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add Group</string>
+      </property>
+     </widget>
      <zorder>groupBox</zorder>
      <zorder>toolBox</zorder>
      <zorder>label_5</zorder>
@@ -681,6 +730,8 @@
      <zorder>line_4</zorder>
      <zorder>label_6</zorder>
      <zorder>treeView</zorder>
+     <zorder>remove_group_selection</zorder>
+     <zorder>add_group</zorder>
     </widget>
    </widget>
   </widget>
@@ -756,9 +807,9 @@
     <widget class="QPushButton" name="remove_sample_button">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>120</x>
        <y>510</y>
-       <width>101</width>
+       <width>111</width>
        <height>27</height>
       </rect>
      </property>
@@ -789,6 +840,9 @@
      </property>
      <property name="dragDropMode">
       <enum>QAbstractItemView::DragOnly</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>

@@ -28,11 +28,17 @@ private slots:
 
     void on_listView_clicked(const QModelIndex &index);
 
+    void on_treeView_clicked(const QModelIndex &index);
+
     void on_save_sample_button_clicked();
 
     void on_add_sample_button_clicked();
 
     void on_remove_sample_button_clicked();
+
+    void on_add_group_clicked();
+
+    void on_remove_group_selection_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -41,14 +47,18 @@ private:
     std::vector<PGTA::Track_Sample *> trackSamples;
     std::vector<PGTA::Track_Group *> trackGroups;
     int selectedSampleIndex;
+    QModelIndex selectedGroupElementIndex;
     std::string fileName;
     void refreshListView();
     void refreshGroupsView();
+    void clearSamplePropertiesFields();
     void saveTrackFile();
     void listViewClickHandler(const QModelIndex &index);
     QString getFileName(const std::string fileName);
     uint32_t probabilityToPercent(const uint32_t probability);
     uint32_t percentToProbability(const uint32_t percent);
+    int nameToSampleID(const std::string fileName);
+    void setGroupsFromView();
 };
 
 #endif // MAINWINDOW_H
