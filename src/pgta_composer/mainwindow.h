@@ -10,6 +10,9 @@ namespace Ui {
 class MainWindow;
 }
 
+
+class TrackEngine;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -59,6 +62,9 @@ private:
     uint32_t percentToProbability(const uint32_t percent);
     int nameToSampleID(const std::string fileName);
     void setGroupsFromView();
+
+private:
+    TrackEngine *m_trackEngine;
 };
 
 #endif // MAINWINDOW_H

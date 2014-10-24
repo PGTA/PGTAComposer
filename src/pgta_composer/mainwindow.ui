@@ -444,6 +444,12 @@
       <height>551</height>
      </rect>
     </property>
+    <property name="tabPosition">
+     <enum>QTabWidget::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Triangular</enum>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -539,6 +545,9 @@
          <width>141</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
        </property>
       </widget>
       <widget class="QLineEdit" name="sample_vol_edit">
@@ -721,17 +730,6 @@
        <string>Add Group</string>
       </property>
      </widget>
-     <zorder>groupBox</zorder>
-     <zorder>toolBox</zorder>
-     <zorder>label_5</zorder>
-     <zorder>line</zorder>
-     <zorder>line_2</zorder>
-     <zorder>line_3</zorder>
-     <zorder>line_4</zorder>
-     <zorder>label_6</zorder>
-     <zorder>treeView</zorder>
-     <zorder>remove_group_selection</zorder>
-     <zorder>add_group</zorder>
     </widget>
    </widget>
   </widget>
@@ -741,7 +739,7 @@
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -777,12 +775,6 @@
    </property>
    <property name="autoFillBackground">
     <bool>true</bool>
-   </property>
-   <property name="features">
-    <set>QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Samples</string>

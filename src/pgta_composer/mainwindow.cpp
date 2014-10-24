@@ -11,11 +11,13 @@
 #include <stdint.h>
 #include <memory>
 #include <cmath>
+#include "trackengine.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    m_trackEngine = new TrackEngine(this);
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     ui->setupUi(this);
     selectedSampleIndex = -1;
@@ -119,7 +121,7 @@ void MainWindow::saveTrackFile()
         fileName = file.toStdString();
     }
 
-    std::fstream output(fileName, std::ios::out | std::ios::trunc | std::ios::binary);
+    std::fstream output(fileName.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
     if (!newTrack.SerializePartialToOstream(&output))
     {
         ui->statusbar->showMessage("Error saving track file!");
@@ -188,7 +190,7 @@ void MainWindow::on_actionOpen_triggered()
 
     fileName = fileList.first().toStdString().c_str();
 
-    std::fstream input(fileName, std::ios::in | std::ios::binary);
+    std::fstream input(fileName.c_str(), std::ios::in | std::ios::binary);
     if (!input)
     {
         ui->statusbar->showMessage("Invalid track file!");

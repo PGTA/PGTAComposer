@@ -1,28 +1,35 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-08-08T00:30:54
+# PGTA COMPOSER QT PROJECT CONFIG
 #
 #-------------------------------------------------
 
-QT       += core gui \
+QT +=       core gui \
             widgets
 
-TARGET = pgta_composer
-TEMPLATE = app
+TARGET =    pgta_composer
 
+TEMPLATE =  app
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    Track.pb.cc
+SOURCES +=  main.cpp \
+            mainwindow.cpp \
+            Track.pb.cc \
+            trackengine.cpp
 
-QMAKE_CXXFLAGS += -std=c++0x
+CONFIG +=   c++11
 
-LIBS += -lprotobuf
+HEADERS +=  mainwindow.h \
+            Track.pb.h \
+    trackengine.h
 
-HEADERS  += mainwindow.h \
-    Track.pb.h
+FORMS +=    mainwindow.ui
 
-FORMS    += mainwindow.ui
+OTHER_FILES +=  pgta_composer.pro.user
 
-OTHER_FILES += \
-    pgta_composer.pro.user
+QMAKE_MAC_SDK = macosx10.9
+
+LIBS +=     -L/usr/local/lib/ -lprotobuf
+INCLUDEPATH += /usr/local/include
+
+DEPENDPATH +=   /usr/local/include
+PRE_TARGETDEPS +=   /usr/local/lib/libprotobuf.a
