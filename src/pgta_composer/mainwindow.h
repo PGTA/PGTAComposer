@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+
+#   pragma once
 
 #include "Track.pb.h"
 #include <QMainWindow>
@@ -66,5 +66,3 @@ private:
 private:
     TrackEngine *m_trackEngine;
 };
-
-#endif // MAINWINDOW_H

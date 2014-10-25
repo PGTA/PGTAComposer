@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QMap>
 #include <QtCore/QStringList>
-
+#include "Track.pb.h"
 
 class Sample;
 
@@ -16,8 +16,14 @@ public:
 
     ~TrackEngine();
 
+    // initializes the TrackEngine object
+    void init(const QString &fileName);
+
     // returns all sample names
     QStringList samples() const;
+
+    // returns the file path by given sample name
+    QString filePath(const QString &sampleName) const;
 
     // returns group name by given sample name
     QString group(const QString &sampleName) const;
@@ -30,6 +36,9 @@ public:
 
     // returns vomume multiplier by given sample name
     qreal volumeMultiplier(const QString &sampleName) const;
+
+    // returns vomume start time by given sample name
+    qint64 startTime(const QString &sampleName) const;
 
     // returns all groups
     QStringList groups() const;
@@ -46,8 +55,10 @@ private:
     void write();
 
 private:
+    QString m_fileName;
     QMap<QString, Sample*> m_samples;
     QMultiMap<QString, QString> m_groups;
+    PGTA::Track m_track;
 };
 
 #endif // TRACKENGINE_H
