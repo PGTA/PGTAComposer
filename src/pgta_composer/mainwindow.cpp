@@ -11,13 +11,13 @@
 #include <stdint.h>
 #include <memory>
 #include <cmath>
-#include "trackengine.h"
+#include "enginetrack.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    m_trackEngine = new TrackEngine(this);
+    m_engineTrack = new EngineTrack(this);
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     ui->setupUi(this);
     selectedSampleIndex = -1;

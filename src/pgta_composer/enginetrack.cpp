@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "trackengine.h"
+#include "enginetrack.h"
 #include "Track.pb.h"
 
 class Sample
@@ -16,29 +16,29 @@ public:
     QString filePath;
 };
 
-TrackEngine::TrackEngine(QObject *parent) :
+EngineTrack::EngineTrack(QObject *parent) :
     QObject(parent)
 {
 }
 
-TrackEngine::~TrackEngine()
+EngineTrack::~EngineTrack()
 {
     qDeleteAll(m_samples);
     m_samples.clear();
 }
 
-void TrackEngine::init(const QString &fileName)
+void EngineTrack::init(const QString &fileName)
 {
     m_fileName = fileName;
     read();
 }
 
-QStringList TrackEngine::samples() const
+QStringList EngineTrack::samples() const
 {
     return m_samples.keys();
 }
 
-QString TrackEngine::filePath(const QString &sampleName) const
+QString EngineTrack::filePath(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -48,7 +48,7 @@ QString TrackEngine::filePath(const QString &sampleName) const
     return sample->filePath;
 }
 
-QString TrackEngine::group(const QString &sampleName) const
+QString EngineTrack::group(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -58,7 +58,7 @@ QString TrackEngine::group(const QString &sampleName) const
     return sample->groupName;
 }
 
-qint64 TrackEngine::frequency(const QString &sampleName) const
+qint64 EngineTrack::frequency(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -68,7 +68,7 @@ qint64 TrackEngine::frequency(const QString &sampleName) const
     return sample->frequency;
 }
 
-qint32 TrackEngine::probability(const QString &sampleName) const
+qint32 EngineTrack::probability(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -79,7 +79,7 @@ qint32 TrackEngine::probability(const QString &sampleName) const
 }
 
 
-qreal TrackEngine::volumeMultiplier(const QString &sampleName) const
+qreal EngineTrack::volumeMultiplier(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -89,7 +89,7 @@ qreal TrackEngine::volumeMultiplier(const QString &sampleName) const
     return sample->volumeMultiplier;
 }
 
-qint64 TrackEngine::startTime(const QString &sampleName) const
+qint64 EngineTrack::startTime(const QString &sampleName) const
 {
     Sample *sample = m_samples[sampleName];
     if (sample == nullptr)
@@ -99,25 +99,25 @@ qint64 TrackEngine::startTime(const QString &sampleName) const
     return sample->startTime;
 }
 
-QStringList TrackEngine::groups() const
+QStringList EngineTrack::groups() const
 {
    return m_groups.uniqueKeys();
 }
 
-QStringList TrackEngine::samplesByGroup(const QString &sampleName) const
+QStringList EngineTrack::samplesByGroup(const QString &sampleName) const
 {
     return m_groups.values(sampleName);
 }
 
-void TrackEngine::read()
+void EngineTrack::read()
 {
     // clear existing data
     qDeleteAll(m_samples);
     m_samples.clear();
 
     GOOGLE_PROTOBUF_VERIFY_VERSION;
-    m_track.Clear();
-
+    PGTA::Track track;
+    
     std::fstream protoInput(m_fileName.toStdString().c_str(), std::ios::in | std::ios::binary);
 
     if (!protoInput)
@@ -126,7 +126,7 @@ void TrackEngine::read()
         return; // failed to open input stream
     }
 
-    bool isParsed = m_track.ParseFromIstream(&protoInput);
+    bool isParsed = track.ParseFromIstream(&protoInput);
     protoInput.close();
 
     if (!isParsed)
@@ -135,7 +135,7 @@ void TrackEngine::read()
         return; // failed to parse proto file
     }
 
-    for (auto &trackSample : m_track.samples())
+    for (auto &trackSample : track.samples())
     {
         Sample *sample = new Sample();
         sample->sampleName = "";
@@ -151,7 +151,7 @@ void TrackEngine::read()
     }
 }
 
-void TrackEngine::write()
+void EngineTrack::write()
 {
 
 }

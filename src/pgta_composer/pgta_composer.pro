@@ -14,13 +14,15 @@ TEMPLATE =  app
 SOURCES +=  main.cpp \
             mainwindow.cpp \
             Track.pb.cc \
-            trackengine.cpp
+    enginetrack.cpp \
+    tracktablemodel.cpp
 
 CONFIG +=   c++11
 
 HEADERS +=  mainwindow.h \
             Track.pb.h \
-    trackengine.h
+    enginetrack.h \
+    tracktablemodel.h
 
 FORMS +=    mainwindow.ui
 

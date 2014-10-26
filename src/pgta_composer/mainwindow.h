@@ -1,5 +1,5 @@
 
-#   pragma once
+#pragma once
 
 #include "Track.pb.h"
 #include <QMainWindow>
@@ -10,8 +10,7 @@ namespace Ui {
 class MainWindow;
 }
 
-
-class TrackEngine;
+class EngineTrack;
 
 class MainWindow : public QMainWindow
 {
@@ -64,5 +63,5 @@ private:
     void setGroupsFromView();
 
 private:
-    TrackEngine *m_trackEngine;
+    EngineTrack *m_engineTrack;
 };

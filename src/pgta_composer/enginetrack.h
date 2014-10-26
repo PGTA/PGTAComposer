@@ -8,13 +8,13 @@
 
 class Sample;
 
-class TrackEngine : public QObject
+class EngineTrack : public QObject
 {
     Q_OBJECT
 public:
-    explicit TrackEngine(QObject *parent = 0);
+    explicit EngineTrack(QObject *parent = 0);
 
-    ~TrackEngine();
+    ~EngineTrack();
 
     // initializes the TrackEngine object
     void init(const QString &fileName);
@@ -58,7 +58,6 @@ private:
     QString m_fileName;
     QMap<QString, Sample*> m_samples;
     QMultiMap<QString, QString> m_groups;
-    PGTA::Track m_track;
 };
 
 #endif // TRACKENGINE_H
