@@ -30,6 +30,14 @@ MainWindow::MainWindow(QWidget *parent) :
     test->setModel(m_trackTableModel);
     test->show();
     
+    
+    QTreeView *test1 = new QTreeView(parent);
+    test1->setGeometry(0,0,200,200);
+    
+    test1->setModel(m_trackTableModel);
+    test1->show();
+    
+    
     ui->setupUi(this);
 }
 

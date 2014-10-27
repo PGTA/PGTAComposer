@@ -12,7 +12,7 @@ class EngineTrack : public QObject
 {
     Q_OBJECT
 public:
-    enum { SampleName=0, GroupName=1, SampleFrequency=2, SampleProbability=3, SampleVolMult=4, SampleStartTime=5 };
+    enum { SampleName=0, GroupName, FilePath, SampleFrequency, SampleProbability, SampleVolMult, SampleStartTime, ColumnCount };
     explicit EngineTrack(QObject *parent = 0);
 
     ~EngineTrack();

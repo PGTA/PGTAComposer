@@ -18,16 +18,16 @@ void TrackTableModel::setInput(EngineTrack *input)
 
 int TrackTableModel::columnCount ( const QModelIndex & parent ) const
 {
-    if (!parent.isValid() || !m_input)
+    if (parent.isValid() || !m_input)
     {
         return 0;
     }
-    return 7;
+    return EngineTrack::ColumnCount;
 }
 
 int	TrackTableModel::rowCount ( const QModelIndex & parent ) const
 {
-    if (!parent.isValid() || !m_input)
+    if (parent.isValid() || !m_input)
     {
         return 0;
     }
@@ -47,6 +47,8 @@ QVariant TrackTableModel::data ( const QModelIndex & index, int role ) const
                     return sampleName;
                 case EngineTrack::GroupName:
                     return m_input->group(sampleName);
+                case EngineTrack::FilePath:
+                    return m_input->filePath(sampleName);
                 case EngineTrack::SampleFrequency:
                     return m_input->frequency(sampleName);
                 case EngineTrack::SampleProbability:
@@ -66,5 +68,6 @@ QVariant TrackTableModel::data ( const QModelIndex & index, int role ) const
 
 QVariant TrackTableModel::headerData ( int section, Qt::Orientation orientation, int role ) const
 {
-    return QVariant();
+    return QString("Sample %1").arg(section+1);
+    //return QVariant();
 }
