@@ -135,11 +135,13 @@ void EngineTrack::read()
         return; // failed to parse proto file
     }
 
-    for (auto &trackSample : track.samples())
+    for (int i = 0; i < track.samples_size(); ++i)
     {
+        const PGTA::Track_Sample &trackSample = track.samples(i);
         Sample *sample = new Sample();
-        sample->sampleName = "";
-        sample->groupName = "";
+        sample->sampleName = QString::fromStdString("Sample " + std::to_string(i));
+        sample->groupName = "Group 1";
+        std::cout << sample->sampleName.toStdString() << std::endl;
         sample->filePath = QString::fromStdString(trackSample.filepath());
         sample->frequency = trackSample.frequency();
         sample->probability = trackSample.probability();

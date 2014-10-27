@@ -10,19 +10,27 @@
 #include <limits>
 #include <stdint.h>
 #include <memory>
+#include <QtGUi>
 #include <cmath>
 #include "enginetrack.h"
+#include "tracktablemodel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     m_engineTrack = new EngineTrack(this);
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    m_engineTrack->init(QString::fromStdString("../../../tracks/test1.track"));
+    m_trackTableModel = new TrackTableModel(this);
+    m_trackTableModel->setInput(m_engineTrack);
+    
+    QListView *test = new QListView(parent);
+    test->setGeometry(0,0,200,200);
+
+    test->setModel(m_trackTableModel);
+    test->show();
+    
     ui->setupUi(this);
-    selectedSampleIndex = -1;
-    QStandardItemModel* groupsModel = new QStandardItemModel();
-    ui->treeView->setModel(groupsModel);
 }
 
 MainWindow::~MainWindow()

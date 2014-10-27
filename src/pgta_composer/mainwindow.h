@@ -11,6 +11,7 @@ class MainWindow;
 }
 
 class EngineTrack;
+class TrackTableModel;
 
 class MainWindow : public QMainWindow
 {
@@ -64,4 +65,5 @@ private:
 
 private:
     EngineTrack *m_engineTrack;
+    TrackTableModel *m_trackTableModel;
 };
