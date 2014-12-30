@@ -1,14 +1,17 @@
 
+#include <fstream>
+#include <iostream>
 #include "TrackTreeModel.h"
 #include "TrackItem.h"
+#include "Track.pb.h"
 
-TrackTreeModel::TrackTreeModel(const QString &data, QObject *parent)
-    : QAbstractItemModel(parent)
+TrackTreeModel::TrackTreeModel(const QString &filePath, QObject *parent)
+    : QAbstractItemModel(parent), m_filePath(filePath)
 {
     QList<QVariant> rootData;
-    rootData << "";
+    rootData << "Sample Name" << "File Path";
     m_rootItem = new TrackItem(rootData);
-    SetupModelData(data.split(QString("\n")), m_rootItem);
+    SetupModelData(m_rootItem);
 }
 
 TrackTreeModel::~TrackTreeModel()
@@ -16,7 +19,7 @@ TrackTreeModel::~TrackTreeModel()
     delete m_rootItem;
 }
 
-QVariant TrackTreeModel::GetData(const QModelIndex &index, int role) const
+QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
     {
@@ -53,7 +56,7 @@ QVariant TrackTreeModel::GetHeaderData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-QModelIndex TrackTreeModel::GetIndex(int row, int column,
+QModelIndex TrackTreeModel::index(int row, int column,
                      const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent))
@@ -84,7 +87,7 @@ QModelIndex TrackTreeModel::GetIndex(int row, int column,
     }
 }
 
-QModelIndex TrackTreeModel::GetParent(const QModelIndex &index) const
+QModelIndex TrackTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
     {
@@ -102,7 +105,7 @@ QModelIndex TrackTreeModel::GetParent(const QModelIndex &index) const
     return createIndex(parentItem->GetRow(), 0, parentItem);
 }
 
-int TrackTreeModel::GetRowCount(const QModelIndex &parent) const
+int TrackTreeModel::rowCount(const QModelIndex &parent) const
 {
     TrackItem *parentItem;
 
@@ -123,7 +126,7 @@ int TrackTreeModel::GetRowCount(const QModelIndex &parent) const
     return parentItem->ChildCount();
 }
 
-int TrackTreeModel::GetColumnCount(const QModelIndex &parent) const
+int TrackTreeModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
     {
@@ -135,7 +138,44 @@ int TrackTreeModel::GetColumnCount(const QModelIndex &parent) const
     }
 }
 
-void TrackTreeModel::SetupModelData(const QStringList &lines, TrackItem *parent)
+void TrackTreeModel::SetupModelData(TrackItem *parent)
 {
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    PGTA::Track track;
 
+    std::fstream protoInput(m_filePath.toStdString().c_str(), std::ios::in | std::ios::binary);
+
+    if (!protoInput)
+    {
+        // TODO : error codes for string table lookup
+        std::cout << "Failed to open input stream." << std::endl;
+        return; // failed to open input stream
+    }
+
+    bool isParsed = track.ParseFromIstream(&protoInput);
+    protoInput.close();
+
+    if (!isParsed)
+    {
+        // TODO : error codes for string table lookup
+        std::cout << "Failed to parse proto file." << std::endl;
+        return; // failed to parse proto file
+    }
+
+    std::cout << "testing" << std::endl;
+
+    for (int i = 0; i < track.samples_size(); ++i)
+    {
+        const PGTA::Track_Sample &trackSample = track.samples(i);
+
+        QList<QVariant> data;
+        data.append(QString::fromStdString("Sample " + std::to_string(i)));
+        data.append(QString::fromStdString(trackSample.filepath()));
+
+
+        TrackItem *item = new TrackItem(data, parent);
+
+        parent->AddChild(item);
+        parent = item;
+    }
 }

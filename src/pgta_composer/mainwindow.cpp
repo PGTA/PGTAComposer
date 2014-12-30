@@ -14,29 +14,24 @@
 #include <cmath>
 #include "enginetrack.h"
 #include "tracktablemodel.h"
+#include "TrackTreeModel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     m_engineTrack = new EngineTrack(this);
-    m_engineTrack->init(QString::fromStdString("../../../tracks/test1.track"));
+    m_engineTrack->init(QString::fromStdString("../../tracks/test1.track"));
     m_trackTableModel = new TrackTableModel(this);
     m_trackTableModel->setInput(m_engineTrack);
     
-    QListView *test = new QListView(parent);
+    QTreeView *test = new QTreeView(parent);
     test->setGeometry(0,0,200,200);
 
-    test->setModel(m_trackTableModel);
+    TrackTreeModel *bla = new TrackTreeModel("/Users/keeferdavies/dev/git/PGTA/tracks/demo.track", this);
+
+    test->setModel(bla);
     test->show();
-    
-    
-    QTreeView *test1 = new QTreeView(parent);
-    test1->setGeometry(0,0,200,200);
-    
-    test1->setModel(m_trackTableModel);
-    test1->show();
-    
     
     ui->setupUi(this);
 }
