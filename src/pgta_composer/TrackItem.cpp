@@ -1,7 +1,7 @@
 
 #include "TrackItem.h"
 
-TrackItem::TrackItem(const QList<QVariant> &data, TrackItem *parent)
+TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent)
 {
     m_parent = parent;
     m_itemData = data;
@@ -15,6 +15,36 @@ TrackItem::~TrackItem()
 void TrackItem::AddChild(TrackItem *item)
 {
     m_childItems.append(item);
+}
+
+bool TrackItem::InsertChildren(int position, int count, int columns)
+{
+    if (position < 0 || position > m_childItems.size())
+    {
+        return false;
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        QVector<QVariant> data(columns);
+        TrackItem *item = new TrackItem(data, this);
+        m_childItems.insert(position, item);
+    }
+}
+
+bool TrackItem::RemoveChildren(int position, int count)
+{
+    if (position < 0 || position + count > m_childItems.size())
+    {
+        return false;
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        delete m_childItems.takeAt(position);
+    }
+
+    return true;
 }
 
 TrackItem *TrackItem::GetChild(int row) const
@@ -35,6 +65,16 @@ int TrackItem::ColumnCount() const
 QVariant TrackItem::GetData(int column) const
 {
     return m_itemData.value(column);
+}
+
+bool TrackItem::SetData(int column, const QVariant &value)
+{
+    if (column < 0 || column >= m_itemData.size())
+    {
+        return false;
+    }
+    m_itemData[column] = value;
+    return true;
 }
 
 int TrackItem::GetRow() const

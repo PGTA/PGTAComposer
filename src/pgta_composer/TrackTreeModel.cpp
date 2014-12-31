@@ -8,8 +8,9 @@
 TrackTreeModel::TrackTreeModel(const QString &filePath, QObject *parent)
     : QAbstractItemModel(parent), m_filePath(filePath)
 {
-    QList<QVariant> rootData;
-    rootData << "Sample Name" << "File Path";
+    QVector<QVariant> rootData;
+    rootData << "Sample Name" << "File Path" << "Frequency" << "Probability"
+             << "Volume Multiplier" << "Start Time";
     m_rootItem = new TrackItem(rootData);
     SetupModelData(m_rootItem);
 }
@@ -42,10 +43,10 @@ Qt::ItemFlags TrackTreeModel::GetFlags(const QModelIndex &index) const
     {
         return 0;
     }
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant TrackTreeModel::GetHeaderData(int section, Qt::Orientation orientation,
+QVariant TrackTreeModel::headerData(int section, Qt::Orientation orientation,
                        int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -162,16 +163,17 @@ void TrackTreeModel::SetupModelData(TrackItem *parent)
         return; // failed to parse proto file
     }
 
-    std::cout << "testing" << std::endl;
-
     for (int i = 0; i < track.samples_size(); ++i)
     {
         const PGTA::Track_Sample &trackSample = track.samples(i);
 
-        QList<QVariant> data;
-        data.append(QString::fromStdString("Sample " + std::to_string(i)));
+        QVector<QVariant> data;
+        data.append(QString::fromStdString("Sample " + std::to_string(i + 1)));
         data.append(QString::fromStdString(trackSample.filepath()));
-
+        data.append(trackSample.frequency());
+        data.append(trackSample.probability());
+        data.append(trackSample.volumemultiplier());
+        data.append(trackSample.starttime());
 
         TrackItem *item = new TrackItem(data, parent);
 

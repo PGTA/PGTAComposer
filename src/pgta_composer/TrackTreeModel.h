@@ -17,7 +17,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags GetFlags(const QModelIndex &index) const;
-    QVariant GetHeaderData(int section, Qt::Orientation orientation,
+    QVariant headerData(int section, Qt::Orientation orientation,
                            int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
                          const QModelIndex &parent = QModelIndex()) const;
