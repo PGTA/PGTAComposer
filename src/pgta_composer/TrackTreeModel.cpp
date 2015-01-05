@@ -20,6 +20,20 @@ TrackTreeModel::~TrackTreeModel()
     delete m_rootItem;
 }
 
+
+TrackItem *TrackTreeModel::getItem(const QModelIndex &index) const
+{
+    if (index.isValid())
+    {
+        TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
+        if (item)
+        {
+            return item;
+        }
+    }
+    return m_rootItem;
+}
+
 QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -37,7 +51,7 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
     return item->GetData(index.column());
 }
 
-Qt::ItemFlags TrackTreeModel::GetFlags(const QModelIndex &index) const
+Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
     {
@@ -137,6 +151,63 @@ int TrackTreeModel::columnCount(const QModelIndex &parent) const
     {
         return m_rootItem->ColumnCount();
     }
+}
+
+bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
+             int role)
+{
+    if (role != Qt::EditRole)
+    {
+        return false;
+    }
+
+    TrackItem *item = getItem(index);
+    bool retVal = item->SetData(index.column(), value);
+
+    if (retVal)
+    {
+        emit dataChanged(index, index);
+    }
+
+    return retVal;
+}
+
+bool TrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
+                   const QVariant &value, int role)
+{
+    if (role != Qt::EditRole || orientation != Qt::Horizontal)
+    {
+        return false;
+    }
+
+    bool retVal = m_rootItem->SetData(section, value);
+
+    if (retVal)
+    {
+        emit headerDataChanged(orientation, section, section);
+    }
+
+    return retVal;
+}
+
+bool TrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    TrackItem *parentItem = getItem(parent);
+    bool retVal = true;
+    beginInsertRows(parent, row, row + count - 1);
+    retVal = parentItem->InsertChildren(row, count, m_rootItem->ColumnCount());
+    endInsertRows();
+    return retVal;
+}
+
+bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    TrackItem *parentItem = getItem(parent);
+    bool retVal = true;
+    beginRemoveRows(parent, row, row + count - 1);
+    retVal = parentItem->RemoveChildren(row, count);
+    endRemoveRows();
+    return retVal;
 }
 
 void TrackTreeModel::SetupModelData(TrackItem *parent)
