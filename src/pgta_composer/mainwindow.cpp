@@ -11,6 +11,9 @@
 #include <stdint.h>
 #include <memory>
 #include <QtGUi>
+//#include <QMediaPlayer>
+#include <QFileSystemModel>
+#include <QtCore>
 #include <cmath>
 #include "enginetrack.h"
 #include "tracktablemodel.h"
