@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+
+#pragma once
 
 #include "Track.pb.h"
 #include <QMainWindow>
@@ -9,6 +9,9 @@
 namespace Ui {
 class MainWindow;
 }
+
+class EngineTrack;
+class TrackTableModel;
 
 class MainWindow : public QMainWindow
 {
@@ -59,6 +62,8 @@ private:
     uint32_t percentToProbability(const uint32_t percent);
     int nameToSampleID(const std::string fileName);
     void setGroupsFromView();
-};
 
-#endif // MAINWINDOW_H
+private:
+    EngineTrack *m_engineTrack;
+    TrackTableModel *m_trackTableModel;
+};

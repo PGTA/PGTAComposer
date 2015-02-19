@@ -10,17 +10,33 @@
 #include <limits>
 #include <stdint.h>
 #include <memory>
+#include <QtGUi>
+//#include <QMediaPlayer>
+#include <QFileSystemModel>
+#include <QtCore>
 #include <cmath>
+#include "enginetrack.h"
+#include "tracktablemodel.h"
+#include "TrackTreeModel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    m_engineTrack = new EngineTrack(this);
+    m_engineTrack->init(QString::fromStdString("../../tracks/test1.track"));
+    m_trackTableModel = new TrackTableModel(this);
+    m_trackTableModel->setInput(m_engineTrack);
+    
+    QTreeView *test = new QTreeView(parent);
+    test->setGeometry(0,0,200,200);
+
+    TrackTreeModel *bla = new TrackTreeModel("/Users/keeferdavies/dev/git/PGTA/tracks/demo.track", this);
+
+    test->setModel(bla);
+    test->show();
+    
     ui->setupUi(this);
-    selectedSampleIndex = -1;
-    QStandardItemModel* groupsModel = new QStandardItemModel();
-    ui->treeView->setModel(groupsModel);
 }
 
 MainWindow::~MainWindow()
@@ -119,7 +135,7 @@ void MainWindow::saveTrackFile()
         fileName = file.toStdString();
     }
 
-    std::fstream output(fileName, std::ios::out | std::ios::trunc | std::ios::binary);
+    std::fstream output(fileName.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
     if (!newTrack.SerializePartialToOstream(&output))
     {
         ui->statusbar->showMessage("Error saving track file!");
@@ -188,7 +204,7 @@ void MainWindow::on_actionOpen_triggered()
 
     fileName = fileList.first().toStdString().c_str();
 
-    std::fstream input(fileName, std::ios::in | std::ios::binary);
+    std::fstream input(fileName.c_str(), std::ios::in | std::ios::binary);
     if (!input)
     {
         ui->statusbar->showMessage("Invalid track file!");

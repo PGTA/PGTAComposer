@@ -165,6 +165,7 @@ const int Track_Sample::kStartTimeFieldNumber;
 Track_Sample::Track_Sample()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:PGTA.Track.Sample)
 }
 
 void Track_Sample::InitAsDefaultInstance() {
@@ -174,11 +175,13 @@ Track_Sample::Track_Sample(const Track_Sample& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:PGTA.Track.Sample)
 }
 
 void Track_Sample::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  filepath_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  filepath_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   frequency_ = GOOGLE_ULONGLONG(1000);
   probability_ = 0u;
   volumemultiplier_ = 1;
@@ -187,11 +190,12 @@ void Track_Sample::SharedCtor() {
 }
 
 Track_Sample::~Track_Sample() {
+  // @@protoc_insertion_point(destructor:PGTA.Track.Sample)
   SharedDtor();
 }
 
 void Track_Sample::SharedDtor() {
-  if (filepath_ != &::google::protobuf::internal::kEmptyString) {
+  if (filepath_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete filepath_;
   }
   if (this != default_instance_) {
@@ -220,9 +224,9 @@ Track_Sample* Track_Sample::New() const {
 }
 
 void Track_Sample::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 31) {
     if (has_filepath()) {
-      if (filepath_ != &::google::protobuf::internal::kEmptyString) {
+      if (filepath_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         filepath_->clear();
       }
     }
@@ -237,21 +241,25 @@ void Track_Sample::Clear() {
 
 bool Track_Sample::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:PGTA.Track.Sample)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string filePath = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_filepath()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->filepath().data(), this->filepath().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "filepath");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_frequency;
         break;
@@ -259,15 +267,14 @@ bool Track_Sample::MergePartialFromCodedStream(
 
       // optional uint64 frequency = 2 [default = 1000];
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_frequency:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &frequency_)));
           set_has_frequency();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_probability;
         break;
@@ -275,15 +282,14 @@ bool Track_Sample::MergePartialFromCodedStream(
 
       // optional uint32 probability = 3 [default = 0];
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_probability:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &probability_)));
           set_has_probability();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(37)) goto parse_volumeMultiplier;
         break;
@@ -291,15 +297,14 @@ bool Track_Sample::MergePartialFromCodedStream(
 
       // optional float volumeMultiplier = 4 [default = 1];
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+        if (tag == 37) {
          parse_volumeMultiplier:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &volumemultiplier_)));
           set_has_volumemultiplier();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(40)) goto parse_startTime;
         break;
@@ -307,25 +312,25 @@ bool Track_Sample::MergePartialFromCodedStream(
 
       // optional uint64 startTime = 5 [default = 0];
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 40) {
          parse_startTime:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &starttime_)));
           set_has_starttime();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -333,18 +338,25 @@ bool Track_Sample::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:PGTA.Track.Sample)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:PGTA.Track.Sample)
+  return false;
 #undef DO_
 }
 
 void Track_Sample::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:PGTA.Track.Sample)
   // optional string filePath = 1;
   if (has_filepath()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->filepath().data(), this->filepath().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "filepath");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->filepath(), output);
   }
 
@@ -372,15 +384,18 @@ void Track_Sample::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:PGTA.Track.Sample)
 }
 
 ::google::protobuf::uint8* Track_Sample::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:PGTA.Track.Sample)
   // optional string filePath = 1;
   if (has_filepath()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->filepath().data(), this->filepath().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "filepath");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->filepath(), target);
@@ -410,6 +425,7 @@ void Track_Sample::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:PGTA.Track.Sample)
   return target;
 }
 
@@ -544,6 +560,7 @@ const int Track_Group::kSampleIndexFieldNumber;
 Track_Group::Track_Group()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:PGTA.Track.Group)
 }
 
 void Track_Group::InitAsDefaultInstance() {
@@ -553,6 +570,7 @@ Track_Group::Track_Group(const Track_Group& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:PGTA.Track.Group)
 }
 
 void Track_Group::SharedCtor() {
@@ -561,6 +579,7 @@ void Track_Group::SharedCtor() {
 }
 
 Track_Group::~Track_Group() {
+  // @@protoc_insertion_point(destructor:PGTA.Track.Group)
   SharedDtor();
 }
 
@@ -598,35 +617,37 @@ void Track_Group::Clear() {
 
 bool Track_Group::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:PGTA.Track.Group)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated uint32 sampleIndex = 1 [packed = true];
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, this->mutable_sampleindex())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_VARINT) {
+        } else if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  1, 10, input, this->mutable_sampleindex())));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -634,12 +655,18 @@ bool Track_Group::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:PGTA.Track.Group)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:PGTA.Track.Group)
+  return false;
 #undef DO_
 }
 
 void Track_Group::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:PGTA.Track.Group)
   // repeated uint32 sampleIndex = 1 [packed = true];
   if (this->sampleindex_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
@@ -654,10 +681,12 @@ void Track_Group::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:PGTA.Track.Group)
 }
 
 ::google::protobuf::uint8* Track_Group::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:PGTA.Track.Group)
   // repeated uint32 sampleIndex = 1 [packed = true];
   if (this->sampleindex_size() > 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
@@ -676,6 +705,7 @@ void Track_Group::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:PGTA.Track.Group)
   return target;
 }
 
@@ -773,6 +803,7 @@ const int Track::kGroupsFieldNumber;
 Track::Track()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:PGTA.Track)
 }
 
 void Track::InitAsDefaultInstance() {
@@ -782,6 +813,7 @@ Track::Track(const Track& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:PGTA.Track)
 }
 
 void Track::SharedCtor() {
@@ -790,6 +822,7 @@ void Track::SharedCtor() {
 }
 
 Track::~Track() {
+  // @@protoc_insertion_point(destructor:PGTA.Track)
   SharedDtor();
 }
 
@@ -828,19 +861,22 @@ void Track::Clear() {
 
 bool Track::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:PGTA.Track)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .PGTA.Track.Sample samples = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
          parse_samples:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_samples()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(10)) goto parse_samples;
         if (input->ExpectTag(18)) goto parse_groups;
@@ -849,24 +885,24 @@ bool Track::MergePartialFromCodedStream(
 
       // repeated .PGTA.Track.Group groups = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_groups:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_groups()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_groups;
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -874,12 +910,18 @@ bool Track::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:PGTA.Track)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:PGTA.Track)
+  return false;
 #undef DO_
 }
 
 void Track::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:PGTA.Track)
   // repeated .PGTA.Track.Sample samples = 1;
   for (int i = 0; i < this->samples_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -896,10 +938,12 @@ void Track::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:PGTA.Track)
 }
 
 ::google::protobuf::uint8* Track::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:PGTA.Track)
   // repeated .PGTA.Track.Sample samples = 1;
   for (int i = 0; i < this->samples_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -918,6 +962,7 @@ void Track::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:PGTA.Track)
   return target;
 }
 
