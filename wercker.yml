@@ -1,0 +1,17 @@
+
+box: kt2davie/pgtabox@0.0.1
+
+build:
+    steps:
+    - script:
+        name: compiler versions
+        code: |
+          gcc --version
+          g++ --version
+          clang --version
+    - script:
+        name: building PGTA Composer
+        code: |
+          pushd src/qmake/
+          ./gmake.sh
+          popd

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "EngineTrack.h"
-#include "Track.pb.h"
+//#include "Track.pb.h"
 
 class Sample
 {
@@ -111,7 +111,7 @@ QStringList EngineTrack::samplesByGroup(const QString &sampleName) const
 
 void EngineTrack::read()
 {
-    // clear existing data
+    /*// clear existing data
     qDeleteAll(m_samples);
     m_samples.clear();
 
@@ -150,7 +150,7 @@ void EngineTrack::read()
 
         m_samples.insert(sample->sampleName, sample);
         m_groups.insert(sample->groupName, sample->sampleName);
-    }
+    }*/
 }
 
 void EngineTrack::write()

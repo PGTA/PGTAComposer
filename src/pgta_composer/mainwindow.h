@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Track.pb.h"
+//#include "Track.pb.h"
 #include <QMainWindow>
 #include <QModelIndex>
 #include <vector>
@@ -21,7 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-private slots:
+/*private slots:
 
     void on_actionOpen_triggered();
 
@@ -42,10 +42,10 @@ private slots:
     void on_add_group_clicked();
 
     void on_remove_group_selection_clicked();
-
+*/
 private:
     Ui::MainWindow *ui;
-    PGTA::Track oldTrack;
+    /*PGTA::Track oldTrack;
     PGTA::Track newTrack;
     std::vector<PGTA::Track_Sample *> trackSamples;
     std::vector<PGTA::Track_Group *> trackGroups;
@@ -61,7 +61,7 @@ private:
     uint32_t probabilityToPercent(const uint32_t probability);
     uint32_t percentToProbability(const uint32_t percent);
     int nameToSampleID(const std::string fileName);
-    void setGroupsFromView();
+    void setGroupsFromView();*/
 
 private:
     EngineTrack *m_engineTrack;

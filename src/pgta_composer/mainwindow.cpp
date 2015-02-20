@@ -10,7 +10,7 @@
 #include <limits>
 #include <stdint.h>
 #include <memory>
-#include <QtGUi>
+
 //#include <QMediaPlayer>
 #include <QFileSystemModel>
 #include <QtCore>
@@ -44,7 +44,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-uint32_t MainWindow::probabilityToPercent(const uint32_t probability)
+/*uint32_t MainWindow::probabilityToPercent(const uint32_t probability)
 {
     return ceil((static_cast<double>(probability) / UINT_MAX) * 100);
 }
@@ -431,4 +431,4 @@ void MainWindow::on_remove_sample_button_clicked()
     clearSamplePropertiesFields();
     refreshListView();
     refreshGroupsView();
-}
+}*/

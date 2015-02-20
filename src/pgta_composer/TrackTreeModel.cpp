@@ -3,7 +3,7 @@
 #include <iostream>
 #include "TrackTreeModel.h"
 #include "TrackItem.h"
-#include "Track.pb.h"
+//#include "Track.pb.h"
 
 TrackTreeModel::TrackTreeModel(const QString &filePath, QObject *parent)
     : QAbstractItemModel(parent), m_filePath(filePath)
@@ -212,7 +212,7 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void TrackTreeModel::SetupModelData(TrackItem *parent)
 {
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    /*GOOGLE_PROTOBUF_VERIFY_VERSION;
     PGTA::Track track;
 
     std::fstream protoInput(m_filePath.toStdString().c_str(), std::ios::in | std::ios::binary);
@@ -250,5 +250,5 @@ void TrackTreeModel::SetupModelData(TrackItem *parent)
 
         parent->AddChild(item);
         parent = item;
-    }
+    }*/
 }
