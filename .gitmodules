@@ -1,0 +1,3 @@
+[submodule "src/flatbuffers"]
+	path = src/external/flatbuffers
+	url = https://github.com/google/flatbuffers.git
