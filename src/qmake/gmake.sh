@@ -7,7 +7,18 @@ if [ ! -d "$BUILD_DIRECTORY" ]; then
 fi
 
 pushd gmake/
+
 qmake ../pgta_composer.pro
-make clean
+
+if [ "$?" != "0" ]; then
+	echo "qmake ../pgta_composer.pro"
+	exit 1
+fi
+
 make
+
+if [ "$?" != "0" ]; then
+	echo "make"
+	exit 1
+fi
 popd
