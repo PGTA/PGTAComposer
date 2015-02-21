@@ -13,5 +13,5 @@ build:
         name: building PGTA Composer
         code: |
           pushd src/qmake/
-          ./gmake.sh
+          ./linux_gmake.sh
           popd
