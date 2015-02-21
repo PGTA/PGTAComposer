@@ -1,3 +1,6 @@
 [submodule "src/flatbuffers"]
 	path = src/external/flatbuffers
 	url = https://github.com/google/flatbuffers.git
+[submodule "src/external/build-tools"]
+	path = src/external/build-tools
+	url = https://github.com/SizzlingCalamari/build-tools.git
