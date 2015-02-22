@@ -23,5 +23,13 @@ SOURCES +=  ./*.cpp
 
 INCLUDEPATH +=  $$PWD/../external/flatbuffers/include/
 DEPENDPATH +=   $$PWD/../external/flatbuffers/include/
-LIBS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
-PRE_TARGETDEPS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
+
+win32 {
+    LIBS += $$PWD/../qmake/vs2013/_FlatBuffers.lib
+    PRE_TARGETDEPS += $$PWD/../qmake/vs2013/_FlatBuffers.lib
+}
+
+unix {
+    LIBS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
+}
