@@ -20,7 +20,7 @@ runCommand 'make'
 
 popd
 
-echo "--Building PGTA Composer Applicatoin--"
+echo "--Building PGTA Composer Application--"
 
 runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
