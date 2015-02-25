@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 runCommand()
 {
@@ -8,17 +8,24 @@ runCommand()
     fi
 }
 
+bin="./../bin/"
+gmake="./gmake/"
+pgta_premake="./../external/PGTA/src/premake/"
+
 echo "--Building PGTA Composer Dependencies--"
 
-runCommand './../external/build-tools/bin/premake/premake5_linux clean --file=externals.lua'
-runCommand './../external/build-tools/bin/premake/premake5_linux gmake --file=externals.lua'
+pushd $pgta_premake
 
-pushd gmake/
-
-runCommand 'make clean'
-runCommand 'make'
+runCommand "./linux_gmake.sh"
 
 popd
+
+echo "--Copying PGTA Binaries--"
+
+runCommand "mkdir -p $gmake"
+runCommand "cp -r $pgta_premake/gmake/* $gmake"
+runCommand "mkdir -p $bin"
+runCommand "cp -r $pgta_premake/../../bin/* $bin"
 
 echo "--Building PGTA Composer Application--"
 
