@@ -4,3 +4,6 @@
 [submodule "src/external/build-tools"]
 	path = src/external/build-tools
 	url = https://github.com/SizzlingCalamari/build-tools.git
+[submodule "src/external/PGTA"]
+	path = src/external/PGTA
+	url = git@github.com:kt2davie/PGTA.git
