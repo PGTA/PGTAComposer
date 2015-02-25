@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 runCommand()
 {
@@ -8,13 +8,13 @@ runCommand()
     fi
 }
 
-bin="./../bin/"
-gmake="./gmake/"
-pgta_premake="./../external/PGTA/src/premake/"
+export BIN="./../bin/"
+export GMAKE="./gmake/"
+export PGTA_PREMAKE="./../external/PGTA/src/premake/"
 
 echo "--Building PGTA Composer Dependencies--"
 
-pushd $pgta_premake
+pushd $PGTA_PREMAKE
 
 runCommand "./linux_gmake.sh"
 
@@ -22,10 +22,10 @@ popd
 
 echo "--Copying PGTA Binaries--"
 
-runCommand "mkdir -p $gmake"
-runCommand "cp -r $pgta_premake/gmake/* $gmake"
-runCommand "mkdir -p $bin"
-runCommand "cp -r $pgta_premake/../../bin/* $bin"
+runCommand "mkdir -p $GMAKE"
+runCommand "cp -r $PGTA_PREMAKE/gmake/* $GMAKE"
+runCommand "mkdir -p $BIN"
+runCommand "cp -r $PGTA_PREMAKE/../../bin/* $BIN"
 
 echo "--Building PGTA Composer Application--"
 
