@@ -212,7 +212,22 @@ void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid uuid)
     TrackItem *parent = getGroup(uuid);
     TrackItem *item = new TrackItem(data, parent);
     parent->AddChild(item);
+}
 
+void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid uuid)
+{
+    TrackItem * parent = getGroup(uuid);
+
+    if (parent != m_rootItem)
+    {
+        // Group already exists
+        return;
+    }
+
+    // TODO: Add group to aux data structure
+
+    TrackItem *item = new TrackItem(data, parent);
+    parent->AddChild(item);
 }
 
 TrackItem* TrackTreeModel::getGroup(const QUuid uuid) const
@@ -221,5 +236,6 @@ TrackItem* TrackTreeModel::getGroup(const QUuid uuid) const
     {
 
     }
+    Q_ASSERT(m_rootItem != nullptr);
     return m_rootItem;
 }

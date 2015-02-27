@@ -1,5 +1,6 @@
 
 #include <QVariant>
+#include <QByteArray>
 #include <schema/track_generated.h>
 #include <schema/track.fbs.h>
 #include <flatbuffers/idl.h>
@@ -11,7 +12,7 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, const size_t length, Trac
 static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
-
+#if 0
 TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t length, TrackTreeModel* trackModel)
 {
     if (!src || length > MAX_TRACK_LEN || !trackModel)
@@ -28,6 +29,7 @@ TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t l
         return LoadAsciiTrack(src, length, trackModel);
     }
 }
+
 
 static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel)
 {
@@ -58,29 +60,123 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, const size_t length, Trac
 static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema)
 {
     using SampleList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Sample>>;
-    using SchemaSample = PGTASchema::Sample;
+    using GroupList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Group>>;
+    using RestrictionList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Restriction>>;
+    using UuidList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::UUID>>;
 
     if (trackSchema == nullptr || trackSchema->samples() == nullptr)
     {
         return nullptr;
     }
 
-    const SampleList* samples = trackSchema->samples();
-    flatbuffers::uoffset_t numSamples = samples->size();
-
-    for (flatbuffers::uoffset_t i = 0; i < numSamples; ++i)
+    // Load Track Groups with Google Flatbuffer
+    const GroupList* schemaGroups = trackSchema->groups();
+    for (const PGTASchema::Group* schemaGroup : *schemaGroups)
     {
-        QVector<QVariant> sample(TrackTreeModel::SampleColumn_Size);
-        const SchemaSample* schemaSample = samples->Get(i);
-        if(!schemaSample)
+        QVector<QVariant> group(TrackTreeModel::GroupColumn_Restrictions);
+        if (!schemaGroup)
         {
             continue;
         }
+
+        const flatbuffers::String* groupName = schemaGroup->groupName();
+        if (!groupName || groupName->size() == 0)
+        {
+            continue;
+        }
+        group[TrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
+
+        const flatbuffers::Vector<int8_t>* groupUuid = schemaGroup->uuid()->uuid();
+        if (!groupUuid)
+        {
+            continue;
+        }
+
+        QUuid uuid = QByteArray(reinterpret_cast<const char*>(groupUuid->Data()), groupUuid->size());;
+        if (uuid.isNull())
+        {
+            continue;
+        }
+        group[TrackTreeModel::GroupColumn_UUID] = uuid;
+
+        trackModel->addGroup(group, uuid);
+    }
+
+    // Load Track Restrictions with Google Flatbuffer
+    const RestrictionList* schemaRestrictions = trackSchema->restrictions();
+    for(const PGTASchema::Restriction* schemaRestriction : *schemaRestrictions)
+    {
+        const flatbuffers::Vector<int8_t>* schemaGroup1Uuid = schemaRestriction->group1()->uuid();
+        if (!schemaGroup1Uuid)
+        {
+            continue;
+        }
+
+        QUuid group1Uuid = QByteArray(reinterpret_cast<const char*>(schemaGroup1Uuid->Data()),schemaGroup1Uuid->size());
+        if (group1Uuid.isNull())
+        {
+            continue;
+        }
+
+        // Add group 1 to model here
+
+        const flatbuffers::Vector<int8_t>* schemaGroup2Uuid = schemaRestriction->group2()->uuid();
+        if(!schemaGroup2Uuid)
+        {
+            continue;
+        }
+
+        QUuid group2Uuid = QByteArray(reinterpret_cast<const char*>(schemaGroup2Uuid->Data()),schemaGroup2Uuid->size());
+        if (group2Uuid.isNull())
+        {
+            continue;
+        }
+        // Add group 2 to model here
+    }
+
+    // Load Track Samples with Google Flatbuffer
+    const SampleList* schemaSamples = trackSchema->samples();
+    for (const PGTASchema::Sample* schemaSample : *schemaSamples)
+    {
+        QVector<QVariant> sample(TrackTreeModel::SampleColumn_Size);
+        if (!schemaSample)
+        {
+            continue;
+        }
+
+        const flatbuffers::String* sampleName = schemaSample->name();
+        if (!sampleName || sampleName->size() == 0)
+        {
+            continue;
+        }
+
+        const flatbuffers::String* sampleDefaultFile = schemaSample->defaultFile();
+        if (!sampleDefaultFile || sampleDefaultFile->size() == 0)
+        {
+            continue;
+        }
+
+        const int64_t sampleFrequency = schemaSample->frequency();
+        if (sampleFrequency < 0)
+        {
+            continue;
+        }
+
+        const float sampleProbability = schemaSample->probability();
+        if (sampleProbability < 0.0f)
+        {
+            continue;
+        }
+
+        const float sampleVolumeMultiplier = schemaSample->volumeMultiplier();
+        if(sampleVolumeMultiplier < 0.0f)
+        {
+            continue;
+        }
+
         trackModel->addSample(sample, QUuid(0));
     }
 
-
-
     return trackModel;
 }
-
+#endif

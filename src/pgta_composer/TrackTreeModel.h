@@ -13,22 +13,29 @@ class TrackTreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+    enum GroupColumn
+    {
+        GroupColumn_Name = 0,
+        GroupColumn_UUID,
+        GroupColumn_Restrictions
+    };
     enum SampleColumn
     {
         SampleColumn_Name = 0,
         SampleColumn_FilePath,
+        SampleColumn_StartTime,
         SampleColumn_Frequency,
         SampleColumn_Probability,
         SampleColumn_VolumeMultiplier,
-        SampleColumn_StartTime,
+        SampleColumn_GroupUUID,
         SampleColumn_Size
     };
-
 public:
     TrackTreeModel(QObject *parent = nullptr);
     ~TrackTreeModel();
 
     void addSample(const QVector<QVariant> &data, const QUuid uuid);
+    void addGroup(const QVector<QVariant> &data, const QUuid uuid);
 
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
