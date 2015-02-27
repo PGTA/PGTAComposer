@@ -29,7 +29,7 @@ popd
 
 echo "--Creating Symbolic Links--"
 
-pushd $build
+pushd $BUILD
     test -L lib_FlatBuffers.a || runCommand "ln -s $PGTA_PREMAKE/gmake/lib_FlatBuffers.a lib_FlatBuffers.a"
 popd
 
