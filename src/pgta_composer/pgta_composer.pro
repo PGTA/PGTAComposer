@@ -21,8 +21,9 @@ FORMS +=    forms/mainwindow.ui
 HEADERS +=  ./*.h
 SOURCES +=  ./*.cpp
 
-INCLUDEPATH +=  $$PWD/../external/flatbuffers/include/
-DEPENDPATH +=   $$PWD/../external/flatbuffers/include/
+INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
+INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/
+DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 
 win32 {
     LIBS += $$PWD/../qmake/vs2013/_FlatBuffers.lib

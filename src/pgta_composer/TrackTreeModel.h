@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+#include <QUuid>
 
 class TrackItem;
 
@@ -12,8 +13,22 @@ class TrackTreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    TrackTreeModel(const QString &filePath, QObject *parent = nullptr);
+    enum SampleColumn
+    {
+        SampleColumn_Name = 0,
+        SampleColumn_FilePath,
+        SampleColumn_Frequency,
+        SampleColumn_Probability,
+        SampleColumn_VolumeMultiplier,
+        SampleColumn_StartTime,
+        SampleColumn_Size
+    };
+
+public:
+    TrackTreeModel(QObject *parent = nullptr);
     ~TrackTreeModel();
+
+    void addSample(const QVector<QVariant> &data, const QUuid uuid);
 
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -34,11 +49,10 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex &parent = QModelIndex()) override;
 
-
-
 private:
     TrackItem *getItem(const QModelIndex &index) const;
-    void SetupModelData(TrackItem *parent);
+    TrackItem *getGroup(const QUuid uuid) const;
+
+private:
     TrackItem *m_rootItem;
-    QString m_filePath;
 };

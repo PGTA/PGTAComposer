@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QTreeView *test = new QTreeView(parent);
     test->setGeometry(0,0,200,200);
 
-    TrackTreeModel *bla = new TrackTreeModel("/Users/keeferdavies/dev/git/PGTA/tracks/demo.track", this);
+    TrackTreeModel *bla = new TrackTreeModel(this);
 
     test->setModel(bla);
     test->show();

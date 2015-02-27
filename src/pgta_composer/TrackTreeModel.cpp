@@ -3,23 +3,20 @@
 #include <iostream>
 #include "TrackTreeModel.h"
 #include "TrackItem.h"
-//#include "Track.pb.h"
 
-TrackTreeModel::TrackTreeModel(const QString &filePath, QObject *parent)
-    : QAbstractItemModel(parent), m_filePath(filePath)
+TrackTreeModel::TrackTreeModel(QObject *parent)
+    : QAbstractItemModel(parent)
 {
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "File Path" << "Frequency" << "Probability"
              << "Volume Multiplier" << "Start Time";
     m_rootItem = new TrackItem(rootData);
-    SetupModelData(m_rootItem);
 }
 
 TrackTreeModel::~TrackTreeModel()
 {
     delete m_rootItem;
 }
-
 
 TrackItem *TrackTreeModel::getItem(const QModelIndex &index) const
 {
@@ -210,45 +207,19 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
     return retVal;
 }
 
-void TrackTreeModel::SetupModelData(TrackItem *parent)
+void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid uuid)
 {
-    /*GOOGLE_PROTOBUF_VERIFY_VERSION;
-    PGTA::Track track;
+    TrackItem *parent = getGroup(uuid);
+    TrackItem *item = new TrackItem(data, parent);
+    parent->AddChild(item);
 
-    std::fstream protoInput(m_filePath.toStdString().c_str(), std::ios::in | std::ios::binary);
+}
 
-    if (!protoInput)
+TrackItem* TrackTreeModel::getGroup(const QUuid uuid) const
+{
+    if (!uuid.isNull())
     {
-        // TODO : error codes for string table lookup
-        std::cout << "Failed to open input stream." << std::endl;
-        return; // failed to open input stream
+
     }
-
-    bool isParsed = track.ParseFromIstream(&protoInput);
-    protoInput.close();
-
-    if (!isParsed)
-    {
-        // TODO : error codes for string table lookup
-        std::cout << "Failed to parse proto file." << std::endl;
-        return; // failed to parse proto file
-    }
-
-    for (int i = 0; i < track.samples_size(); ++i)
-    {
-        const PGTA::Track_Sample &trackSample = track.samples(i);
-
-        QVector<QVariant> data;
-        data.append(QString::fromStdString("Sample " + std::to_string(i + 1)));
-        data.append(QString::fromStdString(trackSample.filepath()));
-        data.append(trackSample.frequency());
-        data.append(trackSample.probability());
-        data.append(trackSample.volumemultiplier());
-        data.append(trackSample.starttime());
-
-        TrackItem *item = new TrackItem(data, parent);
-
-        parent->AddChild(item);
-        parent = item;
-    }*/
+    return m_rootItem;
 }
