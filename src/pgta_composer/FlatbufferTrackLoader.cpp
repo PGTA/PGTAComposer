@@ -62,7 +62,6 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     using SampleList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Sample>>;
     using GroupList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Group>>;
     using RestrictionList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Restriction>>;
-    using UuidList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::UUID>>;
 
     if (trackSchema == nullptr || trackSchema->samples() == nullptr)
     {
@@ -73,7 +72,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     const GroupList* schemaGroups = trackSchema->groups();
     for (const PGTASchema::Group* schemaGroup : *schemaGroups)
     {
-        QVector<QVariant> group(TrackTreeModel::GroupColumn_Restrictions);
+        QVector<QVariant> group(TrackTreeModel::SampleColumn_Size);
         if (!schemaGroup)
         {
             continue;
@@ -86,13 +85,14 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         group[TrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
 
-        const flatbuffers::Vector<int8_t>* groupUuid = schemaGroup->uuid()->uuid();
+        const flatbuffers::String* groupUuid = schemaGroup->uuid();
         if (!groupUuid)
         {
             continue;
         }
 
-        QUuid uuid = QByteArray(reinterpret_cast<const char*>(groupUuid->Data()), groupUuid->size());;
+        QUuid uuid = QString(groupUuid->c_str());
+
         if (uuid.isNull())
         {
             continue;
@@ -106,13 +106,13 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     const RestrictionList* schemaRestrictions = trackSchema->restrictions();
     for(const PGTASchema::Restriction* schemaRestriction : *schemaRestrictions)
     {
-        const flatbuffers::Vector<int8_t>* schemaGroup1Uuid = schemaRestriction->group1()->uuid();
+        const flatbuffers::String* schemaGroup1Uuid = schemaRestriction->group1();
         if (!schemaGroup1Uuid)
         {
             continue;
         }
 
-        QUuid group1Uuid = QByteArray(reinterpret_cast<const char*>(schemaGroup1Uuid->Data()),schemaGroup1Uuid->size());
+        QUuid group1Uuid = QString(schemaGroup1Uuid->c_str());
         if (group1Uuid.isNull())
         {
             continue;
@@ -120,13 +120,13 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
 
         // Add group 1 to model here
 
-        const flatbuffers::Vector<int8_t>* schemaGroup2Uuid = schemaRestriction->group2()->uuid();
+        const flatbuffers::String*  schemaGroup2Uuid = schemaRestriction->group2();
         if(!schemaGroup2Uuid)
         {
             continue;
         }
 
-        QUuid group2Uuid = QByteArray(reinterpret_cast<const char*>(schemaGroup2Uuid->Data()),schemaGroup2Uuid->size());
+        QUuid group2Uuid = QString(schemaGroup2Uuid->c_str());
         if (group2Uuid.isNull())
         {
             continue;
@@ -149,32 +149,55 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         {
             continue;
         }
+        sample[TrackTreeModel::SampleColumn_Name] = QString(sampleName->c_str());
 
         const flatbuffers::String* sampleDefaultFile = schemaSample->defaultFile();
         if (!sampleDefaultFile || sampleDefaultFile->size() == 0)
         {
             continue;
         }
+        sample[TrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
+
+        const int64_t sampleStartTime = schemaSample->startTime();
+        if (sampleStartTime < 0)
+        {
+            continue;
+        }
+        sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
         const int64_t sampleFrequency = schemaSample->frequency();
         if (sampleFrequency < 0)
         {
             continue;
         }
+        sample[TrackTreeModel::SampleColumn_Frequency] = sampleFrequency;
 
         const float sampleProbability = schemaSample->probability();
         if (sampleProbability < 0.0f)
         {
             continue;
         }
+        sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
         const float sampleVolumeMultiplier = schemaSample->volumeMultiplier();
         if(sampleVolumeMultiplier < 0.0f)
         {
             continue;
         }
+        sample[TrackTreeModel::SampleColumn_VolumeMultiplier] = schemaSample->volumeMultiplier();
 
-        trackModel->addSample(sample, QUuid(0));
+        QUuid groupUuid;
+        const flatbuffers::String* schemaUuid = schemaSample->group();
+        if(schemaUuid)
+        {
+            groupUuid = QString(schemaUuid->c_str());
+            if (groupUuid.isNull())
+            {
+                continue;
+            }
+            sample[TrackTreeModel::SampleColumn_GroupUUID] = groupUuid;
+        }
+        trackModel->addSample(sample, groupUuid);
     }
 
     return trackModel;

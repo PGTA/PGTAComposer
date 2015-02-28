@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+#include <QMap>
 #include <QUuid>
 
 class TrackItem;
@@ -17,12 +18,12 @@ public:
     {
         GroupColumn_Name = 0,
         GroupColumn_UUID,
-        GroupColumn_Restrictions
+        GroupColumn_Size
     };
     enum SampleColumn
     {
         SampleColumn_Name = 0,
-        SampleColumn_FilePath,
+        SampleColumn_DefaultFile,
         SampleColumn_StartTime,
         SampleColumn_Frequency,
         SampleColumn_Probability,
@@ -34,8 +35,8 @@ public:
     TrackTreeModel(QObject *parent = nullptr);
     ~TrackTreeModel();
 
-    void addSample(const QVector<QVariant> &data, const QUuid uuid);
-    void addGroup(const QVector<QVariant> &data, const QUuid uuid);
+    void addSample(const QVector<QVariant> &data, const QUuid &uuid);
+    void addGroup(const QVector<QVariant> &data, const QUuid &uuid);
 
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -58,8 +59,9 @@ public:
 
 private:
     TrackItem *getItem(const QModelIndex &index) const;
-    TrackItem *getGroup(const QUuid uuid) const;
+    TrackItem *getGroup(const QUuid &uuid) const;
 
 private:
+    QMap<QUuid, TrackItem*> m_groups;
     TrackItem *m_rootItem;
 };

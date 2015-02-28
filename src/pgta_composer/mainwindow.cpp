@@ -18,25 +18,46 @@
 #include "enginetrack.h"
 #include "tracktablemodel.h"
 #include "TrackTreeModel.h"
+#include "FlatbufferTrackLoader.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    m_engineTrack = new EngineTrack(this);
-    m_engineTrack->init(QString::fromStdString("../../tracks/test1.track"));
-    m_trackTableModel = new TrackTableModel(this);
-    m_trackTableModel->setInput(m_engineTrack);
+//    m_engineTrack = new EngineTrack(this);
+//    m_engineTrack->init(QString::fromStdString("../../tracks/test1.track"));
+//    m_trackTableModel = new TrackTableModel(this);
+//    m_trackTableModel->setInput(m_engineTrack);
     
     QTreeView *test = new QTreeView(parent);
     test->setGeometry(0,0,200,200);
 
-    TrackTreeModel *bla = new TrackTreeModel(this);
+    TrackTreeModel *trackModel = new TrackTreeModel(this);
 
-    test->setModel(bla);
+    char * buffer = 0;
+    long length = 0;
+    FILE * f = fopen ("/Users/keeferdavies/dev/git/pgta-composer/bin/test.track", "rb");
+
+    if (f)
+    {
+      fseek (f, 0, SEEK_END);
+      length = ftell (f);
+      fseek (f, 0, SEEK_SET);
+      buffer = (char *)malloc (length);
+      if (buffer)
+      {
+        fread (buffer, 1, length, f);
+      }
+      fclose (f);
+    }
+
+    //FlatbufferTrackLoader::LoadTrack(buffer, length, trackModel);
+    test->setModel(trackModel);
     test->show();
     
     ui->setupUi(this);
+
+    delete buffer;
 }
 
 MainWindow::~MainWindow()

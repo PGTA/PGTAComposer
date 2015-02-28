@@ -8,8 +8,8 @@ TrackTreeModel::TrackTreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
     QVector<QVariant> rootData;
-    rootData << "Sample Name" << "File Path" << "Frequency" << "Probability"
-             << "Volume Multiplier" << "Start Time";
+    rootData << "Sample Name" << "Default File" << "Start Time" << "Frequency" << "Probability"
+             << "Volume Multiplier" << "UUID";
     m_rootItem = new TrackItem(rootData);
 }
 
@@ -207,35 +207,40 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
     return retVal;
 }
 
-void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid uuid)
+void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
 {
     TrackItem *parent = getGroup(uuid);
     TrackItem *item = new TrackItem(data, parent);
     parent->AddChild(item);
 }
 
-void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid uuid)
+void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
 {
-    TrackItem * parent = getGroup(uuid);
+    if (uuid.isNull())
+    {
+        return;
+    }
 
+    TrackItem * parent = getGroup(uuid);
     if (parent != m_rootItem)
     {
         // Group already exists
         return;
     }
-
-    // TODO: Add group to aux data structure
-
     TrackItem *item = new TrackItem(data, parent);
+    m_groups.insert(uuid, item);
     parent->AddChild(item);
 }
 
-TrackItem* TrackTreeModel::getGroup(const QUuid uuid) const
+TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const
 {
     if (!uuid.isNull())
     {
-
+        auto groupItr = m_groups.find(uuid);
+        if(groupItr!=m_groups.end())
+        {
+            return groupItr.value();
+        }
     }
-    Q_ASSERT(m_rootItem != nullptr);
     return m_rootItem;
 }
