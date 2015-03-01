@@ -3,7 +3,8 @@
 #include <QStandardItem>
 #include <QFileDialog>
 #include <QStandardItemModel>
-#include <sstream>      // std::ostringstream
+#include <QTreeView>
+#include <sstream>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -13,6 +14,7 @@
 
 //#include <QMediaPlayer>
 #include <QFileSystemModel>
+#include <QDataWidgetMapper>
 #include <QtCore>
 #include <cmath>
 #include "enginetrack.h"
@@ -24,46 +26,101 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-//    m_engineTrack = new EngineTrack(this);
-//    m_engineTrack->init(QString::fromStdString("../../tracks/test1.track"));
-//    m_trackTableModel = new TrackTableModel(this);
-//    m_trackTableModel->setInput(m_engineTrack);
-    
-    QTreeView *test = new QTreeView(parent);
-    test->setGeometry(0,0,200,200);
+    m_fileSystemModel= new QFileSystemModel();
+    m_fileSystemModel->setRootPath(QDir::currentPath());
 
-    TrackTreeModel *trackModel = new TrackTreeModel(this);
+    m_trackTreeModel = new TrackTreeModel(this);
 
-    char * buffer = 0;
-    long length = 0;
-    FILE * f = fopen ("/Users/keeferdavies/dev/git/pgta-composer/bin/test.track", "rb");
-
-    if (f)
-    {
-      fseek (f, 0, SEEK_END);
-      length = ftell (f);
-      fseek (f, 0, SEEK_SET);
-      buffer = (char *)malloc (length);
-      if (buffer)
-      {
-        fread (buffer, 1, length, f);
-      }
-      fclose (f);
-    }
-
-    //FlatbufferTrackLoader::LoadTrack(buffer, length, trackModel);
-    test->setModel(trackModel);
-    test->show();
-    
     ui->setupUi(this);
+    // remove title bar from all dock widgets
+    ui->TopPanel->setTitleBarWidget(new QWidget());
+    ui->LeftPanel->setTitleBarWidget(new QWidget());
+    ui->RightPanel->setTitleBarWidget(new QWidget());
 
-    delete buffer;
+    // set modles
+    ui->FileSystemView->setModel(m_fileSystemModel);
+    ui->TrackTreeView->setModel(m_trackTreeModel);
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_trackTreeModel;
+    delete m_fileSystemModel;
     delete ui;
 }
+
+void MainWindow::treeViewRowColChange(const QModelIndex &index)
+{
+    m_dataWidgetMapper->setRootIndex(index.parent());
+    m_dataWidgetMapper->setCurrentModelIndex(index);
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
+     m_dataWidgetMapper->toNext();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    if (m_trackTreeModel)
+    {
+        delete m_trackTreeModel;
+    }
+
+    if (m_dataWidgetMapper)
+    {
+        delete m_dataWidgetMapper;
+    }
+    m_trackTreeModel = new TrackTreeModel(this);
+    m_dataWidgetMapper = new QDataWidgetMapper(this);
+    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
+    if (fileList.size() <= 0)
+    {
+        return;
+    }
+
+    // load test track
+    char * buffer = 0;
+    long length = 0;
+    const char *fileName = fileList.first().toStdString().c_str();
+    std::ifstream is (fileName, std::ifstream::binary);
+    if (is)
+    {
+        // determine length of the file
+        is.seekg (0, is.end);
+        length = is.tellg();
+        is.seekg (0, is.beg);
+
+        buffer = new char [length];
+        is.read (buffer, length);
+
+        if (!is)
+        {
+            qDebug("Error reading track file.");
+        }
+        // flatbuffer requires null terminated buffers
+        buffer[length-1] = 0;
+
+        is.close();
+    }
+
+    // initialize track model
+    FlatbufferTrackLoader::LoadTrack(buffer, length, m_trackTreeModel);
+    ui->TrackTreeView->setModel(m_trackTreeModel);
+    m_dataWidgetMapper->setModel(m_trackTreeModel);
+    m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
+    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
+    m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
+    m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
+    m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
+    m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
+    m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
+    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+        this, SLOT(treeViewRowColChange(QModelIndex)));
+    delete[] buffer;
+}
+
 
 /*uint32_t MainWindow::probabilityToPercent(const uint32_t probability)
 {

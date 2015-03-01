@@ -8,7 +8,7 @@
 class TrackItem
 {
 public:
-    TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr);
+    explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr);
     ~TrackItem();
 
     void AddChild(TrackItem *item);

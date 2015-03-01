@@ -6,6 +6,10 @@
 #include <QModelIndex>
 #include <vector>
 
+class TrackTreeModel;
+class QFileSystemModel;
+class QDataWidgetMapper;
+
 namespace Ui {
 class MainWindow;
 }
@@ -20,6 +24,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+private slots:
+     void on_actionOpen_triggered();
+     void on_actionSave_triggered();
+     void treeViewRowColChange(const QModelIndex &index);
     
 /*private slots:
 
@@ -65,5 +74,7 @@ private:
 
 private:
     EngineTrack *m_engineTrack;
-    TrackTableModel *m_trackTableModel;
+    TrackTreeModel *m_trackTreeModel;
+    QFileSystemModel *m_fileSystemModel;
+    QDataWidgetMapper *m_dataWidgetMapper;
 };

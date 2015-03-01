@@ -8,11 +8,11 @@
 #include "TrackTreeModel.h"
 
 static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel);
-static TrackTreeModel* LoadAsciiTrack(const char* src, const size_t length, TrackTreeModel* trackModel);
+static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel);
 static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
-#if 0
+
 TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t length, TrackTreeModel* trackModel)
 {
     if (!src || length > MAX_TRACK_LEN || !trackModel)
@@ -26,16 +26,16 @@ TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t l
     }
     else
     {
-        return LoadAsciiTrack(src, length, trackModel);
+        return LoadAsciiTrack(src, trackModel);
     }
 }
-
 
 static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel)
 {
     flatbuffers::Verifier verifier(src, length);
     if (!PGTASchema::VerifyTrackBuffer(verifier))
     {
+        qDebug("Verification of track buffer failed.");
         return nullptr;
     }
 
@@ -44,11 +44,14 @@ static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, 
     return InitTrackData(trackModel, trackSchema);
 }
 
-static TrackTreeModel* LoadAsciiTrack(const char* src, const size_t length, TrackTreeModel* trackModel)
+static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel)
 {
+    qDebug("Lodaing Ascii track");
     flatbuffers::Parser parser;
     if (!parser.Parse(PGTASchemaHeader::TRACK_FBS) || !parser.Parse(src))
     {
+        qDebug("Lodaing Ascii track parse error.");
+        qDebug(parser.error_.c_str());
         return nullptr;
     }
 
@@ -63,6 +66,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     using GroupList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Group>>;
     using RestrictionList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Restriction>>;
 
+    qDebug("Initializing Track");
     if (trackSchema == nullptr || trackSchema->samples() == nullptr)
     {
         return nullptr;
@@ -202,4 +206,4 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
 
     return trackModel;
 }
-#endif
+
