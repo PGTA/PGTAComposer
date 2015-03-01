@@ -40,10 +40,25 @@ MainWindow::MainWindow(QWidget *parent) :
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
+
+    // setup data widget mapper
+    m_dataWidgetMapper = new QDataWidgetMapper(this);
+    m_dataWidgetMapper->setModel(m_trackTreeModel);
+    m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
+    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
+    m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
+    m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
+    m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
+    m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
+    m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
+    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+        this, SLOT(treeViewRowColChange(QModelIndex)));
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_dataWidgetMapper;
     delete m_trackTreeModel;
     delete m_fileSystemModel;
     delete ui;
