@@ -548,8 +548,16 @@
     </property>
     <addaction name="actionAbout_2"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="insertSampleAction"/>
+    <addaction name="insertGroupAction"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QDockWidget" name="TopPanel">
    <property name="sizePolicy">
@@ -1039,6 +1047,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="insertSampleAction">
+   <property name="text">
+    <string>Insert Sample</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="insertGroupAction">
+   <property name="text">
+    <string>Insert Group</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

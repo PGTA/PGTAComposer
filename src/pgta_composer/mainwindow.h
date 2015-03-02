@@ -29,6 +29,8 @@ private slots:
      void on_actionOpen_triggered();
      void on_actionSave_triggered();
      void treeViewRowColChange(const QModelIndex &index);
+     void insertSample();
+     void insertGroup();
     
 /*private slots:
 

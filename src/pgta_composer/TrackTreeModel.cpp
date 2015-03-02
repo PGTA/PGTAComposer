@@ -10,7 +10,7 @@ TrackTreeModel::TrackTreeModel(QObject *parent)
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Frequency" << "Probability"
              << "Volume Multiplier" << "UUID";
-    m_rootItem = new TrackItem(rootData);
+    m_rootItem = new TrackItem(rootData, nullptr, true);
 }
 
 TrackTreeModel::~TrackTreeModel()
@@ -214,6 +214,12 @@ void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
     parent->AddChild(item);
 }
 
+bool TrackTreeModel::isGroup(const QModelIndex &index) const
+{
+    TrackItem *item = getItem(index);
+    return item->IsGroup();
+}
+
 void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
 {
     if (uuid.isNull())
@@ -221,15 +227,15 @@ void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
         return;
     }
 
-    TrackItem * parent = getGroup(uuid);
-    if (parent != m_rootItem)
+    TrackItem * group = getGroup(uuid);
+    if (group != m_rootItem)
     {
         // Group already exists
         return;
     }
-    TrackItem *item = new TrackItem(data, parent);
+    TrackItem *item = new TrackItem(data, group, true);
     m_groups.insert(uuid, item);
-    parent->AddChild(item);
+    group->AddChild(item);
 }
 
 TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const

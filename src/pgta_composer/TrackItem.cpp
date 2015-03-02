@@ -1,7 +1,8 @@
 
 #include "TrackItem.h"
 
-TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent)
+TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, bool isGroup) :
+    m_isGroup(isGroup)
 {
     m_parent = parent;
     m_itemData = data;
@@ -19,7 +20,7 @@ void TrackItem::AddChild(TrackItem *item)
 
 bool TrackItem::InsertChildren(int position, int count, int columns)
 {
-    if (position < 0 || position > m_childItems.size())
+    if (!m_isGroup || position < 0 || position > m_childItems.size())
     {
         return false;
     }
@@ -30,11 +31,12 @@ bool TrackItem::InsertChildren(int position, int count, int columns)
         TrackItem *item = new TrackItem(data, this);
         m_childItems.insert(position, item);
     }
+    return true;
 }
 
 bool TrackItem::RemoveChildren(int position, int count)
 {
-    if (position < 0 || position + count > m_childItems.size())
+    if (!m_isGroup || position < 0 || position + count > m_childItems.size())
     {
         return false;
     }
@@ -43,7 +45,6 @@ bool TrackItem::RemoveChildren(int position, int count)
     {
         delete m_childItems.takeAt(position);
     }
-
     return true;
 }
 
@@ -96,4 +97,9 @@ int TrackItem::GetChildRow(TrackItem *child) const
 TrackItem *TrackItem::GetParent() const
 {
     return m_parent;
+}
+
+bool TrackItem::IsGroup() const
+{
+    return m_isGroup;
 }

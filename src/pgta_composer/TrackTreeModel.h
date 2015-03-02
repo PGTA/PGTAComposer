@@ -57,6 +57,8 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex &parent = QModelIndex()) override;
 
+    bool isGroup(const QModelIndex &index) const;
+
 private:
     TrackItem *getItem(const QModelIndex &index) const;
     TrackItem *getGroup(const QUuid &uuid) const;

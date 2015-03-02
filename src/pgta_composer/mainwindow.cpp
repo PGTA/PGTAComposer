@@ -54,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
 
+    connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
+    connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
+
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +72,42 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
     m_dataWidgetMapper->setRootIndex(index.parent());
     m_dataWidgetMapper->setCurrentModelIndex(index);
 }
+
+void MainWindow::insertGroup()
+{
+    //TODO::implement this
+}
+
+void MainWindow::insertSample()
+{
+    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
+    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    int position = 0;
+    // check if selection is on first level
+    if (!model->isGroup(index))
+    {
+        position = index.row() + 1; // index of current selection + 1
+        index = index.parent();
+    }
+
+    if (!model->insertRow(position, index))
+    {
+        return;
+    }
+
+    for (int column = 0; column < model->columnCount(index); ++column)
+    {
+        QModelIndex child = model->index(position, column, index);
+        model->setData(child, QVariant("[No data]"), Qt::EditRole);
+        if (!model->headerData(column, Qt::Horizontal).isValid())
+        {
+            model->setHeaderData(column, Qt::Horizontal, QVariant("[No header]"), Qt::EditRole);
+        }
+    }
+    ui->TrackTreeView->selectionModel()->setCurrentIndex(model->index(position, 0, index),
+                                            QItemSelectionModel::ClearAndSelect);
+}
+
 
 void MainWindow::on_actionSave_triggered()
 {

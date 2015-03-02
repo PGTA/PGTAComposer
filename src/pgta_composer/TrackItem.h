@@ -8,7 +8,8 @@
 class TrackItem
 {
 public:
-    explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr);
+    explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr,
+                       bool isGroup = false);
     ~TrackItem();
 
     void AddChild(TrackItem *item);
@@ -24,8 +25,11 @@ public:
     int GetChildRow(TrackItem *child) const;
     TrackItem *GetParent() const;
 
+    bool IsGroup() const;
+
 private:
     QList<TrackItem*> m_childItems;
     QVector<QVariant> m_itemData;
     TrackItem *m_parent;
+    bool m_isGroup;
 };
