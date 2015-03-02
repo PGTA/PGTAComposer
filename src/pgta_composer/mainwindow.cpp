@@ -108,7 +108,6 @@ void MainWindow::insertSample()
                                             QItemSelectionModel::ClearAndSelect);
 }
 
-
 void MainWindow::on_actionSave_triggered()
 {
     QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();

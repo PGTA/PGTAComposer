@@ -84,6 +84,7 @@ int TrackItem::GetRow() const
     {
         return m_parent->GetChildRow(const_cast<TrackItem*>(this));
     }
+    return 0;
 }
 
 int TrackItem::GetChildRow(TrackItem *child) const
@@ -92,6 +93,7 @@ int TrackItem::GetChildRow(TrackItem *child) const
     {
         return m_childItems.indexOf(child);
     }
+    return 0;
 }
 
 TrackItem *TrackItem::GetParent() const

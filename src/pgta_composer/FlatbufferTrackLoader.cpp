@@ -82,7 +82,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             continue;
         }
 
-        const flatbuffers::String* groupName = schemaGroup->groupName();
+        const flatbuffers::String* groupName = schemaGroup->name();
         if (!groupName || groupName->size() == 0)
         {
             continue;
@@ -162,14 +162,14 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         sample[TrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
 
-        const int64_t sampleStartTime = schemaSample->startTime();
+        const qint64 sampleStartTime = schemaSample->startTime();
         if (sampleStartTime < 0)
         {
             continue;
         }
         sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
-        const int64_t sampleFrequency = schemaSample->frequency();
+        const qint64 sampleFrequency = schemaSample->frequency();
         if (sampleFrequency < 0)
         {
             continue;
