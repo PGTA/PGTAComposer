@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LeftPanel->setTitleBarWidget(new QWidget());
     ui->RightPanel->setTitleBarWidget(new QWidget());
 
+    ui->TrackTreeView->setStyleSheet("QTreeView {background: #252526; color: #FFFFFF;}");
+
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
@@ -162,9 +164,13 @@ void MainWindow::clearSampleProperties()
 
 void MainWindow::insertSample()
 {
-    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
+    QModelIndex selectedIndex = ui->TrackTreeView->selectionModel()->currentIndex();
     TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+
     int position = 0;
+    // set column to column 0 otherwise inserting child doesn't work
+    QModelIndex index = model->index(selectedIndex.row(), 0, selectedIndex.parent());
+
     // check if selection is on first level
     if (!model->isGroup(index))
     {
@@ -224,11 +230,22 @@ void MainWindow::on_actionOpen_triggered()
     {
         qDebug("Error reading from file.");
         ui->statusBar->showMessage("Error reading from file.");
+        ui->statusBar->setStyleSheet("QStatusBar{background: #C85217; color: #FFFFFF;}");
         return;
     }
 
     // initialize track model
-    FlatbufferTrackLoader::LoadTrack(buffer.c_str(), buffer.length(), m_trackTreeModel);
+    if(!FlatbufferTrackLoader::LoadTrack(buffer.c_str(), buffer.length(), m_trackTreeModel))
+    {
+        ui->statusBar->showMessage("Error reading from file.");
+        ui->statusBar->setStyleSheet("QStatusBar{background: #C85217; color: #FFFFFF;}");
+    }
+    else
+    {
+        ui->statusBar->showMessage("File opened successfully.");
+        ui->statusBar->setStyleSheet("QStatusBar{background: #137CCA; color: #FFFFFF;}");
+    }
+
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
@@ -240,8 +257,6 @@ void MainWindow::on_actionOpen_triggered()
     m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
-
-    ui->statusBar->showMessage("File opened successfully.");
 }
 
 
