@@ -30,7 +30,10 @@ private slots:
      void on_actionSave_triggered();
      void treeViewRowColChange(const QModelIndex &index);
      void insertSample();
+     void removeTrackItem();
+     void clearSampleProperties();
      void insertGroup();
+     void onCustomContextMenu(const QPoint &point);
     
 /*private slots:
 

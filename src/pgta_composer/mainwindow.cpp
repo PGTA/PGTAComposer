@@ -51,11 +51,16 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
     m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
     m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
-    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
+
+    connect(ui->TrackTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this,
+            SLOT(onCustomContextMenu(const QPoint &)));
 
     connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
     connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
+    connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
+
 
 }
 
@@ -67,6 +72,34 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::onCustomContextMenu(const QPoint &point)
+{
+    QModelIndex index = ui->TrackTreeView->indexAt(point);
+    QPoint globalPos = ui->TrackTreeView->mapToGlobal(point);
+    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    QMenu myMenu;
+
+    QAction *insertSampleAction = myMenu.addAction("Insert Sample");
+    connect(insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
+
+    if (index.isValid())
+    {
+        QString removeText = "Remove Sample";
+        if (model->isGroup(index))
+        {
+            removeText = "Remove Group";
+        }
+        QAction *removeTrackItemAction = myMenu.addAction(removeText);
+        connect(removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
+    }
+    else
+    {
+        QAction *insertGroupAction = myMenu.addAction("Insert Group");
+        connect(insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
+    }
+    myMenu.exec(globalPos);
+}
+
 void MainWindow::treeViewRowColChange(const QModelIndex &index)
 {
     m_dataWidgetMapper->setRootIndex(index.parent());
@@ -76,6 +109,34 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
 void MainWindow::insertGroup()
 {
     //TODO::implement this
+}
+
+void MainWindow::removeTrackItem()
+{
+    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
+
+    if (!index.isValid())
+    {
+        return;
+    }
+
+    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    if(model->removeRow(index.row(), index.parent()))
+    {
+        ui->TrackTreeView->selectionModel()->clear();
+        clearSampleProperties();
+    }
+}
+
+void MainWindow::clearSampleProperties()
+{
+    ui->EditName->clear();
+    ui->EditDefaultFile->clear();
+    ui->EditStartTime->clear();
+    ui->EditFrequency->clear();
+    ui->EditProbability->clear();
+    ui->EditVolumeMultiplier->clear();
+    ui->EditGroup->clear();
 }
 
 void MainWindow::insertSample()

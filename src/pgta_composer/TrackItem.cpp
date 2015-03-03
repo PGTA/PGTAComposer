@@ -36,7 +36,7 @@ bool TrackItem::InsertChildren(int position, int count, int columns)
 
 bool TrackItem::RemoveChildren(int position, int count)
 {
-    if (!m_isGroup || position < 0 || position + count > m_childItems.size())
+    if (position < 0 || position + count > m_childItems.size())
     {
         return false;
     }

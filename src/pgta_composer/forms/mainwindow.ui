@@ -513,6 +513,9 @@
       </item>
       <item>
        <widget class="QTreeView" name="TrackTreeView">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
@@ -554,6 +557,7 @@
     </property>
     <addaction name="insertSampleAction"/>
     <addaction name="insertGroupAction"/>
+    <addaction name="removeTrackItemAction"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -997,21 +1001,6 @@
       </spacer>
      </item>
     </layout>
-    <zorder>EditName</zorder>
-    <zorder>EditDefaultFile</zorder>
-    <zorder>EditFrequency</zorder>
-    <zorder>EditStartTime</zorder>
-    <zorder>EditProbability</zorder>
-    <zorder>EditVolumeMultiplier</zorder>
-    <zorder>EditGroup</zorder>
-    <zorder>LabelName</zorder>
-    <zorder>LabelDefaultFile</zorder>
-    <zorder>LabelStartTime</zorder>
-    <zorder>LabelFrequency_2</zorder>
-    <zorder>LabelDefaultFile</zorder>
-    <zorder>LabelProbability</zorder>
-    <zorder>LabelVolumeMultiplier</zorder>
-    <zorder>LabelGroup</zorder>
     <zorder>verticalSpacer</zorder>
    </widget>
   </widget>
@@ -1063,6 +1052,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="removeTrackItemAction">
+   <property name="text">
+    <string>Remove Track Item</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
