@@ -1004,6 +1004,7 @@
     <zorder>verticalSpacer</zorder>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="text">
     <string>Open Track</string>

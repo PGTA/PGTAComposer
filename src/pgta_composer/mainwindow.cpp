@@ -21,6 +21,7 @@
 #include "tracktablemodel.h"
 #include "TrackTreeModel.h"
 #include "FlatbufferTrackLoader.h"
+#include "FileUtils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -207,41 +208,27 @@ void MainWindow::on_actionOpen_triggered()
     {
         delete m_dataWidgetMapper;
     }
+
     m_trackTreeModel = new TrackTreeModel(this);
     m_dataWidgetMapper = new QDataWidgetMapper(this);
     QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
-    if (fileList.size() <= 0)
+    if (fileList.isEmpty())
     {
+        ui->statusBar->showMessage("Error opening file.");
         return;
     }
 
-    // load test track
-    char * buffer = 0;
-    long length = 0;
-    const char *fileName = fileList.first().toStdString().c_str();
-    std::ifstream is (fileName, std::ifstream::binary);
-    if (is)
+    std::string fileName = fileList.first().toStdString();
+    std::string buffer;
+    if (!FileUtils::ReadBinaryFileToString(fileName, buffer))
     {
-        // determine length of the file
-        is.seekg (0, is.end);
-        length = is.tellg();
-        is.seekg (0, is.beg);
-
-        buffer = new char [length];
-        is.read (buffer, length);
-
-        if (!is)
-        {
-            qDebug("Error reading track file.");
-        }
-        // flatbuffer requires null terminated buffers
-        buffer[length-1] = 0;
-
-        is.close();
+        qDebug("Error reading from file.");
+        ui->statusBar->showMessage("Error reading from file.");
+        return;
     }
 
     // initialize track model
-    FlatbufferTrackLoader::LoadTrack(buffer, length, m_trackTreeModel);
+    FlatbufferTrackLoader::LoadTrack(buffer.c_str(), buffer.length(), m_trackTreeModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
@@ -253,7 +240,8 @@ void MainWindow::on_actionOpen_triggered()
     m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
-    delete[] buffer;
+
+    ui->statusBar->showMessage("File opened successfully.");
 }
 
 
