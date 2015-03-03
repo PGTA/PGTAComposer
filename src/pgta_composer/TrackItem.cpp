@@ -105,3 +105,8 @@ bool TrackItem::IsGroup() const
 {
     return m_isGroup;
 }
+
+void TrackItem::SetIsGroup(bool isGroup)
+{
+    m_isGroup = isGroup;
+}

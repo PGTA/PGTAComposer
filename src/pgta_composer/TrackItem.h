@@ -26,6 +26,7 @@ public:
     TrackItem *GetParent() const;
 
     bool IsGroup() const;
+    void SetIsGroup(bool isGroup);
 
 private:
     QList<TrackItem*> m_childItems;

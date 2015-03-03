@@ -108,7 +108,26 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
 
 void MainWindow::insertGroup()
 {
-    //TODO::implement this
+    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    QModelIndex rootIndex = ui->TrackTreeView->rootIndex();
+    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
+    if (index.parent() != rootIndex)
+    {
+        index = rootIndex;
+    }
+
+    if (!model->insertRow(index.row()+1, index.parent()))
+    {
+        return;
+    }
+
+    for (int column = 0; column < model->columnCount(index.parent()); ++column)
+    {
+        QModelIndex child = model->index(index.row()+1, column, index.parent());
+        //TODO: Add UUID generation
+        model->setData(child, QVariant("[Group No data]"), Qt::EditRole);
+        model->setIsGroup(child);
+    }
 }
 
 void MainWindow::removeTrackItem()
@@ -123,6 +142,7 @@ void MainWindow::removeTrackItem()
     TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
     if(model->removeRow(index.row(), index.parent()))
     {
+        //TODO: remove UUID from aux data structure
         ui->TrackTreeView->selectionModel()->clear();
         clearSampleProperties();
     }
@@ -159,6 +179,7 @@ void MainWindow::insertSample()
     for (int column = 0; column < model->columnCount(index); ++column)
     {
         QModelIndex child = model->index(position, column, index);
+        //TODO: set UUID correclty
         model->setData(child, QVariant("[No data]"), Qt::EditRole);
         if (!model->headerData(column, Qt::Horizontal).isValid())
         {

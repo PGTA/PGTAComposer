@@ -220,6 +220,12 @@ bool TrackTreeModel::isGroup(const QModelIndex &index) const
     return item->IsGroup();
 }
 
+void TrackTreeModel::setIsGroup(const QModelIndex &index) const
+{
+    TrackItem *item = getItem(index);
+    item->SetIsGroup(true);
+}
+
 void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
 {
     if (uuid.isNull())

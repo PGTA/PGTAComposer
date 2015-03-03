@@ -57,6 +57,7 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex &parent = QModelIndex()) override;
 
+    void setIsGroup(const QModelIndex &index) const;
     bool isGroup(const QModelIndex &index) const;
 
 private:
