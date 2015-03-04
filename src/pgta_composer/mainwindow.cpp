@@ -38,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LeftPanel->setTitleBarWidget(new QWidget());
     ui->RightPanel->setTitleBarWidget(new QWidget());
 
-    ui->TrackTreeView->setStyleSheet("QTreeView {background: #252526; color: #FFFFFF;}");
-
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
@@ -54,17 +52,17 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
     m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
     m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
+
+    // setup signals and slots
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
-
     connect(ui->TrackTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(onCustomContextMenu(const QPoint &)));
-
     connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
     connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
 
-
+    ui->statusBar->showMessage("Ready");
 }
 
 MainWindow::~MainWindow()

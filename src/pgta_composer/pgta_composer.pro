@@ -18,8 +18,17 @@ TARGET =    PGTAComposer
 DESTDIR = 	$$PWD/../../bin/
 
 FORMS +=    forms/mainwindow.ui
-HEADERS +=  ./*.h
-SOURCES +=  ./*.cpp
+HEADERS +=  ./FileUtils.h \
+            ./FlatbufferTrackLoader.h \
+            ./mainwindow.h \
+            ./TrackItem.h \
+            ./TrackTreeModel.h
+SOURCES +=  ./FileUtils.cpp \
+            ./FlatbufferTrackLoader.cpp \
+            ./main.cpp \
+            ./mainwindow.cpp \
+            ./TrackItem.cpp \
+            ./TrackTreeModel.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/
@@ -34,3 +43,6 @@ unix {
     LIBS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
     PRE_TARGETDEPS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
 }
+
+RESOURCES += \
+    stylesheet.qrc
