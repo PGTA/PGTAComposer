@@ -559,9 +559,17 @@
     <addaction name="insertGroupAction"/>
     <addaction name="removeTrackItemAction"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="toggleRightPanelAction"/>
+    <addaction name="toggleLeftPanelAction"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QDockWidget" name="TopPanel">
    <property name="sizePolicy">
@@ -572,7 +580,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>402</width>
+     <width>571</width>
      <height>55</height>
     </size>
    </property>
@@ -631,7 +639,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>114</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -702,6 +710,18 @@
         </item>
         <item>
          <widget class="QSlider" name="VolumeSlider">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -749,8 +769,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>225</width>
      <height>157</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>225</width>
+     <height>524287</height>
     </size>
    </property>
    <property name="features">
@@ -800,8 +826,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>225</width>
      <height>368</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>225</width>
+     <height>524287</height>
     </size>
    </property>
    <property name="features">
@@ -1061,6 +1093,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="toggleRightPanelAction">
+   <property name="text">
+    <string>Toggle Right Panel</string>
+   </property>
+  </action>
+  <action name="toggleLeftPanelAction">
+   <property name="text">
+    <string>Toggle Left Panel</string>
    </property>
   </action>
  </widget>

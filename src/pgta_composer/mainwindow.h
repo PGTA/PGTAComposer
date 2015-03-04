@@ -34,6 +34,8 @@ private slots:
      void clearSampleProperties();
      void insertGroup();
      void onCustomContextMenu(const QPoint &point);
+     void toggleRightPanel();
+     void toggleLeftPanel();
     
 /*private slots:
 

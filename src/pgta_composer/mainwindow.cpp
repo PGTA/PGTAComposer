@@ -62,6 +62,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
 
+    // right panel
+    connect(ui->toggleRightPanelAction, SIGNAL(triggered()), this, SLOT(toggleRightPanel()));
+    connect ( ui->ToggleRightPanel, SIGNAL(clicked()), this, SLOT(toggleRightPanel()));
+
+    // left panel
+    connect(ui->toggleLeftPanelAction, SIGNAL(triggered()), this, SLOT(toggleLeftPanel()));
+    connect ( ui->ToggleLeftPanel, SIGNAL(clicked()), this, SLOT(toggleLeftPanel()));
+
     ui->statusBar->showMessage("Ready");
 }
 
@@ -71,6 +79,28 @@ MainWindow::~MainWindow()
     delete m_trackTreeModel;
     delete m_fileSystemModel;
     delete ui;
+}
+
+void MainWindow::toggleRightPanel()
+{
+    if (ui->RightPanel->isHidden())
+    {
+        ui->RightPanel->show();
+        return;
+    }
+    ui->RightPanel->hide();
+    return;
+}
+
+void MainWindow::toggleLeftPanel()
+{
+    if (ui->LeftPanel->isHidden())
+    {
+        ui->LeftPanel->show();
+        return;
+    }
+    ui->LeftPanel->hide();
+    return;
 }
 
 void MainWindow::onCustomContextMenu(const QPoint &point)
