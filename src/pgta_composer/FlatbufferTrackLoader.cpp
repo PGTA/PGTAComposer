@@ -51,7 +51,7 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackMode
     if (!parser.Parse(PGTASchemaHeader::TRACK_FBS) || !parser.Parse(src))
     {
         qDebug("Lodaing Ascii track parse error.");
-        qDebug(parser.error_.c_str());
+        qDebug("%s", parser.error_.c_str());
         return nullptr;
     }
 

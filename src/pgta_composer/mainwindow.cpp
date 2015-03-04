@@ -227,8 +227,7 @@ void MainWindow::insertSample()
 
 void MainWindow::on_actionSave_triggered()
 {
-    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
-     m_dataWidgetMapper->toNext();
+
 }
 
 void MainWindow::on_actionOpen_triggered()

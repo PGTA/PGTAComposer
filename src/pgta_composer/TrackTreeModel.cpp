@@ -54,7 +54,13 @@ Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
     {
         return 0;
     }
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable |
+            Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+}
+
+Qt::DropActions TrackTreeModel::supportedDropActions () const
+{
+    return Qt::MoveAction | Qt::CopyAction;
 }
 
 QVariant TrackTreeModel::headerData(int section, Qt::Orientation orientation,
