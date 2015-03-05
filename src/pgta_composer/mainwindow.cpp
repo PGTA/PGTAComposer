@@ -70,6 +70,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->toggleLeftPanelAction, SIGNAL(triggered()), this, SLOT(toggleLeftPanel()));
     connect ( ui->ToggleLeftPanel, SIGNAL(clicked()), this, SLOT(toggleLeftPanel()));
 
+
+    ui->TrackTreeView->setDropIndicatorShown(true);
+    ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
 }
 

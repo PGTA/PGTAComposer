@@ -1,6 +1,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <QMimeData>
 #include "TrackTreeModel.h"
 #include "TrackItem.h"
 
@@ -50,12 +51,16 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index) |  Qt::ItemIsEditable |
+            Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (index.isValid())
     {
-        return 0;
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
     }
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-            Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    else
+    {
+        return Qt::ItemIsDropEnabled | defaultFlags;
+    }
 }
 
 Qt::DropActions TrackTreeModel::supportedDropActions () const
@@ -212,6 +217,118 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
     endRemoveRows();
     return retVal;
 }
+
+
+QStringList TrackTreeModel::mimeTypes() const
+ {
+     QStringList types;
+     types << "application/vnd.text.list";
+     return types;
+ }
+
+QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    if (!indexes.isEmpty() && isGroup(indexes.at(0)))
+    {
+        return nullptr;
+    }
+    QMimeData *mimeData = new QMimeData();
+
+    mimeData.
+
+    QByteArray encodedData;
+
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    foreach(QModelIndex index, indexes)
+    {
+        if (index.isValid())
+        {
+            QString text = data(index, Qt::DisplayRole).toString();
+            stream << text;
+        }
+    }
+    mimeData->setData("application/vnd.text.list", encodedData);
+    return mimeData;
+}
+
+bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
+                                        int row, int column, const QModelIndex & parent)
+{
+    QModelIndex newParent = parent;
+
+    if (action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+
+    if (!data)
+    {
+        return false;
+    }
+
+    if (!data->hasFormat("application/vnd.text.list"))
+    {
+        return false;
+    }
+
+    if (column > 0)
+    {
+        return false;
+    }
+
+    int beginRow = 0;
+
+    if (row != -1)
+    {
+        beginRow = row;
+    }
+    else if (newParent.isValid() && isGroup(newParent))
+    {
+        beginRow = 0;
+    }
+    else
+    {
+        beginRow = rowCount(QModelIndex());
+    }
+
+    if (!isGroup(newParent))
+    {
+        newParent = QModelIndex();
+    }
+
+    // decode imported data
+    QByteArray encodedData = data->data("application/vnd.text.list");
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    QStringList newItems;
+    int cols = 0;
+
+    while (!stream.atEnd())
+    {
+        QString text;
+        stream >> text;
+        newItems << text;
+        ++cols;
+    }
+
+    int beginCols = 0;
+
+    if (!insertRows(beginRow, 1, newParent))
+    {
+        return false;
+    }
+
+    foreach (QString text, newItems)
+    {
+        QModelIndex idx = index(beginRow, beginCols, newParent);
+        setData(idx, text);
+        beginCols++;
+    }
+
+    return true;
+}
+
+
 
 void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
 {

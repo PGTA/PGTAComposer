@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <QMap>
 #include <QUuid>
+#include <QMimeData>
 
 class TrackItem;
 
@@ -41,6 +42,10 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     Qt::DropActions supportedDropActions () const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    bool dropMimeData( const QMimeData * data, Qt::DropAction action,
+                                            int row, int column, const QModelIndex & parent) override;
     QVariant headerData(int section, Qt::Orientation orientation,
                            int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column,
