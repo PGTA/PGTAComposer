@@ -234,8 +234,6 @@ QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indexes) const
     }
     QMimeData *mimeData = new QMimeData();
 
-    mimeData.
-
     QByteArray encodedData;
 
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
