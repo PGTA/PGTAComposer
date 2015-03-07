@@ -75,6 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TrackTreeView->setDropIndicatorShown(true);
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
+
+    //QPixmap image(":icons/icon.iconset/icon_32x32@2x.png");
+    //ui->logoImage->setPixmap(image);
 }
 
 MainWindow::~MainWindow()

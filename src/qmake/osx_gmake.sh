@@ -22,13 +22,11 @@ pgta_premake="$qmakedir/../external/PGTA/src/premake/"
 test -d $build || runCommand "mkdir -p $build"
 
 echo "--Building PGTA Composer Dependencies--"
-
 pushd $pgta_premake
     runCommand "./osx_gmake.sh"
 popd
 
 echo "--Creating Symbolic Links--"
-
 pushd $build
     test -L lib_FlatBuffers.a || runCommand "ln -s $pgta_premake/gmake/lib_FlatBuffers.a lib_FlatBuffers.a"
 popd
@@ -37,8 +35,12 @@ echo "--Copying PGTA Binaries--"
 
 # TODO : Copy library used to play/pause/stop PGTA track
 
-echo "--Building PGTA Composer Application--"
+echo "--Generating Icon File--"
+pushd $qmakedir/../pgta_composer/icons
+    runCommand "iconutil -c icns icon.iconset/"
+popd
 
+echo "--Building PGTA Composer Application--"
 runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
 runCommand 'make'
