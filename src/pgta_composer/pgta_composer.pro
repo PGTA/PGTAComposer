@@ -47,4 +47,8 @@ unix {
 }
 
 RESOURCES += \
-    stylesheet.qrc
+    stylesheet.qrc \
+    icons.qrc
+
+macx:ICON = $${PWD}/icons/icon.icns
+

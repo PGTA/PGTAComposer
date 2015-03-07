@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
     QString styleSheet = QLatin1String(stylesFile.readAll());
     mainApp.setStyleSheet(styleSheet);
 
+    QIcon icon(":icons/icon.icns");
+    mainWindow.setWindowIcon(icon);
+
     mainWindow.move(QApplication::desktop()->screen()->rect().center() - mainWindow.rect().center());
     mainWindow.show();
     return mainApp.exec();
