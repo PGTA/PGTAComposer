@@ -35,11 +35,6 @@ echo "--Copying PGTA Binaries--"
 
 # TODO : Copy library used to play/pause/stop PGTA track
 
-echo "--Generating Icon File--"
-pushd $qmakedir/../pgta_composer/icons
-    runCommand "iconutil -c icns icon.iconset/"
-popd
-
 echo "--Building PGTA Composer Application--"
 runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
