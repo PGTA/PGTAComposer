@@ -43,9 +43,7 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-
     TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
-
     return item->GetData(index.column());
 }
 
@@ -75,7 +73,6 @@ QVariant TrackTreeModel::headerData(int section, Qt::Orientation orientation,
     {
         return m_rootItem->GetData(section);
     }
-
     return QVariant();
 }
 
@@ -88,7 +85,6 @@ QModelIndex TrackTreeModel::index(int row, int column,
     }
 
     TrackItem *parentItem;
-
     if(!parent.isValid())
     {
         parentItem = m_rootItem;
@@ -99,7 +95,6 @@ QModelIndex TrackTreeModel::index(int row, int column,
     }
 
     TrackItem *childItem = parentItem->GetChild(row);
-
     if (childItem)
     {
         return createIndex(row, column, childItem);
@@ -119,19 +114,16 @@ QModelIndex TrackTreeModel::parent(const QModelIndex &index) const
 
     TrackItem *childItem = static_cast<TrackItem*>(index.internalPointer());
     TrackItem *parentItem = childItem->GetParent();
-
     if (parentItem == m_rootItem)
     {
         return QModelIndex();
     }
-
     return createIndex(parentItem->GetRow(), 0, parentItem);
 }
 
 int TrackTreeModel::rowCount(const QModelIndex &parent) const
 {
     TrackItem *parentItem;
-
     if (parent.column() > 0)
     {
         return 0;
@@ -145,7 +137,6 @@ int TrackTreeModel::rowCount(const QModelIndex &parent) const
     {
         parentItem = static_cast<TrackItem*>(parent.internalPointer());
     }
-
     return parentItem->ChildCount();
 }
 
@@ -171,12 +162,10 @@ bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
 
     TrackItem *item = getItem(index);
     bool retVal = item->SetData(index.column(), value);
-
     if (retVal)
     {
         emit dataChanged(index, index);
     }
-
     return retVal;
 }
 
@@ -189,12 +178,10 @@ bool TrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
     }
 
     bool retVal = m_rootItem->SetData(section, value);
-
     if (retVal)
     {
         emit headerDataChanged(orientation, section, section);
     }
-
     return retVal;
 }
 

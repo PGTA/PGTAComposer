@@ -3,10 +3,10 @@
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include <QVariant>
-#include <QMap>
-#include <QUuid>
 #include <QMimeData>
+#include <QVariant>
+#include <QUuid>
+#include <QMap>
 
 class TrackItem;
 
@@ -32,6 +32,7 @@ public:
         SampleColumn_GroupUUID,
         SampleColumn_Size
     };
+
 public:
     TrackTreeModel(QObject *parent = nullptr);
     ~TrackTreeModel();

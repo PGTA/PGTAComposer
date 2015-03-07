@@ -1,21 +1,22 @@
 
 #pragma once
 
-#include <QList>
-#include <QVector>
 #include <QVariant>
+#include <QVector>
+#include <QList>
 
 class TrackItem
 {
+
 public:
     explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr,
                        bool isGroup = false);
     ~TrackItem();
 
+public:
     void AddChild(TrackItem *item);
     bool InsertChildren(int position, int count, int columns);
     bool RemoveChildren(int position, int count);
-
     TrackItem *GetChild(int row) const;
     int ChildCount() const;
     int ColumnCount() const;
@@ -24,7 +25,6 @@ public:
     int GetRow() const;
     int GetChildRow(TrackItem *child) const;
     TrackItem *GetParent() const;
-
     bool IsGroup() const;
     void SetIsGroup(bool isGroup);
 

@@ -38,9 +38,7 @@ static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, 
         qDebug("Verification of track buffer failed.");
         return nullptr;
     }
-
     const PGTASchema::Track* trackSchema = PGTASchema::GetTrack(src);
-
     return InitTrackData(trackModel, trackSchema);
 }
 
@@ -54,9 +52,7 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackMode
         qDebug("%s", parser.error_.c_str());
         return nullptr;
     }
-
     const PGTASchema::Track* trackSchema = PGTASchema::GetTrack(parser.builder_.GetBufferPointer());
-
     return InitTrackData(trackModel, trackSchema);
 }
 
@@ -102,7 +98,6 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             continue;
         }
         group[TrackTreeModel::GroupColumn_UUID] = uuid;
-
         trackModel->addGroup(group, uuid);
     }
 
@@ -203,7 +198,6 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         trackModel->addSample(sample, groupUuid);
     }
-
     return trackModel;
 }
 
