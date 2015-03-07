@@ -22,13 +22,15 @@ HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackLoader.h \
             ./mainwindow.h \
             ./TrackItem.h \
-            ./TrackTreeModel.h
+            ./TrackTreeModel.h \
+            ./FlatbufferTrackWriter.h
 SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \
             ./mainwindow.cpp \
             ./TrackItem.cpp \
-            ./TrackTreeModel.cpp
+            ./TrackTreeModel.cpp \
+            ./FlatbufferTrackWriter.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/

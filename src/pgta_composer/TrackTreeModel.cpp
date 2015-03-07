@@ -226,19 +226,17 @@ QStringList TrackTreeModel::mimeTypes() const
      return types;
  }
 
-QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indexes) const
+QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indices) const
 {
-    if (!indexes.isEmpty() && isGroup(indexes.at(0)))
+    if (!indeces.isEmpty() && isGroup(indices.at(0)))
     {
         return nullptr;
     }
+
     QMimeData *mimeData = new QMimeData();
-
     QByteArray encodedData;
-
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
-
-    foreach(QModelIndex index, indexes)
+    for (auto &index : indices)
     {
         if (index.isValid())
         {
@@ -253,80 +251,73 @@ QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indexes) const
 bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
                                         int row, int column, const QModelIndex & parent)
 {
-    QModelIndex newParent = parent;
-
     if (action == Qt::IgnoreAction)
     {
         return true;
     }
 
-    if (!data)
+    if (!data || !data->hasFormat("application/vnd.text.list") || column > 0)
     {
         return false;
     }
 
-    if (!data->hasFormat("application/vnd.text.list"))
+    // parent must be colum zero in order for drop to work properly
+    QModelIndex destParent = index(parent.row(), 0, parent.parent());
+
+    int targetRow = 0;
+    // check to see if drop target is a group
+    if (!isGroup(destParent))
     {
-        return false;
+        targetRow = destParent.row();
+        destParent = destParent.parent();
     }
 
-    if (column > 0)
+    // set drop row
+    if (row < 0)
     {
-        return false;
+        if (destParent.isValid() && isGroup(destParent))
+        {
+            row = rowCount(destParent) ? targetRow + 1 : 0;
+        }
+        else
+        {
+            row = rowCount(QModelIndex());
+        }
     }
 
-    int beginRow = 0;
-
-    if (row != -1)
+    // check to see if parent is
+    if (!isGroup(destParent))
     {
-        beginRow = row;
-    }
-    else if (newParent.isValid() && isGroup(newParent))
-    {
-        beginRow = 0;
-    }
-    else
-    {
-        beginRow = rowCount(QModelIndex());
-    }
-
-    if (!isGroup(newParent))
-    {
-        newParent = QModelIndex();
+        destParent = QModelIndex();
     }
 
     // decode imported data
     QByteArray encodedData = data->data("application/vnd.text.list");
     QDataStream stream(&encodedData, QIODevice::ReadOnly);
     QStringList newItems;
-    int cols = 0;
-
     while (!stream.atEnd())
     {
         QString text;
         stream >> text;
         newItems << text;
-        ++cols;
     }
 
-    int beginCols = 0;
-
-    if (!insertRows(beginRow, 1, newParent))
+    // attempt to insert new row
+    if (!insertRows(row, 1, destParent))
     {
         return false;
     }
 
-    foreach (QString text, newItems)
+    // set the data of the newly inserted row
+    int beginCols = 0;
+    for (auto &text : newItems)
     {
-        QModelIndex idx = index(beginRow, beginCols, newParent);
+        QModelIndex idx = index(row, beginCols, destParent);
         setData(idx, text);
         beginCols++;
     }
-
     return true;
 }
-
-
 
 void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
 {
