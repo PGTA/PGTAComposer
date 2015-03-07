@@ -37,7 +37,6 @@ private:
     Ui::MainWindow *ui;
 
 private:
-    EngineTrack *m_engineTrack;
     TrackTreeModel *m_trackTreeModel;
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;

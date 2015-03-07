@@ -215,7 +215,7 @@ QStringList TrackTreeModel::mimeTypes() const
 
 QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indices) const
 {
-    if (!indeces.isEmpty() && isGroup(indices.at(0)))
+    if (!indices.isEmpty() && isGroup(indices.at(0)))
     {
         return nullptr;
     }
