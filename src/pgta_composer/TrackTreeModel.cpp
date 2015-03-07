@@ -255,7 +255,7 @@ bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
     // check to see if drop target is a group
     if (!isGroup(destParent))
     {
-        targetRow = destParent.row();
+        targetRow = destParent.row() + 1;
         destParent = destParent.parent();
     }
 
@@ -264,7 +264,7 @@ bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
     {
         if (destParent.isValid() && isGroup(destParent))
         {
-            row = rowCount(destParent) ? targetRow + 1 : 0;
+            row = targetRow;
         }
         else
         {
