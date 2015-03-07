@@ -15,6 +15,7 @@
 //#include <QMediaPlayer>
 #include <QFileSystemModel>
 #include <QDataWidgetMapper>
+#include <QUuid>
 #include <QtCore>
 #include <cmath>
 #include "enginetrack.h"
@@ -158,8 +159,17 @@ void MainWindow::insertGroup()
     for (int column = 0; column < model->columnCount(index.parent()); ++column)
     {
         QModelIndex child = model->index(index.row()+1, column, index.parent());
-        //TODO: Add UUID generation
-        model->setData(child, QVariant("[Group No data]"), Qt::EditRole);
+        switch (column)
+        {
+            case TrackTreeModel::GroupColumn_Name :
+                model->setData(child, QVariant("[Group Name]"), Qt::EditRole);
+                break;
+            case TrackTreeModel::GroupColumn_UUID :
+                model->setData(child, QUuid::createUuid(), Qt::EditRole);
+                break;
+            default:
+                break;
+        }
         model->setIsGroup(child);
     }
 }
