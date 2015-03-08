@@ -5,5 +5,10 @@
         <file>img/pause_64x64.png</file>
         <file>img/play_64x64.png</file>
         <file>img/stop_64x64.png</file>
+        <file>img/leftpanel_64x64.png</file>
+        <file>img/leftpanelselected_64x64.png</file>
+        <file>img/rightpanel_64x64.png</file>
+        <file>img/rightpanelselected_64x64.png</file>
+        <file>img/banner.png</file>
     </qresource>
 </RCC>

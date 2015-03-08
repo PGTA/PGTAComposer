@@ -79,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->PlayButton->setIcon(QIcon(":/img/play_64x64.png"));
     ui->PauseButton->setIcon(QIcon(":/img/pause_64x64.png"));
     ui->StopButton->setIcon(QIcon(":/img/stop_64x64.png"));
+    ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
+    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
 }
 
 MainWindow::~MainWindow()
@@ -93,9 +95,11 @@ void MainWindow::toggleRightPanel()
 {
     if (ui->RightPanel->isHidden())
     {
+        ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
         ui->RightPanel->show();
         return;
     }
+    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanel_64x64.png"));
     ui->RightPanel->hide();
     return;
 }
@@ -104,9 +108,11 @@ void MainWindow::toggleLeftPanel()
 {
     if (ui->LeftPanel->isHidden())
     {
+        ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
         ui->LeftPanel->show();
         return;
     }
+    ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanel_64x64.png"));
     ui->LeftPanel->hide();
     return;
 }
