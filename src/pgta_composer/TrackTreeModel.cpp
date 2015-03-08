@@ -13,7 +13,7 @@ TrackTreeModel::TrackTreeModel(QObject *parent)
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Frequency" << "Probability"
              << "Volume Multiplier" << "UUID";
-    m_rootItem = new TrackItem(rootData, nullptr, true);
+    m_rootItem = new TrackItem(rootData, nullptr,  QUuid(), true);
 }
 
 TrackTreeModel::~TrackTreeModel()
@@ -21,7 +21,20 @@ TrackTreeModel::~TrackTreeModel()
     delete m_rootItem;
 }
 
-TrackItem *TrackTreeModel::getItem(const QModelIndex &index) const
+TrackItem *TrackTreeModel::getItemSafe(const QModelIndex &index) const
+{
+    if (index.isValid())
+    {
+        TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
+        if (item)
+        {
+            return item;
+        }
+    }
+    return m_rootItem;
+}
+
+TrackItem *TrackTreeModel::getItemUnsafe(const QModelIndex &index)
 {
     if (index.isValid())
     {
@@ -176,7 +189,7 @@ bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
         return false;
     }
 
-    TrackItem *item = getItem(index);
+    TrackItem *item = getItemSafe(index);
     bool retVal = item->SetData(index.column(), value);
     if (retVal)
     {
@@ -203,7 +216,7 @@ bool TrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
 
 bool TrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    TrackItem *parentItem = getItem(parent);
+    TrackItem *parentItem = getItemSafe(parent);
     bool retVal = true;
     beginInsertRows(parent, row, row + count - 1);
     retVal = parentItem->InsertChildren(row, count, m_rootItem->ColumnCount());
@@ -213,11 +226,29 @@ bool TrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
 
 bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    TrackItem *parentItem = getItem(parent);
+    TrackItem *parentItem = getItemSafe(parent);
     bool retVal = true;
+
+    // determine if any children bing remove are group
+    std::vector<QUuid> uuids;
+    for (int i = 0; i < count; ++i)
+    {
+        QModelIndex tmpIndex = index(row + i, 0, parent);
+        if (isGroup(tmpIndex))
+        {
+            uuids.push_back(getUuid(tmpIndex));
+        }
+    }
+
     beginRemoveRows(parent, row, row + count - 1);
     retVal = parentItem->RemoveChildren(row, count);
     endRemoveRows();
+
+    // remove all groups from the aux data structure
+    for (auto &uuid : uuids)
+    {
+        removeGroup(uuid);
+    }
     return retVal;
 }
 
@@ -316,7 +347,15 @@ bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
     for (auto &text : newItems)
     {
         QModelIndex idx = index(row, beginCols, destParent);
-        setData(idx, text);
+
+        if (beginCols == SampleColumn_GroupUUID)
+        {
+            setData(idx, getUuid(destParent));
+        }
+        else
+        {
+            setData(idx, text);
+        }
         beginCols++;
     }
     return true;
@@ -331,14 +370,15 @@ void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
 
 bool TrackTreeModel::isGroup(const QModelIndex &index) const
 {
-    TrackItem *item = getItem(index);
+    TrackItem *item = getItemSafe(index);
     return item->IsGroup();
 }
 
-void TrackTreeModel::setIsGroup(const QModelIndex &index) const
+void TrackTreeModel::setIsGroup(const QModelIndex &index)
 {
-    TrackItem *item = getItem(index);
+    TrackItem *item = getItemUnsafe(index);
     item->SetIsGroup(true);
+    m_groups.insert(item->GetUuid(), item);
 }
 
 void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
@@ -354,7 +394,7 @@ void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
         // Group already exists
         return;
     }
-    TrackItem *item = new TrackItem(data, group, true);
+    TrackItem *item = new TrackItem(data, group, uuid, true);
     m_groups.insert(uuid, item);
     group->AddChild(item);
 }
@@ -371,3 +411,22 @@ TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const
     }
     return m_rootItem;
 }
+
+QUuid TrackTreeModel::getUuid(const QModelIndex &index) const
+{
+    if (!index.isValid())
+    {
+        return QUuid();
+    }
+    TrackItem *item = getItemSafe(index);
+    return item->GetUuid();
+}
+
+void TrackTreeModel::removeGroup(const QUuid &uuid)
+{
+    if(!uuid.isNull())
+    {
+        m_groups.remove(uuid);
+    }
+}
+

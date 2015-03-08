@@ -64,12 +64,16 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex &parent = QModelIndex()) override;
 
-    void setIsGroup(const QModelIndex &index) const;
+    void setIsGroup(const QModelIndex &index);
+    QUuid getUuid(const QModelIndex &index) const;
+    void setUuid(const QModelIndex &index, const QUuid &uuid) const;
     bool isGroup(const QModelIndex &index) const;
 
 private:
-    TrackItem *getItem(const QModelIndex &index) const;
+    TrackItem *getItemSafe(const QModelIndex &index) const;
+    TrackItem *getItemUnsafe(const QModelIndex &index);
     TrackItem *getGroup(const QUuid &uuid) const;
+    void removeGroup(const QUuid &uuid);
 
 private:
     QMap<QUuid, TrackItem*> m_groups;

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <QVariant>
+#include <QUuid>
 #include <QVector>
 #include <QList>
 
@@ -10,7 +11,7 @@ class TrackItem
 
 public:
     explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr,
-                       bool isGroup = false);
+                       QUuid uuid = QUuid(), bool isGroup = false);
     ~TrackItem();
 
 public:
@@ -27,10 +28,12 @@ public:
     TrackItem *GetParent() const;
     bool IsGroup() const;
     void SetIsGroup(bool isGroup);
+    QUuid GetUuid() const;
 
 private:
     QList<TrackItem*> m_childItems;
     QVector<QVariant> m_itemData;
+    QUuid m_uuid;
     TrackItem *m_parent;
     bool m_isGroup;
 };

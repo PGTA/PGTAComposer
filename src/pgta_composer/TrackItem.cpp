@@ -1,7 +1,9 @@
 
+#include <QUuid>
 #include "TrackItem.h"
 
-TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, bool isGroup) :
+TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, QUuid uuid, bool isGroup) :
+    m_uuid(uuid),
     m_isGroup(isGroup)
 {
     m_parent = parent;
@@ -28,7 +30,7 @@ bool TrackItem::InsertChildren(int position, int count, int columns)
     for (int i = 0; i < count; ++i)
     {
         QVector<QVariant> data(columns);
-        TrackItem *item = new TrackItem(data, this);
+        TrackItem *item = new TrackItem(data, this, m_uuid);
         m_childItems.insert(position, item);
     }
     return true;
@@ -108,5 +110,11 @@ bool TrackItem::IsGroup() const
 
 void TrackItem::SetIsGroup(bool isGroup)
 {
+    m_uuid = QUuid::createUuid();
     m_isGroup = isGroup;
+}
+
+QUuid TrackItem::GetUuid() const
+{
+    return m_uuid;
 }

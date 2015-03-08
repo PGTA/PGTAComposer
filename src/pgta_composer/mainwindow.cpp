@@ -182,22 +182,22 @@ void MainWindow::insertGroup()
     {
         return;
     }
-
+    QModelIndex child = model->index(index.row()+1, 0, index.parent());
+    model->setIsGroup(child);
     for (int column = 0; column < model->columnCount(index.parent()); ++column)
     {
-        QModelIndex child = model->index(index.row()+1, column, index.parent());
+        child = model->index(index.row()+1, column, index.parent());
         switch (column)
         {
             case TrackTreeModel::GroupColumn_Name :
                 model->setData(child, QVariant("[Group Name]"), Qt::EditRole);
                 break;
             case TrackTreeModel::GroupColumn_UUID :
-                model->setData(child, QUuid::createUuid(), Qt::EditRole);
+                model->setData(child, model->getUuid(child), Qt::EditRole);
                 break;
             default:
                 break;
         }
-        model->setIsGroup(child);
     }
 }
 
@@ -254,8 +254,19 @@ void MainWindow::insertSample()
     for (int column = 0; column < model->columnCount(index); ++column)
     {
         QModelIndex child = model->index(position, column, index);
-        //TODO: set UUID correclty
-        model->setData(child, QVariant("[No data]"), Qt::EditRole);
+        switch (column)
+        {
+            case TrackTreeModel::SampleColumn_Name :
+                model->setData(child, QVariant("[Sample Name]"), Qt::EditRole);
+                break;
+            case TrackTreeModel::SampleColumn_GroupUUID :
+                model->setData(child, model->getUuid(index), Qt::EditRole);
+                break;
+            default:
+                model->setData(child, QVariant("[No data]"), Qt::EditRole);
+                break;
+        }
+
         if (!model->headerData(column, Qt::Horizontal).isValid())
         {
             model->setHeaderData(column, Qt::Horizontal, QVariant("[No header]"), Qt::EditRole);
