@@ -62,6 +62,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
     connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
+    connect(ui->removeTrackItemButton, SIGNAL(clicked()), this, SLOT(removeTrackItem()));
+
+    // setup tool button context menu for add sample/group button
+    QMenu *menu = new QMenu();
+    QAction *addGroup = menu->addAction("Add Group");
+    connect(addGroup, SIGNAL(triggered()), this, SLOT(insertGroup()));
+    QAction *addSample = menu->addAction("Add Sample");
+    connect(addSample, SIGNAL(triggered()), this, SLOT(insertSample()));
+    ui->addTrackItemButton->setPopupMode(QToolButton::InstantPopup);
+    ui->addTrackItemButton->setMenu(menu);
 
     // right panel
     connect(ui->toggleRightPanelAction, SIGNAL(triggered()), this, SLOT(toggleRightPanel()));
@@ -81,6 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->StopButton->setIcon(QIcon(":/img/stop_64x64.png"));
     ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
     ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
+
 }
 
 MainWindow::~MainWindow()

@@ -469,9 +469,27 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="toolButton">
+          <widget class="QToolButton" name="addTrackItemButton">
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -508,6 +526,31 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QToolButton" name="removeTrackItemButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>24</horstretch>
+             <verstretch>24</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>24</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -515,7 +558,7 @@
        <widget class="QTreeView" name="TrackTreeView">
         <property name="font">
          <font>
-          <pointsize>14</pointsize>
+          <pointsize>13</pointsize>
          </font>
         </property>
         <property name="contextMenuPolicy">
@@ -665,6 +708,12 @@
           <property name="text">
            <string/>
           </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
          </widget>
         </item>
         <item>
@@ -695,7 +744,13 @@
            </size>
           </property>
           <property name="text">
-           <string>...</string>
+           <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -714,7 +769,13 @@
            </size>
           </property>
           <property name="text">
-           <string>...</string>
+           <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -733,7 +794,13 @@
            </size>
           </property>
           <property name="text">
-           <string>...</string>
+           <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -841,7 +908,13 @@
            </size>
           </property>
           <property name="text">
-           <string>...</string>
+           <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -885,6 +958,9 @@
    </attribute>
    <widget class="QWidget" name="LeftPanelWidget">
     <layout class="QVBoxLayout" name="verticalLayout_6">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -901,6 +977,19 @@
            <height>20</height>
           </size>
          </property>
+         <widget class="QLabel" name="label_4">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>0</y>
+            <width>59</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Library</string>
+          </property>
+         </widget>
         </widget>
        </item>
        <item>
@@ -968,6 +1057,9 @@
           <bool>false</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
