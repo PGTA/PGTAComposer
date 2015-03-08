@@ -107,10 +107,12 @@ void MainWindow::toggleRightPanel()
     if (ui->RightPanel->isHidden())
     {
         ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
+        ui->toggleRightPanelAction->setText("Hide Right Panel");
         ui->RightPanel->show();
         return;
     }
     ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanel_64x64.png"));
+    ui->toggleRightPanelAction->setText("Show Right Panel");
     ui->RightPanel->hide();
     return;
 }
@@ -120,10 +122,12 @@ void MainWindow::toggleLeftPanel()
     if (ui->LeftPanel->isHidden())
     {
         ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
+        ui->toggleLeftPanelAction->setText("Hide Left Panel");
         ui->LeftPanel->show();
         return;
     }
     ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanel_64x64.png"));
+    ui->toggleLeftPanelAction->setText("Show Left Panel");
     ui->LeftPanel->hide();
     return;
 }

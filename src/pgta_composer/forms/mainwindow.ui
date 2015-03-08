@@ -1293,12 +1293,18 @@
   </action>
   <action name="toggleRightPanelAction">
    <property name="text">
-    <string>Toggle Right Panel</string>
+    <string>Hide Right Panel</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
    </property>
   </action>
   <action name="toggleLeftPanelAction">
    <property name="text">
-    <string>Toggle Left Panel</string>
+    <string>Hide Left Panel</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
    </property>
   </action>
  </widget>
