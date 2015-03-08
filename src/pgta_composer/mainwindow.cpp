@@ -76,8 +76,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
 
-    //QPixmap image(":icons/icon.iconset/icon_32x32@2x.png");
-    //ui->logoImage->setPixmap(image);
+    ui->PlayButton->setIcon(QIcon(":/img/play_64x64.png"));
+    ui->PauseButton->setIcon(QIcon(":/img/pause_64x64.png"));
+    ui->StopButton->setIcon(QIcon(":/img/stop_64x64.png"));
 }
 
 MainWindow::~MainWindow()

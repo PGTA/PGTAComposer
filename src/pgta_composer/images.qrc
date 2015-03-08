@@ -1,1 +1,9 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>img/group_32x32.png</file>
+        <file>img/sample_32x32.png</file>
+        <file>img/pause_64x64.png</file>
+        <file>img/play_64x64.png</file>
+        <file>img/stop_64x64.png</file>
+    </qresource>
+</RCC>

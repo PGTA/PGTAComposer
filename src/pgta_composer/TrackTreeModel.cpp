@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <QMimeData>
+#include <QIcon>
+#include <QVariant>
 #include "TrackTreeModel.h"
 #include "TrackItem.h"
 
@@ -37,6 +39,20 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
     {
         return QVariant();
+    }
+
+    if (role == Qt::DecorationRole && index.column() == 0)
+    {
+        QVariant decoration;
+        if (isGroup(index))
+        {
+            decoration.setValue(QIcon(":/img/group_32x32.png"));
+        }
+        else
+        {
+            decoration.setValue(QIcon(":img/sample_32x32.png"));
+        }
+        return decoration;
     }
 
     if (role != Qt::DisplayRole && role != Qt::EditRole)
