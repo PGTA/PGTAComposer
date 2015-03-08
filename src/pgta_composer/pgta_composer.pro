@@ -14,7 +14,7 @@ QT +=       core \
             gui \
             widgets
 
-TARGET =    PGTAComposer
+TARGET =    "PGTA\ Composer"
 DESTDIR = 	$$PWD/../../bin/
 
 FORMS +=    forms/mainwindow.ui
