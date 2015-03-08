@@ -10,5 +10,7 @@
         <file>img/rightpanel_64x64.png</file>
         <file>img/rightpanelselected_64x64.png</file>
         <file>img/banner.png</file>
+        <file>img/minus_24x24.png</file>
+        <file>img/plus_24x24.png</file>
     </qresource>
 </RCC>
