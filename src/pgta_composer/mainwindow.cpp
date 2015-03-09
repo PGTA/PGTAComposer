@@ -280,7 +280,24 @@ void MainWindow::insertSample()
 void MainWindow::on_actionSave_triggered()
 {
     qDebug("Saving File");
-    FlatBufferTrackWriter::WriteTrack(m_trackTreeModel,"/Users/keeferdavies/Desktop/testing.track");
+    std::string filePath = m_trackTreeModel->getFilePath().toStdString();
+
+    if (filePath.length() == 0)
+    {
+        QString file = QFileDialog::getSaveFileName(this, tr("Save Track File"), "",tr("Track files (*.track)"));
+        if (file.isEmpty())
+        {
+            ui->statusBar->showMessage("Error saving track file.");
+            return;
+        }
+        filePath = file.toStdString();
+    }
+
+    if (FlatBufferTrackWriter::WriteTrack(m_trackTreeModel, filePath))
+    {
+        m_trackTreeModel->setFilePath(QString::fromStdString(filePath));
+        ui->statusBar->showMessage("Track file saved successfully.");
+    }
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -324,6 +341,7 @@ void MainWindow::on_actionOpen_triggered()
     {
         ui->statusBar->showMessage("File opened successfully.");
         ui->statusBar->setStyleSheet("QStatusBar{background: #137CCA; color: #FFFFFF;}");
+        m_trackTreeModel->setFilePath(QString::fromStdString(fileName));
     }
 
     ui->TrackTreeView->setModel(m_trackTreeModel);

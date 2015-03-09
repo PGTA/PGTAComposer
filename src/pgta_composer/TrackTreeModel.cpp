@@ -434,3 +434,14 @@ const TrackItem *TrackTreeModel::getRoot() const
 {
     return m_rootItem;
 }
+
+void TrackTreeModel::setFilePath(const QString &filePath)
+{
+    m_filePath = filePath;
+}
+
+QString TrackTreeModel::getFilePath() const
+{
+    return m_filePath;
+}
+

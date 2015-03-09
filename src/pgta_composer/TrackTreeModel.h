@@ -68,7 +68,8 @@ public:
     QUuid getUuid(const QModelIndex &index) const;
     void setUuid(const QModelIndex &index, const QUuid &uuid) const;
     bool isGroup(const QModelIndex &index) const;
-
+    void setFilePath(const QString &filePath);
+    QString getFilePath() const;
     const TrackItem *getRoot() const;
 
 private:
@@ -79,5 +80,7 @@ private:
 
 private:
     QMap<QUuid, TrackItem*> m_groups;
+    QString m_filePath;
     TrackItem *m_rootItem;
+
 };
