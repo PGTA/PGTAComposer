@@ -105,6 +105,23 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::updateStatusBar(QString message, StatusBarState state)
+{
+    switch (state)
+    {
+    case StatusBarState_READY:
+        ui->statusBar->setStyleSheet("QStatusBar{background: #5C1E6E; color: #FFFFFF;}");
+        break;
+    case StatusBarState_OK:
+        ui->statusBar->setStyleSheet("QStatusBar{background: #137CCA; color: #FFFFFF;}");
+        break;
+    case StatusBarState_ERROR:
+        ui->statusBar->setStyleSheet("QStatusBar{background: #C85217; color: #FFFFFF;}");
+        break;
+    }
+    ui->statusBar->showMessage(message);
+}
+
 void MainWindow::toggleRightPanel()
 {
     if (ui->RightPanel->isHidden())
@@ -214,7 +231,6 @@ void MainWindow::removeTrackItem()
     TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
     if(model->removeRow(index.row(), index.parent()))
     {
-        //TODO: remove UUID from aux data structure
         ui->TrackTreeView->selectionModel()->clear();
         clearSampleProperties();
     }
@@ -287,7 +303,7 @@ void MainWindow::on_actionSave_triggered()
         QString file = QFileDialog::getSaveFileName(this, tr("Save Track File"), "",tr("Track files (*.track)"));
         if (file.isEmpty())
         {
-            ui->statusBar->showMessage("Error saving track file.");
+            updateStatusBar("Error saving track file.", StatusBarState_ERROR);
             return;
         }
         filePath = file.toStdString();
@@ -296,12 +312,20 @@ void MainWindow::on_actionSave_triggered()
     if (FlatBufferTrackWriter::WriteTrack(m_trackTreeModel, filePath))
     {
         m_trackTreeModel->setFilePath(QString::fromStdString(filePath));
-        ui->statusBar->showMessage("Track file saved successfully.");
+        updateStatusBar("Track file saved successfully.", StatusBarState_OK);
     }
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
+    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
+    if (fileList.isEmpty())
+    {
+        ui->statusBar->showMessage("Error opening file.");
+        return;
+    }
+    std::string fileName = fileList.first().toStdString();
+
     if (m_trackTreeModel)
     {
         delete m_trackTreeModel;
@@ -314,33 +338,23 @@ void MainWindow::on_actionOpen_triggered()
 
     m_trackTreeModel = new TrackTreeModel(this);
     m_dataWidgetMapper = new QDataWidgetMapper(this);
-    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
-    if (fileList.isEmpty())
-    {
-        ui->statusBar->showMessage("Error opening file.");
-        return;
-    }
 
-    std::string fileName = fileList.first().toStdString();
     std::string buffer;
     if (!FileUtils::ReadBinaryFileToString(fileName, buffer))
     {
         qDebug("Error reading from file.");
-        ui->statusBar->showMessage("Error reading from file.");
-        ui->statusBar->setStyleSheet("QStatusBar{background: #C85217; color: #FFFFFF;}");
+        updateStatusBar("Error reading from file..", StatusBarState_ERROR);
         return;
     }
 
     // initialize track model
     if(!FlatbufferTrackLoader::LoadTrack(buffer.c_str(), buffer.length(), m_trackTreeModel))
     {
-        ui->statusBar->showMessage("Error reading from file.");
-        ui->statusBar->setStyleSheet("QStatusBar{background: #C85217; color: #FFFFFF;}");
+        updateStatusBar("Error reading from file.", StatusBarState_ERROR);
     }
     else
     {
-        ui->statusBar->showMessage("File opened successfully.");
-        ui->statusBar->setStyleSheet("QStatusBar{background: #137CCA; color: #FFFFFF;}");
+        updateStatusBar("File opened successfully.", StatusBarState_OK);
         m_trackTreeModel->setFilePath(QString::fromStdString(fileName));
     }
 

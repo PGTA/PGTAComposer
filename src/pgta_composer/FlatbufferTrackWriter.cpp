@@ -18,6 +18,7 @@ using SchemaRestrictions = std::vector<flatbuffers::Offset<PGTASchema::Restricti
 using Builder = flatbuffers::FlatBufferBuilder;
 
 static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups);
+static void RemoveUuidFormatting(std::string &uuid);
 
 bool FlatBufferTrackWriter::WriteTrack(const TrackTreeModel* trackModel, const std::string dest, bool binary)
 {
@@ -50,7 +51,6 @@ bool FlatBufferTrackWriter::WriteTrack(const TrackTreeModel* trackModel, const s
     return FileUtils::WriteAsciiToFile(dest, jsongen);
 }
 
-
 static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups)
 {
     int numChildren = root->ChildCount();
@@ -64,9 +64,7 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
             // Add Group (Gorup Builder)
             auto fbbName = fbb.CreateString(child->GetData(TrackTreeModel::GroupColumn_Name).toString().toStdString());
             std::string  uuid = child->GetData(TrackTreeModel::GroupColumn_UUID).toString().toStdString();
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '{'), uuid.end());
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '}'), uuid.end());
+            RemoveUuidFormatting(uuid);
             auto fbbUuid = fbb.CreateString(uuid);
 
             PGTASchema::GroupBuilder groupBuilder(fbb);
@@ -84,9 +82,7 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
             auto fbbName = fbb.CreateString(child->GetData(TrackTreeModel::SampleColumn_Name).toString().toStdString());
 
             std::string  uuid = child->GetData(TrackTreeModel::SampleColumn_GroupUUID).toString().toStdString();
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '{'), uuid.end());
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
-            uuid.erase(std::remove(uuid.begin(), uuid.end(), '}'), uuid.end());
+            RemoveUuidFormatting(uuid);
             auto fbbUuid = fbb.CreateString(uuid);
 
             PGTASchema::SampleBuilder sampleBuilder(fbb);
@@ -105,4 +101,10 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
     }
 }
 
+static void RemoveUuidFormatting(std::string &uuid)
+{
+    uuid.erase(std::remove(uuid.begin(), uuid.end(), '{'), uuid.end());
+    uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
+    uuid.erase(std::remove(uuid.begin(), uuid.end(), '}'), uuid.end());
+}
 

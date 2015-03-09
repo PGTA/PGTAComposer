@@ -1,6 +1,7 @@
 
 #include <QVariant>
 #include <QByteArray>
+#include <sstream>
 #include <schema/track_generated.h>
 #include <schema/track.fbs.h>
 #include <flatbuffers/idl.h>
@@ -10,6 +11,7 @@
 static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel);
 static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel);
 static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
+static std::string AddUuidFormatting(const std::string &uuid);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
 
@@ -91,7 +93,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             continue;
         }
 
-        QUuid uuid = QString(groupUuid->c_str());
+        QUuid uuid = QString::fromStdString(AddUuidFormatting(groupUuid->c_str()));
 
         if (uuid.isNull())
         {
@@ -189,7 +191,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         const flatbuffers::String* schemaUuid = schemaSample->group();
         if(schemaUuid)
         {
-            groupUuid = QString(schemaUuid->c_str());
+            groupUuid = QString::fromStdString(AddUuidFormatting(schemaUuid->c_str()));
             if (groupUuid.isNull())
             {
                 continue;
@@ -199,5 +201,26 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         trackModel->addSample(sample, groupUuid);
     }
     return trackModel;
+}
+
+static std::string AddUuidFormatting(const std::string &uuid)
+{
+    if (uuid.length() != 32)
+    {
+        return "";
+    }
+    std::stringstream ss;
+    ss << "{"
+       << uuid.substr(0, 8)
+       << "-"
+       << uuid.substr(8, 4)
+       << "-"
+       << uuid.substr(12,4)
+       << "-"
+       << uuid.substr(16,4)
+       << "-"
+       << uuid.substr(20,12)
+       << "}\n";
+    return ss.str();
 }
 
