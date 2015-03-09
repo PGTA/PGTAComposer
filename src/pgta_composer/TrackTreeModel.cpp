@@ -262,19 +262,22 @@ QStringList TrackTreeModel::mimeTypes() const
 
 QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indices) const
 {
-    if (!indices.isEmpty() && isGroup(indices.at(0)))
+    if (indices.isEmpty() || !indices.at(0).isValid() || isGroup(indices.at(0)))
     {
         return nullptr;
     }
-
+    QModelIndex currIdx = indices.at(0);
+    int numCols = columnCount();
+    int row = currIdx.row();
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
-    for (auto &index : indices)
+    for (int i = 0; i < numCols; ++i)
     {
-        if (index.isValid())
+        QModelIndex idx = index(row, i, currIdx.parent());
+        if (idx.isValid())
         {
-            QString text = data(index, Qt::DisplayRole).toString();
+            QString text = data(idx, Qt::DisplayRole).toString();
             stream << text;
         }
     }
