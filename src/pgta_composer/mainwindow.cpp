@@ -29,9 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    m_fileSystemModel= new QFileSystemModel();
-    m_fileSystemModel->setRootPath(QDir::currentPath());
-
+    m_fileSystemModel= new QFileSystemModel(this);
+    m_fileSystemModel->setRootPath("/Users/keeferdavies/dev/");
     m_trackTreeModel = new TrackTreeModel(this);
 
     ui->setupUi(this);
@@ -43,6 +42,21 @@ MainWindow::MainWindow(QWidget *parent) :
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
+
+    QModelIndex idx = m_fileSystemModel->index("/Users/keeferdavies/dev/tmp/Sample Project");
+    ui->FileSystemView->setRootIndex(idx);
+
+    // only show first column file system view
+    for (int i = 1; i < m_fileSystemModel->columnCount(); ++i)
+    {
+        ui->FileSystemView->hideColumn(i);
+    }
+
+    // only show first column track tree view
+    for (int i = 1; i < m_trackTreeModel->columnCount(); ++i)
+    {
+        ui->TrackTreeView->hideColumn(i);
+    }
 
     // setup data widget mapper
     m_dataWidgetMapper = new QDataWidgetMapper(this);
