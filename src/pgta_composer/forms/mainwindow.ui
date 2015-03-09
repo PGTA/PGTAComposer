@@ -1063,7 +1063,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Sample Properties</string>
+             <string>Properties</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1194,24 +1194,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
-         <item>
-          <widget class="QLabel" name="LabelGroup">
-           <property name="minimumSize">
-            <size>
-             <width>75</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Group:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="EditGroup"/>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout_9"/>
        </item>
       </layout>
      </item>

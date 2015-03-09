@@ -53,7 +53,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
     m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
-    m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
 
     // setup signals and slots
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -184,6 +183,35 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
 {
     m_dataWidgetMapper->setRootIndex(index.parent());
     m_dataWidgetMapper->setCurrentModelIndex(index);
+
+    if (m_trackTreeModel->isGroup(index))
+    {
+        // add these elements to own widget so the widget can be hidden instead
+        ui->LabelDefaultFile->hide();
+        ui->EditDefaultFile->hide();
+        ui->LabelStartTime->hide();
+        ui->EditStartTime->hide();
+        ui->LabelFrequency_2->hide();
+        ui->EditFrequency->hide();
+        ui->LabelProbability->hide();
+        ui->EditProbability->hide();
+        ui->LabelVolumeMultiplier->hide();
+        ui->EditVolumeMultiplier->hide();
+    }
+    else
+    {
+        ui->LabelDefaultFile->show();
+        ui->EditDefaultFile->show();
+        ui->LabelStartTime->show();
+        ui->EditStartTime->show();
+        ui->LabelFrequency_2->show();
+        ui->EditFrequency->show();
+        ui->LabelProbability->show();
+        ui->EditProbability->show();
+        ui->LabelVolumeMultiplier->show();
+        ui->EditVolumeMultiplier->show();
+    }
+
 }
 
 void MainWindow::insertGroup()
@@ -244,7 +272,6 @@ void MainWindow::clearSampleProperties()
     ui->EditFrequency->clear();
     ui->EditProbability->clear();
     ui->EditVolumeMultiplier->clear();
-    ui->EditGroup->clear();
 }
 
 void MainWindow::insertSample()
@@ -366,7 +393,6 @@ void MainWindow::on_actionOpen_triggered()
     m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
     m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
-    m_dataWidgetMapper->addMapping(ui->EditGroup, TrackTreeModel::SampleColumn_GroupUUID);
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
 }
