@@ -1,11 +1,12 @@
 
 #pragma once
 
+#include <string>
 #include <stddef.h>
 
 class TrackTreeModel;
 
 namespace FlatBufferTrackWriter
 {
-    TrackTreeModel* WriteTrack(const TrackTreeModel* trackModel, const char* dest);
+    bool WriteTrack(const TrackTreeModel* trackModel, const std::string dest, bool binary = false);
 }

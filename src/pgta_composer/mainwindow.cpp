@@ -22,6 +22,7 @@
 #include "tracktablemodel.h"
 #include "TrackTreeModel.h"
 #include "FlatbufferTrackLoader.h"
+#include "FlatbufferTrackWriter.h"
 #include "FileUtils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -278,7 +279,8 @@ void MainWindow::insertSample()
 
 void MainWindow::on_actionSave_triggered()
 {
-
+    qDebug("Saving File");
+    FlatBufferTrackWriter::WriteTrack(m_trackTreeModel,"/Users/keeferdavies/Desktop/testing.track");
 }
 
 void MainWindow::on_actionOpen_triggered()

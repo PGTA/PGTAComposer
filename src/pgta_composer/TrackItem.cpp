@@ -2,7 +2,7 @@
 #include <QUuid>
 #include "TrackItem.h"
 
-TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, QUuid uuid, bool isGroup) :
+TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, const QUuid &uuid, const bool isGroup) :
     m_uuid(uuid),
     m_isGroup(isGroup)
 {

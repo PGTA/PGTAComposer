@@ -11,7 +11,7 @@ class TrackItem
 
 public:
     explicit TrackItem(const QVector<QVariant> &data, TrackItem *parent = nullptr,
-                       QUuid uuid = QUuid(), bool isGroup = false);
+                       const QUuid &uuid = QUuid(), const bool isGroup = false);
     ~TrackItem();
 
 public:

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <string>
+#include <fstream>
 
 namespace FileUtils
 {
@@ -47,5 +48,19 @@ namespace FileUtils
     bool ReadBinaryFileToString(const std::string &filename, std::string &out)
     {
         return ReadBinaryFileToString(filename.c_str(), out);
+    }
+
+    bool WriteBinaryToFile(const std::string &filename, const uint8_t *buffer, off_t size)
+    {
+        std::ofstream outFile(filename, std::ofstream::binary);
+        outFile.write(reinterpret_cast<const char*>(buffer), size);
+        outFile.close();
+    }
+
+    bool WriteAsciiToFile(const std::string &filename, const std::string &buffer)
+    {
+        std::ofstream outFile(filename);
+        outFile << buffer;
+        outFile.close();
     }
 }

@@ -69,6 +69,8 @@ public:
     void setUuid(const QModelIndex &index, const QUuid &uuid) const;
     bool isGroup(const QModelIndex &index) const;
 
+    const TrackItem *getRoot() const;
+
 private:
     TrackItem *getItemSafe(const QModelIndex &index) const;
     TrackItem *getItemUnsafe(const QModelIndex &index);

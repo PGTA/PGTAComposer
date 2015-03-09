@@ -229,7 +229,7 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
     TrackItem *parentItem = getItemSafe(parent);
     bool retVal = true;
 
-    // determine if any children bing remove are group
+    // determine if any children being remove are group
     std::vector<QUuid> uuids;
     for (int i = 0; i < count; ++i)
     {
@@ -430,3 +430,7 @@ void TrackTreeModel::removeGroup(const QUuid &uuid)
     }
 }
 
+const TrackItem *TrackTreeModel::getRoot() const
+{
+    return m_rootItem;
+}
