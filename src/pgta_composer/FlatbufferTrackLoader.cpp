@@ -192,10 +192,6 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         if(schemaUuid)
         {
             groupUuid = QString::fromStdString(AddUuidFormatting(schemaUuid->c_str()));
-            if (groupUuid.isNull())
-            {
-                continue;
-            }
             sample[TrackTreeModel::SampleColumn_GroupUUID] = groupUuid;
         }
         trackModel->addSample(sample, groupUuid);
