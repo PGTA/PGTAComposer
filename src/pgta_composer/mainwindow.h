@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QModelIndex>
+#include <QTreeView>
 
 class TrackTreeModel;
 class QFileSystemModel;
@@ -40,6 +41,7 @@ private slots:
      void onCustomContextMenu(const QPoint &point);
      void toggleRightPanel();
      void toggleLeftPanel();
+     void viewFullModel();
     
 private:
     Ui::MainWindow *ui;
@@ -49,4 +51,5 @@ private:
     TrackTreeModel *m_trackTreeModel;
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
+    QTreeView *m_trackFullView;
 };

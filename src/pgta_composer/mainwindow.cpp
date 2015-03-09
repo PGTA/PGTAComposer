@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setup data widget mapper
     m_dataWidgetMapper = new QDataWidgetMapper(this);
+    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
     m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
@@ -95,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->toggleLeftPanelAction, SIGNAL(triggered()), this, SLOT(toggleLeftPanel()));
     connect ( ui->ToggleLeftPanel, SIGNAL(clicked()), this, SLOT(toggleLeftPanel()));
 
+    connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
     ui->TrackTreeView->setDropIndicatorShown(true);
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
@@ -115,7 +117,18 @@ MainWindow::~MainWindow()
     delete m_dataWidgetMapper;
     delete m_trackTreeModel;
     delete m_fileSystemModel;
+    delete m_trackFullView;
     delete ui;
+}
+
+void MainWindow::viewFullModel()
+{
+    if (!m_trackFullView)
+    {
+        m_trackFullView = new QTreeView();
+    }
+    m_trackFullView->setModel(m_trackTreeModel);
+    m_trackFullView->show();
 }
 
 void MainWindow::updateStatusBar(QString message, StatusBarState state)
@@ -225,7 +238,6 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
         ui->LabelVolumeMultiplier->show();
         ui->EditVolumeMultiplier->show();
     }
-
 }
 
 void MainWindow::insertGroup()
@@ -285,7 +297,7 @@ void MainWindow::clearSampleProperties()
     ui->EditStartTime->clear();
     ui->EditFrequency->clear();
     ui->EditProbability->clear();
-    ui->EditVolumeMultiplier->clear();
+    ui->EditVolumeMultiplier->setValue(0);
 }
 
 void MainWindow::insertSample()
@@ -401,6 +413,7 @@ void MainWindow::on_actionOpen_triggered()
 
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
+    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
     m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
     m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);

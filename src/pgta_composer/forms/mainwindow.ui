@@ -631,6 +631,8 @@
     </property>
     <addaction name="toggleRightPanelAction"/>
     <addaction name="toggleLeftPanelAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewFullModelAction"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1189,7 +1191,20 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="EditVolumeMultiplier"/>
+          <widget class="QSlider" name="EditVolumeMultiplier">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="minimum">
+            <number>-18</number>
+           </property>
+           <property name="maximum">
+            <number>96</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -1288,6 +1303,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="viewFullModelAction">
+   <property name="text">
+    <string>View Full Model</string>
    </property>
   </action>
  </widget>
