@@ -18,6 +18,7 @@
 #include <QUuid>
 #include <QtCore>
 #include <cmath>
+#include <thread>
 #include "enginetrack.h"
 #include "tracktablemodel.h"
 #include "TrackTreeModel.h"
@@ -27,7 +28,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_trackPlaybackControl(0)
 {
     m_fileSystemModel= new QFileSystemModel(this);
     m_fileSystemModel->setRootPath("/Users/keeferdavies/dev/");
@@ -98,6 +100,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
+    // playback controls
+    connect(ui->PlayButton, SIGNAL(clicked()), this, SLOT(playTrack()));
+    connect(ui->PauseButton, SIGNAL(clicked()), this, SLOT(pauseTrack()));
+    connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
+
+
     ui->TrackTreeView->setDropIndicatorShown(true);
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
@@ -119,6 +127,22 @@ MainWindow::~MainWindow()
     delete m_fileSystemModel;
     delete m_trackFullView;
     delete ui;
+}
+
+void MainWindow::playTrack()
+{
+    //std::thread(,m_trackPlaybackControl);
+    m_trackPlaybackControl = 0;
+}
+
+void MainWindow::pauseTrack()
+{
+    m_trackPlaybackControl = 1;
+}
+
+void MainWindow::stopTrack()
+{
+    m_trackPlaybackControl = 2;
 }
 
 void MainWindow::viewFullModel()

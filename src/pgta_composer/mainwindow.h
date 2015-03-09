@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QTreeView>
+#include <atomic>
 
 class TrackTreeModel;
 class QFileSystemModel;
@@ -42,6 +43,9 @@ private slots:
      void toggleRightPanel();
      void toggleLeftPanel();
      void viewFullModel();
+     void playTrack();
+     void pauseTrack();
+     void stopTrack();
     
 private:
     Ui::MainWindow *ui;
@@ -52,4 +56,5 @@ private:
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
     QTreeView *m_trackFullView;
+    std::atomic<int> m_trackPlaybackControl;
 };
