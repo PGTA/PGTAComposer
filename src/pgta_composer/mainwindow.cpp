@@ -332,6 +332,9 @@ void MainWindow::insertSample()
             case TrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
+            case TrackTreeModel::SampleColumn_VolumeMultiplier :
+                model->setData(child, QVariant(0), Qt::EditRole);
+                break;
             default:
                 model->setData(child, QVariant("[No data]"), Qt::EditRole);
                 break;

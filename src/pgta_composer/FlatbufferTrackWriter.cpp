@@ -2,6 +2,7 @@
 
 #include <QVariant>
 #include <QByteArray>
+#include <QUuid>
 #include <string>
 #include <schema/track_generated.h>
 #include <schema/track.fbs.h>
@@ -63,8 +64,13 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
             AddTrackItem(child, fbb, samples, groups);
             // Add Group (Gorup Builder)
             auto fbbName = fbb.CreateString(child->GetData(TrackTreeModel::GroupColumn_Name).toString().toStdString());
-            std::string  uuid = child->GetData(TrackTreeModel::GroupColumn_UUID).toString().toStdString();
-            RemoveUuidFormatting(uuid);
+            QUuid qUuid(child->GetData(TrackTreeModel::GroupColumn_UUID).toString());
+            std::string  uuid;
+            if (!qUuid.isNull())
+            {
+                uuid = qUuid.toString().toStdString();
+                RemoveUuidFormatting(uuid);
+            }
             auto fbbUuid = fbb.CreateString(uuid);
 
             PGTASchema::GroupBuilder groupBuilder(fbb);
@@ -80,9 +86,13 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
             auto fbbDefaultFile = fbb.CreateString(
                         child->GetData(TrackTreeModel::SampleColumn_DefaultFile).toString().toStdString());
             auto fbbName = fbb.CreateString(child->GetData(TrackTreeModel::SampleColumn_Name).toString().toStdString());
-
-            std::string  uuid = child->GetData(TrackTreeModel::SampleColumn_GroupUUID).toString().toStdString();
-            RemoveUuidFormatting(uuid);
+            QUuid qUuid(child->GetData(TrackTreeModel::SampleColumn_GroupUUID).toString());
+            std::string  uuid;
+            if (!qUuid.isNull())
+            {
+                uuid = qUuid.toString().toStdString();
+                RemoveUuidFormatting(uuid);
+            }
             auto fbbUuid = fbb.CreateString(uuid);
 
             PGTASchema::SampleBuilder sampleBuilder(fbb);

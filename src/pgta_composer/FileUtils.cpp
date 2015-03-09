@@ -53,14 +53,24 @@ namespace FileUtils
     bool WriteBinaryToFile(const std::string &filename, const uint8_t *buffer, off_t size)
     {
         std::ofstream outFile(filename, std::ofstream::binary);
+        if (!outFile)
+        {
+            return false;
+        }
         outFile.write(reinterpret_cast<const char*>(buffer), size);
         outFile.close();
+        return true;
     }
 
     bool WriteAsciiToFile(const std::string &filename, const std::string &buffer)
     {
         std::ofstream outFile(filename);
+        if (!outFile)
+        {
+            return false;
+        }
         outFile << buffer;
         outFile.close();
+        return true;
     }
 }

@@ -14,6 +14,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
 static std::string AddUuidFormatting(const std::string &uuid);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
+const static int UUID_NUM_BYTES = 32;
 
 TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t length, TrackTreeModel* trackModel)
 {
@@ -88,7 +89,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         group[TrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
 
         const flatbuffers::String* groupUuid = schemaGroup->uuid();
-        if (!groupUuid)
+        if (!groupUuid || groupUuid->Length() < UUID_NUM_BYTES)
         {
             continue;
         }
@@ -189,7 +190,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
 
         QUuid groupUuid;
         const flatbuffers::String* schemaUuid = schemaSample->group();
-        if(schemaUuid)
+        if(schemaUuid && schemaUuid->Length() == UUID_NUM_BYTES)
         {
             groupUuid = QString::fromStdString(AddUuidFormatting(schemaUuid->c_str()));
             sample[TrackTreeModel::SampleColumn_GroupUUID] = groupUuid;
