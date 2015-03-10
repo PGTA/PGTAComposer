@@ -51,6 +51,13 @@ unix {
     PRE_TARGETDEPS += $$PWD/../qmake/gmake/libPGTATestCommon_x64.a
 }
 
+linux {
+    LIBS += $$PWD/../qmake/gmake/libPGTALib.so
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/libPGTALib.so
+    LIBS += $$PWD/../qmake/gmake/libSDL2.so
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/libSDL2.so
+}
+
 macx {
     LIBS += $$PWD/../qmake/gmake/libPGTALib.dylib
     PRE_TARGETDEPS += $$PWD/../qmake/gmake/libPGTALib.dylib
