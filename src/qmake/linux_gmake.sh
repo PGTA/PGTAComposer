@@ -43,6 +43,6 @@ runCommand "cp -rf $PGTA_PREMAKE/gmake/libSDL2-2.0.so.0.4.0 $BUILD/"
 
 echo "--Building PGTA Composer Application--"
 
-runCommand '/home/keeferdavies/Qt/5.3/gcc_64/bin/qmake appsuite.pro'
+runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
 runCommand 'make'
