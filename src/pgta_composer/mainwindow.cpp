@@ -13,12 +13,15 @@
 #include <memory>
 
 //#include <QMediaPlayer>
+#include <PGTATestCommon.h>
 #include <QFileSystemModel>
 #include <QDataWidgetMapper>
 #include <QUuid>
 #include <QtCore>
+#include <atomic>
 #include <cmath>
 #include <thread>
+#include <functional>
 #include "enginetrack.h"
 #include "tracktablemodel.h"
 #include "TrackTreeModel.h"
@@ -131,8 +134,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::playTrack()
 {
-    //std::thread(,m_trackPlaybackControl);
+    m_trackPlaybackControl = 2;
+    //m_trackPlaybackThread.join();
     m_trackPlaybackControl = 0;
+    m_trackPlaybackThread = std::thread(&PGTATestCommon::PlayTrack, m_trackTreeModel->getFilePath().toStdString(),
+                std::ref(m_trackPlaybackControl));
 }
 
 void MainWindow::pauseTrack()

@@ -29,11 +29,14 @@ popd
 echo "--Creating Symbolic Links--"
 pushd $build
     test -L lib_FlatBuffers.a || runCommand "ln -s $pgta_premake/gmake/lib_FlatBuffers.a lib_FlatBuffers.a"
+    test -L libPGTATestCommon_x64.a || runCommand "ln -s $pgta_premake/gmake/libPGTATestCommon_x64.a libPGTATestCommon_x64.a"
 popd
 
 echo "--Copying PGTA Binaries--"
 
-# TODO : Copy library used to play/pause/stop PGTA track
+runCommand "cp -rf $pgta_premake/gmake/libPGTALib.dylib $build/"
+runCommand "cp -rf $pgta_premake/gmake/libSDL2.dylib $build/"
+runCommand "cp -rf $pgta_premake/gmake/libSDL2-2.0.0.dylib $build/"
 
 echo "--Building PGTA Composer Application--"
 runCommand 'qmake appsuite.pro'

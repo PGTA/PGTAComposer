@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QTreeView>
+#include <thread>
 #include <atomic>
 
 class TrackTreeModel;
@@ -56,5 +57,6 @@ private:
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
     QTreeView *m_trackFullView;
+    std::thread m_trackPlaybackThread;
     std::atomic<int> m_trackPlaybackControl;
 };

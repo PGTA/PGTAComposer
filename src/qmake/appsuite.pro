@@ -10,3 +10,4 @@
 
 TEMPLATE = subdirs
 SUBDIRS = $$PWD/../pgta_composer
+

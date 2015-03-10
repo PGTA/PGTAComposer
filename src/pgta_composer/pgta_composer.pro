@@ -14,7 +14,7 @@ QT +=       core \
             gui \
             widgets
 
-TARGET =    "PGTA\ Composer"
+TARGET =    "PGTAComposer"
 DESTDIR = 	$$PWD/../../bin/
 
 FORMS +=    forms/mainwindow.ui
@@ -33,8 +33,11 @@ SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackWriter.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
-INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/
 DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
+INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/
+INCLUDEPATH += $$PWD/../external/PGTA/src/tests/PGTATestCommon/
+DEPENDPATH += $$PWD/../external/PGTA/src/tests/PGTATestCommon/
+
 
 win32 {
     LIBS += $$PWD/../qmake/vs2013/_FlatBuffers.lib
@@ -44,6 +47,15 @@ win32 {
 unix {
     LIBS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
     PRE_TARGETDEPS += $$PWD/../qmake/gmake/lib_FlatBuffers.a
+    LIBS += $$PWD/../qmake/gmake/libPGTATestCommon_x64.a
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/libPGTATestCommon_x64.a
+}
+
+macx {
+    LIBS += $$PWD/../qmake/gmake/libPGTALib.dylib
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/libPGTALib.dylib
+    LIBS += $$PWD/../qmake/gmake/libSDL2.dylib
+    PRE_TARGETDEPS += $$PWD/../qmake/gmake/libSDL2.dylib
 }
 
 RESOURCES += \
