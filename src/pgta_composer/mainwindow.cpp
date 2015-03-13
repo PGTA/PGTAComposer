@@ -22,8 +22,6 @@
 #include <cmath>
 #include <thread>
 #include <functional>
-#include "enginetrack.h"
-#include "tracktablemodel.h"
 #include "TrackTreeModel.h"
 #include "FlatbufferTrackLoader.h"
 #include "FlatbufferTrackWriter.h"
