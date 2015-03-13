@@ -39,8 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     // remove title bar from all dock widgets
     ui->TopPanel->setTitleBarWidget(new QWidget());
-    ui->LeftPanel->setTitleBarWidget(new QWidget());
-    ui->RightPanel->setTitleBarWidget(new QWidget());
+    //ui->LeftPanel->setTitleBarWidget(new QWidget());
+    //ui->RightPanel->setTitleBarWidget(new QWidget());
+
+    int dockableHeight = (this->rect().height() - ui->TopPanel->size().height() - ui->statusBar->size().height())/ 2;
+
+    ui->RightPanel->setMinimumHeight(dockableHeight);
+    ui->LeftPanel->setMinimumHeight(dockableHeight);
+
 
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);

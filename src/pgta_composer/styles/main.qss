@@ -48,3 +48,14 @@ QToolButton:hover{
      border-radius: 3px;
  }
 
+QDockWidget {
+   color: white;
+}
+
+ QDockWidget::title {
+     text-align: center;
+     background: #1C1C1C;
+     color: #FFFFFF;
+     padding-left: 5px;
+ }
+
