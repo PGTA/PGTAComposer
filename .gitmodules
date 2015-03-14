@@ -1,3 +1,9 @@
 [submodule "src/external/PGTA"]
 	path = src/external/PGTA
 	url = git@github.com:kt2davie/PGTA.git
+[submodule "src/external/qanava-mirror"]
+	path = src/external/qanava-mirror
+	url = https://github.com/kt2davie/qanava-mirror.git
+[submodule "src/external/qt-solutions-mirror"]
+	path = src/external/qt-solutions-mirror
+	url = https://github.com/kt2davie/qt-solutions-mirror.git
