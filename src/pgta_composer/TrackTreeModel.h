@@ -27,9 +27,10 @@ public:
         SampleColumn_Name = 0,
         SampleColumn_DefaultFile,
         SampleColumn_StartTime,
-        SampleColumn_Frequency,
+        SampleColumn_Period,
+        SampleColumn_PeriodDeviation,
         SampleColumn_Probability,
-        SampleColumn_VolumeMultiplier,
+        SampleColumn_Volume,
         SampleColumn_GroupUUID,
         SampleColumn_Size
     };

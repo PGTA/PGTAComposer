@@ -167,12 +167,15 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
-        const qint64 sampleFrequency = schemaSample->frequency();
-        if (sampleFrequency < 0)
+        const float samplePeriod = schemaSample->period();
+        if (samplePeriod < 0)
         {
             continue;
         }
-        sample[TrackTreeModel::SampleColumn_Frequency] = sampleFrequency;
+        sample[TrackTreeModel::SampleColumn_Period] = samplePeriod;
+
+        const float samplePeriodDeviation = schemaSample->periodDeviation();
+        sample[TrackTreeModel::SampleColumn_PeriodDeviation] = samplePeriodDeviation;
 
         const float sampleProbability = schemaSample->probability();
         if (sampleProbability < 0.0f)
@@ -181,12 +184,12 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
-        const float sampleVolumeMultiplier = schemaSample->volumeMultiplier();
-        if(sampleVolumeMultiplier < 0.0f)
+        const float sampleVolume = schemaSample->volume();
+        if(sampleVolume < 0.0f)
         {
             continue;
         }
-        sample[TrackTreeModel::SampleColumn_VolumeMultiplier] = schemaSample->volumeMultiplier();
+        sample[TrackTreeModel::SampleColumn_Volume] = sampleVolume;
 
         QUuid groupUuid;
         const flatbuffers::String* schemaUuid = schemaSample->group();

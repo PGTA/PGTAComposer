@@ -79,9 +79,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
     m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
     m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
+    m_dataWidgetMapper->addMapping(ui->EditPeriod, TrackTreeModel::SampleColumn_Period);
+    m_dataWidgetMapper->addMapping(ui->EditDeviation, TrackTreeModel::SampleColumn_PeriodDeviation);
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
+    m_dataWidgetMapper->addMapping(ui->EditVolume, TrackTreeModel::SampleColumn_Volume);
 
     // setup signals and slots
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -277,12 +278,14 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
         ui->EditDefaultFile->hide();
         ui->LabelStartTime->hide();
         ui->EditStartTime->hide();
-        ui->LabelFrequency_2->hide();
-        ui->EditFrequency->hide();
+        ui->LabelPeriod->hide();
+        ui->EditPeriod->hide();
+        ui->LabelDeviation->hide();
+        ui->EditDeviation->hide();
         ui->LabelProbability->hide();
         ui->EditProbability->hide();
-        ui->LabelVolumeMultiplier->hide();
-        ui->EditVolumeMultiplier->hide();
+        ui->LabelVolume->hide();
+        ui->EditVolume->hide();
     }
     else
     {
@@ -290,12 +293,14 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
         ui->EditDefaultFile->show();
         ui->LabelStartTime->show();
         ui->EditStartTime->show();
-        ui->LabelFrequency_2->show();
-        ui->EditFrequency->show();
+        ui->LabelPeriod->show();
+        ui->EditPeriod->show();
+        ui->LabelDeviation->show();
+        ui->EditDeviation->show();
         ui->LabelProbability->show();
         ui->EditProbability->show();
-        ui->LabelVolumeMultiplier->show();
-        ui->EditVolumeMultiplier->show();
+        ui->LabelVolume->show();
+        ui->EditVolume->show();
     }
 }
 
@@ -354,9 +359,10 @@ void MainWindow::clearSampleProperties()
     ui->EditName->clear();
     ui->EditDefaultFile->clear();
     ui->EditStartTime->clear();
-    ui->EditFrequency->clear();
+    ui->EditPeriod->clear();
+    ui->EditDeviation->clear();
     ui->EditProbability->clear();
-    ui->EditVolumeMultiplier->setValue(0);
+    ui->EditVolume->setValue(0);
 }
 
 void MainWindow::insertSample()
@@ -391,7 +397,7 @@ void MainWindow::insertSample()
             case TrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
-            case TrackTreeModel::SampleColumn_VolumeMultiplier :
+            case TrackTreeModel::SampleColumn_Volume :
                 model->setData(child, QVariant(0), Qt::EditRole);
                 break;
             default:
@@ -475,13 +481,13 @@ void MainWindow::on_actionOpen_triggered()
 
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
     m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
     m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
     m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditFrequency, TrackTreeModel::SampleColumn_Frequency);
+    m_dataWidgetMapper->addMapping(ui->EditPeriod, TrackTreeModel::SampleColumn_Period);
+    m_dataWidgetMapper->addMapping(ui->EditDeviation, TrackTreeModel::SampleColumn_PeriodDeviation);
     m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolumeMultiplier, TrackTreeModel::SampleColumn_VolumeMultiplier);
+    m_dataWidgetMapper->addMapping(ui->EditVolume, TrackTreeModel::SampleColumn_Volume);
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
 }

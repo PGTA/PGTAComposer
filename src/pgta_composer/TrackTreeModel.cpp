@@ -9,8 +9,8 @@ TrackTreeModel::TrackTreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
     QVector<QVariant> rootData;
-    rootData << "Sample Name" << "Default File" << "Start Time" << "Frequency" << "Probability"
-             << "Volume Multiplier" << "UUID";
+    rootData << "Sample Name" << "Default File" << "Start Time" << "Period" << "Period Deviation" << "Probability"
+             << "Volume" << "UUID";
     m_rootItem.reset(new TrackItem(rootData, nullptr,  QUuid(), true));
 }
 
