@@ -30,6 +30,11 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    m_trackTreeModel(nullptr),
+    m_fileSystemModel(nullptr),
+    m_dataWidgetMapper(nullptr),
+    m_trackFullView(nullptr),
+    m_trackPlaybackThread(),
     m_trackPlaybackControl(0)
 {
     m_fileSystemModel= new QFileSystemModel(this);
