@@ -185,7 +185,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
         const float sampleVolume = schemaSample->volume();
-        if(sampleVolume < 0.0f)
+        if(sampleVolume < -95.0f || sampleVolume > 6.0f)
         {
             continue;
         }

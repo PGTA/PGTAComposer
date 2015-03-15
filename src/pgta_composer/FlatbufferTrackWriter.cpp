@@ -99,7 +99,7 @@ static void AddTrackItem(const TrackItem *root, Builder &fbb, SchemaSamples &sam
             // cannot call fbb.CreateString or fbb.CreateBuffer in this block
             sampleBuilder.add_defaultFile(fbbDefaultFile);
             sampleBuilder.add_name(fbbName);
-            sampleBuilder.add_startTime(child->GetData(TrackTreeModel::SampleColumn_StartTime).toLongLong());
+            sampleBuilder.add_startTime(child->GetData(TrackTreeModel::SampleColumn_StartTime).toFloat());
             sampleBuilder.add_period(child->GetData(TrackTreeModel::SampleColumn_Period).toFloat());
             sampleBuilder.add_periodDeviation(child->GetData(TrackTreeModel::SampleColumn_PeriodDeviation).toFloat());
             sampleBuilder.add_probability(child->GetData(TrackTreeModel::SampleColumn_Probability).toFloat());
