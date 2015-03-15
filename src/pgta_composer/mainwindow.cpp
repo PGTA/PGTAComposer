@@ -16,6 +16,7 @@
 #include <PGTATestCommon.h>
 #include <QFileSystemModel>
 #include <QDataWidgetMapper>
+#include <QMessageBox>
 #include <QUuid>
 #include <QtCore>
 #include <atomic>
@@ -158,7 +159,6 @@ static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlayback
     }
 }
 
-
 void MainWindow::playTrack()
 {
     m_trackPlaybackControl = 2;
@@ -167,6 +167,27 @@ void MainWindow::playTrack()
         m_trackPlaybackThread.join();
     }
     m_trackPlaybackControl = 0;
+    if (m_trackTreeModel->getIsDirty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The track has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setIconPixmap(QPixmap(":/icons/icon.icns"));
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret) {
+          case QMessageBox::Save:
+              on_actionSave_triggered();
+              break;
+          case QMessageBox::Cancel:
+              return;
+              break;
+          default:
+              // should never be reached
+              break;
+        }
+    }
     m_trackPlaybackThread = std::thread(PGTAPlayTrack, m_trackTreeModel->getFilePath().toStdString(),
                 std::ref(m_trackPlaybackControl));
 }
@@ -433,6 +454,7 @@ void MainWindow::on_actionSave_triggered()
     if (FlatBufferTrackWriter::WriteTrack(m_trackTreeModel, filePath))
     {
         m_trackTreeModel->setFilePath(QString::fromStdString(filePath));
+        m_trackTreeModel->setIsDirty(false);
         updateStatusBar("Track file saved successfully.", StatusBarState_OK);
     }
 }

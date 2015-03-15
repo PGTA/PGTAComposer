@@ -6,7 +6,8 @@
 #include "TrackItem.h"
 
 TrackTreeModel::TrackTreeModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent),
+      m_isDirty(false)
 {
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Period" << "Period Deviation" << "Probability"
@@ -192,6 +193,7 @@ bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
     if (retVal)
     {
         emit dataChanged(index, index);
+        m_isDirty = true;
     }
     return retVal;
 }
@@ -444,5 +446,15 @@ void TrackTreeModel::setFilePath(const QString &filePath)
 QString TrackTreeModel::getFilePath() const
 {
     return m_filePath;
+}
+
+bool TrackTreeModel::getIsDirty() const
+{
+    return m_isDirty;
+}
+
+void TrackTreeModel::setIsDirty(bool isDirty)
+{
+    m_isDirty = isDirty;
 }
 

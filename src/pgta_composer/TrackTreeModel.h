@@ -81,6 +81,8 @@ public:
     QString getFilePath() const;
 
     const TrackItem *getRoot() const;
+    bool getIsDirty() const;
+    void setIsDirty(bool isDirty);
 
 private:
     TrackItem *getItemSafe(const QModelIndex &index) const;
@@ -92,5 +94,5 @@ private:
     QMap<QUuid, TrackItem*> m_groups;
     QString m_filePath;
     std::unique_ptr<TrackItem> m_rootItem;
-
+    bool m_isDirty;
 };
