@@ -1,6 +1,7 @@
 
 #include <QVariant>
 #include <QByteArray>
+#include <QString>
 #include <sstream>
 #include <schema/track_generated.h>
 #include <schema/track.fbs.h>
@@ -12,6 +13,7 @@ static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, 
 static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel);
 static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
 static std::string AddUuidFormatting(const std::string &uuid);
+static std::string GetFileNameFromPath(const std::string &filePath);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
 const static int UUID_NUM_BYTES = 32;
@@ -52,7 +54,7 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackMode
     if (!parser.Parse(PGTASchemaHeader::TRACK_FBS) || !parser.Parse(src))
     {
         qDebug("Lodaing Ascii track parse error.");
-        qDebug("%s", parser.error_.c_str());
+        qCritical("%s", parser.error_.c_str());
         return nullptr;
     }
     const PGTASchema::Track* trackSchema = PGTASchema::GetTrack(parser.builder_.GetBufferPointer());
@@ -75,29 +77,31 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     const GroupList* schemaGroups = trackSchema->groups();
     for (const PGTASchema::Group* schemaGroup : *schemaGroups)
     {
-        QVector<QVariant> group(TrackTreeModel::SampleColumn_Size);
         if (!schemaGroup)
         {
+            qWarning("Problem reading group.");
             continue;
         }
+        QVector<QVariant> group(TrackTreeModel::SampleColumn_Size);
 
         const flatbuffers::String* groupName = schemaGroup->name();
         if (!groupName || groupName->size() == 0)
         {
-            continue;
+           qWarning("Group name not specified.");
         }
         group[TrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
 
         const flatbuffers::String* groupUuid = schemaGroup->uuid();
         if (!groupUuid || groupUuid->Length() < UUID_NUM_BYTES)
         {
+            qWarning("Group UUID not specified, skipping group.");
             continue;
         }
 
         QUuid uuid = QString::fromStdString(AddUuidFormatting(groupUuid->c_str()));
-
         if (uuid.isNull())
         {
+            qWarning("Could not parse group UUID.");
             continue;
         }
         group[TrackTreeModel::GroupColumn_UUID] = uuid;
@@ -140,54 +144,76 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
     const SampleList* schemaSamples = trackSchema->samples();
     for (const PGTASchema::Sample* schemaSample : *schemaSamples)
     {
-        QVector<QVariant> sample(TrackTreeModel::SampleColumn_Size);
         if (!schemaSample)
         {
+            qWarning("Problem reading sample.");
             continue;
         }
-
-        const flatbuffers::String* sampleName = schemaSample->name();
-        if (!sampleName || sampleName->size() == 0)
-        {
-            continue;
-        }
-        sample[TrackTreeModel::SampleColumn_Name] = QString(sampleName->c_str());
+        QVector<QVariant> sample(TrackTreeModel::SampleColumn_Size);
 
         const flatbuffers::String* sampleDefaultFile = schemaSample->defaultFile();
         if (!sampleDefaultFile || sampleDefaultFile->size() == 0)
         {
-            continue;
+            qWarning("Sample default file not specified.");
         }
-        sample[TrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
-
-        const qint64 sampleStartTime = schemaSample->startTime();
-        if (sampleStartTime < 0)
+        else
         {
-            continue;
+            sample[TrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
+        }
+
+        std::string sampleName;
+        const flatbuffers::String* schemaSampleName = schemaSample->name();
+        if (!schemaSampleName || schemaSampleName->size() == 0)
+        {
+            qWarning("Sample name not specified, setting name based on default file path.");
+            if (sampleDefaultFile->size() > 0)
+            {
+                sampleName = GetFileNameFromPath(sampleDefaultFile->c_str());
+            }
+        }
+        else
+        {
+            sampleName = schemaSampleName->c_str();
+        }
+        sample[TrackTreeModel::SampleColumn_Name] = QString(sampleName.c_str());
+
+        float sampleStartTime = schemaSample->startTime();
+        if (sampleStartTime < 0.0f)
+        {
+            qWarning("Sample start time not valid (%f), setting to default value.", sampleStartTime);
+            sampleStartTime = 0;
         }
         sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
-        const float samplePeriod = schemaSample->period();
-        if (samplePeriod < 0)
+        float samplePeriod = schemaSample->period();
+        if (samplePeriod < 0.0f)
         {
-            continue;
+            qWarning("Sample period not valid (%f), setting to default value.", samplePeriod);
+            samplePeriod = 0.0f;
         }
         sample[TrackTreeModel::SampleColumn_Period] = samplePeriod;
 
-        const float samplePeriodDeviation = schemaSample->periodDeviation();
+        float samplePeriodDeviation = schemaSample->periodDeviation();
+        if (qAbs(samplePeriodDeviation) > samplePeriod/2)
+        {
+            qWarning("Sample period deviation not valid (%f), setting to default value.", samplePeriodDeviation);
+            samplePeriodDeviation = (samplePeriodDeviation < 0) ? -1.0f * samplePeriod/2 : samplePeriod/2;
+        }
         sample[TrackTreeModel::SampleColumn_PeriodDeviation] = samplePeriodDeviation;
 
-        const float sampleProbability = schemaSample->probability();
-        if (sampleProbability < 0.0f)
+        float sampleProbability = schemaSample->probability();
+        if (sampleProbability < 0.0f || sampleProbability > 1.0f)
         {
-            continue;
+            qWarning("Sample probability not valid (%f), setting to default value.", sampleProbability);
+            sampleProbability = (sampleProbability > 1.0f) ? 1.0f : 0.0f;
         }
         sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
-        const float sampleVolume = schemaSample->volume();
+        float sampleVolume = schemaSample->volume();
         if(sampleVolume < -95.0f || sampleVolume > 6.0f)
         {
-            continue;
+            qWarning("Sample volume not valid (%f), setting to default value.", sampleVolume);
+            sampleVolume = (sampleVolume > 6.0f) ? 6.0f : -95.0f;
         }
         sample[TrackTreeModel::SampleColumn_Volume] = sampleVolume;
 
@@ -222,5 +248,17 @@ static std::string AddUuidFormatting(const std::string &uuid)
        << uuid.substr(20,12)
        << "}\n";
     return ss.str();
+}
+
+static std::string GetFileNameFromPath(const std::string &filePath)
+{
+   const std::size_t slashIndex = filePath.find_last_of("\\/");
+   const std::size_t periodIndex = filePath.find_last_of(".");
+   std::size_t length = 0;
+   if (periodIndex > slashIndex)
+   {
+       length = periodIndex - slashIndex - 1;
+   }
+   return filePath.substr(slashIndex+1, length);
 }
 
