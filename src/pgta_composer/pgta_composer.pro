@@ -17,20 +17,27 @@ QT +=       core \
 TARGET =    "PGTAComposer"
 DESTDIR = 	$$PWD/../../bin/
 
-FORMS +=    forms/mainwindow.ui
+FORMS +=    forms/mainwindow.ui \
+    forms/properties.ui
 HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackLoader.h \
             ./mainwindow.h \
             ./TrackItem.h \
             ./TrackTreeModel.h \
-            ./FlatbufferTrackWriter.h
+            ./FlatbufferTrackWriter.h \
+            ./PGTAProject.h \
+            ./PGTALibraryModel.h \
+            ./PGTALibraryItem.h
 SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \
             ./mainwindow.cpp \
             ./TrackItem.cpp \
             ./TrackTreeModel.cpp \
-            ./FlatbufferTrackWriter.cpp
+            ./FlatbufferTrackWriter.cpp \
+            ./PGTAProject.cpp \
+            ./PGTALibraryModel.cpp \
+            ./PGTALibraryItem.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
