@@ -41,7 +41,7 @@ SOURCES +=  ./FileUtils.cpp \
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
-INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/public/
+INCLUDEPATH += $$PWD/../external/PGTA/src/PGTA/include/
 INCLUDEPATH += $$PWD/../external/PGTA/src/tests/PGTATestCommon/
 DEPENDPATH += $$PWD/../external/PGTA/src/tests/PGTATestCommon/
 

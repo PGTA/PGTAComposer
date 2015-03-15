@@ -3,8 +3,8 @@
 #include <QByteArray>
 #include <QString>
 #include <sstream>
-#include <schema/track_generated.h>
-#include <schema/track.fbs.h>
+#include <PGTA/schema/track_generated.h>
+#include <PGTA/schema/track.fbs.h>
 #include <flatbuffers/idl.h>
 #include "FlatbufferTrackLoader.h"
 #include "TrackTreeModel.h"

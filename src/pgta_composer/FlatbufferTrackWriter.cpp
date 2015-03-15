@@ -4,8 +4,8 @@
 #include <QByteArray>
 #include <QUuid>
 #include <string>
-#include <schema/track_generated.h>
-#include <schema/track.fbs.h>
+#include <PGTA/schema/track_generated.h>
+#include <PGTA/schema/track.fbs.h>
 #include "flatbuffers/flatbuffers.h"
 #include <flatbuffers/idl.h>
 #include "FlatbufferTrackWriter.h"
