@@ -17,8 +17,7 @@ QT +=       core \
 TARGET =    "PGTAComposer"
 DESTDIR = 	$$PWD/../../bin/
 
-FORMS +=    forms/mainwindow.ui \
-    forms/properties.ui
+FORMS +=    forms/mainwindow.ui 
 HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackLoader.h \
             ./mainwindow.h \
