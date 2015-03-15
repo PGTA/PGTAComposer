@@ -7,7 +7,7 @@
 #include <thread>
 #include <atomic>
 
-class TrackTreeModel;
+class PGTATrackTreeModel;
 class QFileSystemModel;
 class QDataWidgetMapper;
 
@@ -53,7 +53,7 @@ private:
     void updateStatusBar(QString message, StatusBarState state);
 
 private:
-    TrackTreeModel *m_trackTreeModel;
+    PGTATrackTreeModel *m_trackTreeModel;
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
     QTreeView *m_trackFullView;

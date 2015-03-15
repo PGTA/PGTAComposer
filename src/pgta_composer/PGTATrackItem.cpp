@@ -1,8 +1,8 @@
 
 #include <QUuid>
-#include "TrackItem.h"
+#include "PGTATrackItem.h"
 
-TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, const QUuid &uuid, const bool isGroup) :
+PGTATrackItem::PGTATrackItem(const QVector<QVariant> &data, PGTATrackItem *parent, const QUuid &uuid, const bool isGroup) :
     m_itemData(data),
     m_uuid(uuid),
     m_parent(parent),
@@ -10,17 +10,17 @@ TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, const QUu
 {
 }
 
-TrackItem::~TrackItem()
+PGTATrackItem::~PGTATrackItem()
 {
     qDeleteAll(m_childItems);
 }
 
-void TrackItem::AddChild(TrackItem *item)
+void PGTATrackItem::AddChild(PGTATrackItem *item)
 {
     m_childItems.append(item);
 }
 
-bool TrackItem::InsertChildren(int position, int count, int columns)
+bool PGTATrackItem::InsertChildren(int position, int count, int columns)
 {
     if (!m_isGroup || position < 0 || position > m_childItems.size())
     {
@@ -30,13 +30,13 @@ bool TrackItem::InsertChildren(int position, int count, int columns)
     for (int i = 0; i < count; ++i)
     {
         QVector<QVariant> data(columns);
-        TrackItem *item = new TrackItem(data, this, m_uuid);
+        PGTATrackItem *item = new PGTATrackItem(data, this, m_uuid);
         m_childItems.insert(position, item);
     }
     return true;
 }
 
-bool TrackItem::RemoveChildren(int position, int count)
+bool PGTATrackItem::RemoveChildren(int position, int count)
 {
     if (position < 0 || position + count > m_childItems.size())
     {
@@ -50,27 +50,27 @@ bool TrackItem::RemoveChildren(int position, int count)
     return true;
 }
 
-TrackItem *TrackItem::GetChild(int row) const
+PGTATrackItem *PGTATrackItem::GetChild(int row) const
 {
     return m_childItems.value(row);
 }
 
-int TrackItem::ChildCount() const
+int PGTATrackItem::ChildCount() const
 {
     return m_childItems.count();
 }
 
-int TrackItem::ColumnCount() const
+int PGTATrackItem::ColumnCount() const
 {
     return m_itemData.count();
 }
 
-QVariant TrackItem::GetData(int column) const
+QVariant PGTATrackItem::GetData(int column) const
 {
     return m_itemData.value(column);
 }
 
-bool TrackItem::SetData(int column, const QVariant &value)
+bool PGTATrackItem::SetData(int column, const QVariant &value)
 {
     if (column < 0 || column >= m_itemData.size())
     {
@@ -80,16 +80,16 @@ bool TrackItem::SetData(int column, const QVariant &value)
     return true;
 }
 
-int TrackItem::GetRow() const
+int PGTATrackItem::GetRow() const
 {
     if (m_parent != nullptr)
     {
-        return m_parent->GetChildRow(const_cast<TrackItem*>(this));
+        return m_parent->GetChildRow(const_cast<PGTATrackItem*>(this));
     }
     return -1;
 }
 
-int TrackItem::GetChildRow(TrackItem *child) const
+int PGTATrackItem::GetChildRow(PGTATrackItem *child) const
 {
     if (child != nullptr)
     {
@@ -98,23 +98,23 @@ int TrackItem::GetChildRow(TrackItem *child) const
     return -1;
 }
 
-TrackItem *TrackItem::GetParent() const
+PGTATrackItem *PGTATrackItem::GetParent() const
 {
     return m_parent;
 }
 
-bool TrackItem::IsGroup() const
+bool PGTATrackItem::IsGroup() const
 {
     return m_isGroup;
 }
 
-void TrackItem::SetIsGroup(bool isGroup)
+void PGTATrackItem::SetIsGroup(bool isGroup)
 {
     m_uuid = QUuid::createUuid();
     m_isGroup = isGroup;
 }
 
-QUuid TrackItem::GetUuid() const
+QUuid PGTATrackItem::GetUuid() const
 {
     return m_uuid;
 }

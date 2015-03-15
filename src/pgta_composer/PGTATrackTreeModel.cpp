@@ -2,28 +2,28 @@
 #include <QMimeData>
 #include <QIcon>
 #include <QVariant>
-#include "TrackTreeModel.h"
-#include "TrackItem.h"
+#include "PGTATrackTreeModel.h"
+#include "PGTATrackItem.h"
 
-TrackTreeModel::TrackTreeModel(QObject *parent)
+PGTATrackTreeModel::PGTATrackTreeModel(QObject *parent)
     : QAbstractItemModel(parent),
       m_isDirty(false)
 {
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Period" << "Period Deviation" << "Probability"
              << "Volume" << "UUID";
-    m_rootItem.reset(new TrackItem(rootData, nullptr,  QUuid(), true));
+    m_rootItem.reset(new PGTATrackItem(rootData, nullptr,  QUuid(), true));
 }
 
-TrackTreeModel::~TrackTreeModel()
+PGTATrackTreeModel::~PGTATrackTreeModel()
 {
 }
 
-TrackItem *TrackTreeModel::getItemSafe(const QModelIndex &index) const
+PGTATrackItem *PGTATrackTreeModel::getItemSafe(const QModelIndex &index) const
 {
     if (index.isValid())
     {
-        TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
+        PGTATrackItem *item = static_cast<PGTATrackItem*>(index.internalPointer());
         if (item)
         {
             return item;
@@ -32,11 +32,11 @@ TrackItem *TrackTreeModel::getItemSafe(const QModelIndex &index) const
     return m_rootItem.get();
 }
 
-TrackItem *TrackTreeModel::getItemUnsafe(const QModelIndex &index)
+PGTATrackItem *PGTATrackTreeModel::getItemUnsafe(const QModelIndex &index)
 {
     if (index.isValid())
     {
-        TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
+        PGTATrackItem *item = static_cast<PGTATrackItem*>(index.internalPointer());
         if (item)
         {
             return item;
@@ -45,7 +45,7 @@ TrackItem *TrackTreeModel::getItemUnsafe(const QModelIndex &index)
     return m_rootItem.get();
 }
 
-QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
+QVariant PGTATrackTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
     {
@@ -70,11 +70,11 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-    TrackItem *item = static_cast<TrackItem*>(index.internalPointer());
+    PGTATrackItem *item = static_cast<PGTATrackItem*>(index.internalPointer());
     return item->GetData(index.column());
 }
 
-Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags PGTATrackTreeModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = QAbstractItemModel::flags(index) | Qt::ItemIsEditable |
             Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -89,12 +89,12 @@ Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-Qt::DropActions TrackTreeModel::supportedDropActions () const
+Qt::DropActions PGTATrackTreeModel::supportedDropActions () const
 {
     return Qt::MoveAction | Qt::CopyAction;
 }
 
-QVariant TrackTreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant PGTATrackTreeModel::headerData(int section, Qt::Orientation orientation,
                        int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -104,7 +104,7 @@ QVariant TrackTreeModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-QModelIndex TrackTreeModel::index(int row, int column,
+QModelIndex PGTATrackTreeModel::index(int row, int column,
                      const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent))
@@ -112,17 +112,17 @@ QModelIndex TrackTreeModel::index(int row, int column,
         return QModelIndex();
     }
 
-    TrackItem *parentItem;
+    PGTATrackItem *parentItem;
     if (!parent.isValid())
     {
         parentItem = m_rootItem.get();
     }
     else
     {
-        parentItem = static_cast<TrackItem*>(parent.internalPointer());
+        parentItem = static_cast<PGTATrackItem*>(parent.internalPointer());
     }
 
-    TrackItem *childItem = parentItem->GetChild(row);
+    PGTATrackItem *childItem = parentItem->GetChild(row);
     if (childItem)
     {
         return createIndex(row, column, childItem);
@@ -133,15 +133,15 @@ QModelIndex TrackTreeModel::index(int row, int column,
     }
 }
 
-QModelIndex TrackTreeModel::parent(const QModelIndex &index) const
+QModelIndex PGTATrackTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
     {
         return QModelIndex();
     }
 
-    TrackItem *childItem = static_cast<TrackItem*>(index.internalPointer());
-    TrackItem *parentItem = childItem->GetParent();
+    PGTATrackItem *childItem = static_cast<PGTATrackItem*>(index.internalPointer());
+    PGTATrackItem *parentItem = childItem->GetParent();
     if (parentItem == m_rootItem.get())
     {
         return QModelIndex();
@@ -149,9 +149,9 @@ QModelIndex TrackTreeModel::parent(const QModelIndex &index) const
     return createIndex(parentItem->GetRow(), 0, parentItem);
 }
 
-int TrackTreeModel::rowCount(const QModelIndex &parent) const
+int PGTATrackTreeModel::rowCount(const QModelIndex &parent) const
 {
-    TrackItem *parentItem;
+    PGTATrackItem *parentItem;
     if (parent.column() > 0)
     {
         return 0;
@@ -163,16 +163,16 @@ int TrackTreeModel::rowCount(const QModelIndex &parent) const
     }
     else
     {
-        parentItem = static_cast<TrackItem*>(parent.internalPointer());
+        parentItem = static_cast<PGTATrackItem*>(parent.internalPointer());
     }
     return parentItem->ChildCount();
 }
 
-int TrackTreeModel::columnCount(const QModelIndex &parent) const
+int PGTATrackTreeModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
     {
-        return static_cast<TrackItem*>(parent.internalPointer())->ColumnCount();
+        return static_cast<PGTATrackItem*>(parent.internalPointer())->ColumnCount();
     }
     else
     {
@@ -180,7 +180,7 @@ int TrackTreeModel::columnCount(const QModelIndex &parent) const
     }
 }
 
-bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
+bool PGTATrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
              int role)
 {
     if (role != Qt::EditRole)
@@ -188,7 +188,7 @@ bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
         return false;
     }
 
-    TrackItem *item = getItemSafe(index);
+    PGTATrackItem *item = getItemSafe(index);
     bool retVal = item->SetData(index.column(), value);
     if (retVal)
     {
@@ -198,7 +198,7 @@ bool TrackTreeModel::setData(const QModelIndex &index, const QVariant &value,
     return retVal;
 }
 
-bool TrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
+bool PGTATrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
                    const QVariant &value, int role)
 {
     if (role != Qt::EditRole || orientation != Qt::Horizontal)
@@ -214,9 +214,9 @@ bool TrackTreeModel::setHeaderData(int section, Qt::Orientation orientation,
     return retVal;
 }
 
-bool TrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
+bool PGTATrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    TrackItem *parentItem = getItemSafe(parent);
+    PGTATrackItem *parentItem = getItemSafe(parent);
     bool retVal = true;
     beginInsertRows(parent, row, row + count - 1);
     retVal = parentItem->InsertChildren(row, count, m_rootItem->ColumnCount());
@@ -224,9 +224,9 @@ bool TrackTreeModel::insertRows(int row, int count, const QModelIndex &parent)
     return retVal;
 }
 
-bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
+bool PGTATrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    TrackItem *parentItem = getItemSafe(parent);
+    PGTATrackItem *parentItem = getItemSafe(parent);
     bool retVal = true;
 
     // determine if any children being remove are group
@@ -253,14 +253,14 @@ bool TrackTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 
-QStringList TrackTreeModel::mimeTypes() const
+QStringList PGTATrackTreeModel::mimeTypes() const
  {
      QStringList types;
      types << "application/vnd.text.list";
      return types;
  }
 
-QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indices) const
+QMimeData *PGTATrackTreeModel::mimeData(const QModelIndexList &indices) const
 {
     if (indices.isEmpty() || !indices.at(0).isValid() || isGroup(indices.at(0)))
     {
@@ -285,7 +285,7 @@ QMimeData *TrackTreeModel::mimeData(const QModelIndexList &indices) const
     return mimeData;
 }
 
-bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
+bool PGTATrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
                                         int row, int column, const QModelIndex & parent)
 {
     if (action == Qt::IgnoreAction)
@@ -364,45 +364,45 @@ bool TrackTreeModel::dropMimeData(const QMimeData * data, Qt::DropAction action,
     return true;
 }
 
-void TrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
+void PGTATrackTreeModel::addSample(const QVector<QVariant> &data, const QUuid &uuid)
 {
-    TrackItem *parent = getGroup(uuid);
-    TrackItem *item = new TrackItem(data, parent);
+    PGTATrackItem *parent = getGroup(uuid);
+    PGTATrackItem *item = new PGTATrackItem(data, parent);
     parent->AddChild(item);
 }
 
-bool TrackTreeModel::isGroup(const QModelIndex &index) const
+bool PGTATrackTreeModel::isGroup(const QModelIndex &index) const
 {
-    TrackItem *item = getItemSafe(index);
+    PGTATrackItem *item = getItemSafe(index);
     return item->IsGroup();
 }
 
-void TrackTreeModel::setIsGroup(const QModelIndex &index)
+void PGTATrackTreeModel::setIsGroup(const QModelIndex &index)
 {
-    TrackItem *item = getItemUnsafe(index);
+    PGTATrackItem *item = getItemUnsafe(index);
     item->SetIsGroup(true);
     m_groups.insert(item->GetUuid(), item);
 }
 
-void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
+void PGTATrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
 {
     if (uuid.isNull())
     {
         return;
     }
 
-    TrackItem * group = getGroup(uuid);
+    PGTATrackItem * group = getGroup(uuid);
     if (group != m_rootItem.get())
     {
         // Group already exists
         return;
     }
-    TrackItem *item = new TrackItem(data, group, uuid, true);
+    PGTATrackItem *item = new PGTATrackItem(data, group, uuid, true);
     m_groups.insert(uuid, item);
     group->AddChild(item);
 }
 
-TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const
+PGTATrackItem* PGTATrackTreeModel::getGroup(const QUuid &uuid) const
 {
     if (!uuid.isNull())
     {
@@ -415,17 +415,17 @@ TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const
     return m_rootItem.get();
 }
 
-QUuid TrackTreeModel::getUuid(const QModelIndex &index) const
+QUuid PGTATrackTreeModel::getUuid(const QModelIndex &index) const
 {
     if (!index.isValid())
     {
         return QUuid();
     }
-    TrackItem *item = getItemSafe(index);
+    PGTATrackItem *item = getItemSafe(index);
     return item->GetUuid();
 }
 
-void TrackTreeModel::removeGroup(const QUuid &uuid)
+void PGTATrackTreeModel::removeGroup(const QUuid &uuid)
 {
     if(!uuid.isNull())
     {
@@ -433,27 +433,27 @@ void TrackTreeModel::removeGroup(const QUuid &uuid)
     }
 }
 
-const TrackItem *TrackTreeModel::getRoot() const
+const PGTATrackItem *PGTATrackTreeModel::getRoot() const
 {
     return m_rootItem.get();
 }
 
-void TrackTreeModel::setFilePath(const QString &filePath)
+void PGTATrackTreeModel::setFilePath(const QString &filePath)
 {
     m_filePath = filePath;
 }
 
-QString TrackTreeModel::getFilePath() const
+QString PGTATrackTreeModel::getFilePath() const
 {
     return m_filePath;
 }
 
-bool TrackTreeModel::getIsDirty() const
+bool PGTATrackTreeModel::getIsDirty() const
 {
     return m_isDirty;
 }
 
-void TrackTreeModel::setIsDirty(bool isDirty)
+void PGTATrackTreeModel::setIsDirty(bool isDirty)
 {
     m_isDirty = isDirty;
 }

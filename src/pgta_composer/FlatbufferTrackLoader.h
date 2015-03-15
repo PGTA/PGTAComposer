@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-class TrackTreeModel;
+class PGTATrackTreeModel;
 
 namespace FlatbufferTrackLoader
 {
-    TrackTreeModel* LoadTrack(const char* src, const size_t length, TrackTreeModel* trackModel);
+    PGTATrackTreeModel* LoadTrack(const char* src, const size_t length, PGTATrackTreeModel* trackModel);
 }

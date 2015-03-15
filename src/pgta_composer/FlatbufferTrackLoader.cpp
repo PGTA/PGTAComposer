@@ -7,19 +7,19 @@
 #include <PGTA/schema/track.fbs.h>
 #include <flatbuffers/idl.h>
 #include "FlatbufferTrackLoader.h"
-#include "TrackTreeModel.h"
+#include "PGTATrackTreeModel.h"
 #include "PGTAConstants.h"
 
-static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel);
-static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel);
-static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
+static PGTATrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, PGTATrackTreeModel* trackModel);
+static PGTATrackTreeModel* LoadAsciiTrack(const char* src, PGTATrackTreeModel* trackModel);
+static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
 static std::string AddUuidFormatting(const std::string &uuid);
 static std::string GetFileNameFromPath(const std::string &filePath);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
 const static int UUID_NUM_BYTES = 32;
 
-TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t length, TrackTreeModel* trackModel)
+PGTATrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t length, PGTATrackTreeModel* trackModel)
 {
     if (!src || length > MAX_TRACK_LEN || !trackModel)
     {
@@ -36,7 +36,7 @@ TrackTreeModel* FlatbufferTrackLoader::LoadTrack(const char* src, const size_t l
     }
 }
 
-static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel)
+static PGTATrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, PGTATrackTreeModel* trackModel)
 {
     flatbuffers::Verifier verifier(src, length);
     if (!PGTASchema::VerifyTrackBuffer(verifier))
@@ -48,7 +48,7 @@ static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, 
     return InitTrackData(trackModel, trackSchema);
 }
 
-static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel)
+static PGTATrackTreeModel* LoadAsciiTrack(const char* src, PGTATrackTreeModel* trackModel)
 {
     qDebug("Lodaing Ascii track");
     flatbuffers::Parser parser;
@@ -62,7 +62,7 @@ static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackMode
     return InitTrackData(trackModel, trackSchema);
 }
 
-static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema)
+static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema)
 {
     using SampleList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Sample>>;
     using GroupList = flatbuffers::Vector<flatbuffers::Offset<PGTASchema::Group>>;
@@ -83,14 +83,14 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Problem reading group.");
             continue;
         }
-        QVector<QVariant> group(TrackTreeModel::SampleColumn_Size);
+        QVector<QVariant> group(PGTATrackTreeModel::SampleColumn_Size);
 
         const flatbuffers::String* groupName = schemaGroup->name();
         if (!groupName || groupName->size() == 0)
         {
            qWarning("Group name not specified.");
         }
-        group[TrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
+        group[PGTATrackTreeModel::GroupColumn_Name] = QString(groupName->c_str());
 
         const flatbuffers::String* groupUuid = schemaGroup->uuid();
         if (!groupUuid || groupUuid->Length() < UUID_NUM_BYTES)
@@ -105,7 +105,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Could not parse group UUID.");
             continue;
         }
-        group[TrackTreeModel::GroupColumn_UUID] = uuid;
+        group[PGTATrackTreeModel::GroupColumn_UUID] = uuid;
         trackModel->addGroup(group, uuid);
     }
 
@@ -150,7 +150,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Problem reading sample.");
             continue;
         }
-        QVector<QVariant> sample(TrackTreeModel::SampleColumn_Size);
+        QVector<QVariant> sample(PGTATrackTreeModel::SampleColumn_Size);
 
         const flatbuffers::String* sampleDefaultFile = schemaSample->defaultFile();
         if (!sampleDefaultFile || sampleDefaultFile->size() == 0)
@@ -159,7 +159,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         }
         else
         {
-            sample[TrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
+            sample[PGTATrackTreeModel::SampleColumn_DefaultFile] = QString(sampleDefaultFile->c_str());
         }
 
         std::string sampleName;
@@ -176,7 +176,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         {
             sampleName = schemaSampleName->c_str();
         }
-        sample[TrackTreeModel::SampleColumn_Name] = QString(sampleName.c_str());
+        sample[PGTATrackTreeModel::SampleColumn_Name] = QString(sampleName.c_str());
 
         float sampleStartTime = schemaSample->startTime();
         if (sampleStartTime < PGTAConstants::MIN_START_TIME)
@@ -184,7 +184,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Sample start time not valid (%f), setting to default value.", sampleStartTime);
             sampleStartTime = PGTAConstants::MIN_START_TIME;
         }
-        sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
+        sample[PGTATrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
         float samplePeriod = schemaSample->period();
         if (samplePeriod < PGTAConstants::MIN_PERIOD)
@@ -192,7 +192,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Sample period not valid (%f), setting to default value.", samplePeriod);
             samplePeriod = PGTAConstants::MIN_PERIOD;
         }
-        sample[TrackTreeModel::SampleColumn_Period] = samplePeriod;
+        sample[PGTATrackTreeModel::SampleColumn_Period] = samplePeriod;
 
         float samplePeriodDeviation = schemaSample->periodDeviation();
         if (qAbs(samplePeriodDeviation) > samplePeriod/2)
@@ -200,7 +200,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Sample period deviation not valid (%f), setting to default value.", samplePeriodDeviation);
             samplePeriodDeviation = (samplePeriodDeviation < 0) ? -1.0f * samplePeriod/2 : samplePeriod/2;
         }
-        sample[TrackTreeModel::SampleColumn_PeriodDeviation] = samplePeriodDeviation;
+        sample[PGTATrackTreeModel::SampleColumn_PeriodDeviation] = samplePeriodDeviation;
 
         float sampleProbability = schemaSample->probability();
         if (sampleProbability < PGTAConstants::MIN_PROBABILITY || sampleProbability > PGTAConstants::MAX_PROBABILITY)
@@ -209,7 +209,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             sampleProbability = (sampleProbability > PGTAConstants::MAX_PROBABILITY) ? PGTAConstants::MAX_PROBABILITY :
                                                                                        PGTAConstants::MIN_PROBABILITY;
         }
-        sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
+        sample[PGTATrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
         float sampleVolume = schemaSample->volume();
         if(sampleVolume < PGTAConstants::MIN_GAIN || sampleVolume > PGTAConstants::MAX_GAIN)
@@ -217,14 +217,14 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
             qWarning("Sample volume not valid (%f), setting to default value.", sampleVolume);
             sampleVolume = (sampleVolume > PGTAConstants::MAX_GAIN) ? PGTAConstants::MAX_GAIN : PGTAConstants::MIN_GAIN;
         }
-        sample[TrackTreeModel::SampleColumn_Volume] = sampleVolume;
+        sample[PGTATrackTreeModel::SampleColumn_Volume] = sampleVolume;
 
         QUuid groupUuid;
         const flatbuffers::String* schemaUuid = schemaSample->group();
         if(schemaUuid && schemaUuid->Length() == UUID_NUM_BYTES)
         {
             groupUuid = QString::fromStdString(AddUuidFormatting(schemaUuid->c_str()));
-            sample[TrackTreeModel::SampleColumn_GroupUUID] = groupUuid;
+            sample[PGTATrackTreeModel::SampleColumn_GroupUUID] = groupUuid;
         }
         trackModel->addSample(sample, groupUuid);
     }

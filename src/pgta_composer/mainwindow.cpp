@@ -23,7 +23,7 @@
 #include <cmath>
 #include <thread>
 #include <functional>
-#include "TrackTreeModel.h"
+#include "PGTATrackTreeModel.h"
 #include "FlatbufferTrackLoader.h"
 #include "FlatbufferTrackWriter.h"
 #include "FileUtils.h"
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     m_fileSystemModel= new QFileSystemModel(this);
     m_fileSystemModel->setRootPath("/Users/keeferdavies/dev/");
-    m_trackTreeModel = new TrackTreeModel(this);
+    m_trackTreeModel = new PGTATrackTreeModel(this);
 
     ui->setupUi(this);
     // remove title bar from all dock widgets
@@ -77,13 +77,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper = new QDataWidgetMapper(this);
     m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
-    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
-    m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditPeriod, TrackTreeModel::SampleColumn_Period);
-    m_dataWidgetMapper->addMapping(ui->EditDeviation, TrackTreeModel::SampleColumn_PeriodDeviation);
-    m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolume, TrackTreeModel::SampleColumn_Volume);
+    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
+    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
+    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
+    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
+    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
+    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
+    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
 
     // setup signals and slots
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -263,7 +263,7 @@ void MainWindow::onCustomContextMenu(const QPoint &point)
 {
     QModelIndex index = ui->TrackTreeView->indexAt(point);
     QPoint globalPos = ui->TrackTreeView->mapToGlobal(point);
-    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
     QMenu myMenu;
 
     QAction *insertSampleAction = myMenu.addAction("Insert Sample");
@@ -327,7 +327,7 @@ void MainWindow::treeViewRowColChange(const QModelIndex &index)
 
 void MainWindow::insertGroup()
 {
-    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
     QModelIndex rootIndex = ui->TrackTreeView->rootIndex();
     QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
     if (index.parent() != rootIndex)
@@ -346,10 +346,10 @@ void MainWindow::insertGroup()
         child = model->index(index.row()+1, column, index.parent());
         switch (column)
         {
-            case TrackTreeModel::GroupColumn_Name :
+            case PGTATrackTreeModel::GroupColumn_Name :
                 model->setData(child, QVariant("[Group Name]"), Qt::EditRole);
                 break;
-            case TrackTreeModel::GroupColumn_UUID :
+            case PGTATrackTreeModel::GroupColumn_UUID :
                 model->setData(child, model->getUuid(child), Qt::EditRole);
                 break;
             default:
@@ -367,7 +367,7 @@ void MainWindow::removeTrackItem()
         return;
     }
 
-    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
     if(model->removeRow(index.row(), index.parent()))
     {
         ui->TrackTreeView->selectionModel()->clear();
@@ -389,7 +389,7 @@ void MainWindow::clearSampleProperties()
 void MainWindow::insertSample()
 {
     QModelIndex selectedIndex = ui->TrackTreeView->selectionModel()->currentIndex();
-    TrackTreeModel *model = static_cast<TrackTreeModel*>(ui->TrackTreeView->model());
+    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
 
     int position = 0;
     // set column to column 0 otherwise inserting child doesn't work
@@ -412,13 +412,13 @@ void MainWindow::insertSample()
         QModelIndex child = model->index(position, column, index);
         switch (column)
         {
-            case TrackTreeModel::SampleColumn_Name :
+            case PGTATrackTreeModel::SampleColumn_Name :
                 model->setData(child, QVariant("[Sample Name]"), Qt::EditRole);
                 break;
-            case TrackTreeModel::SampleColumn_GroupUUID :
+            case PGTATrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
-            case TrackTreeModel::SampleColumn_Volume :
+            case PGTATrackTreeModel::SampleColumn_Volume :
                 model->setData(child, QVariant(0), Qt::EditRole);
                 break;
             default:
@@ -479,7 +479,7 @@ void MainWindow::on_actionOpen_triggered()
         delete m_dataWidgetMapper;
     }
 
-    m_trackTreeModel = new TrackTreeModel(this);
+    m_trackTreeModel = new PGTATrackTreeModel(this);
     m_dataWidgetMapper = new QDataWidgetMapper(this);
 
     std::string buffer;
@@ -503,13 +503,13 @@ void MainWindow::on_actionOpen_triggered()
 
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->addMapping(ui->EditName, TrackTreeModel::SampleColumn_Name);
-    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, TrackTreeModel::SampleColumn_DefaultFile);
-    m_dataWidgetMapper->addMapping(ui->EditStartTime, TrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditPeriod, TrackTreeModel::SampleColumn_Period);
-    m_dataWidgetMapper->addMapping(ui->EditDeviation, TrackTreeModel::SampleColumn_PeriodDeviation);
-    m_dataWidgetMapper->addMapping(ui->EditProbability, TrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolume, TrackTreeModel::SampleColumn_Volume);
+    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
+    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
+    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
+    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
+    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
+    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
+    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
     connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
 }

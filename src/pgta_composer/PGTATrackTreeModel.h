@@ -9,9 +9,9 @@
 #include <QMap>
 #include <memory>
 
-class TrackItem;
+class PGTATrackItem;
 
-class TrackTreeModel : public QAbstractItemModel
+class PGTATrackTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -36,8 +36,8 @@ public:
     };
 
 public:
-    TrackTreeModel(QObject *parent = nullptr);
-    ~TrackTreeModel();
+    PGTATrackTreeModel(QObject *parent = nullptr);
+    ~PGTATrackTreeModel();
 
 public:
     QModelIndex parent(const QModelIndex &index) const override;
@@ -80,19 +80,19 @@ public:
     void setFilePath(const QString &filePath);
     QString getFilePath() const;
 
-    const TrackItem *getRoot() const;
+    const PGTATrackItem *getRoot() const;
     bool getIsDirty() const;
     void setIsDirty(bool isDirty);
 
 private:
-    TrackItem *getItemSafe(const QModelIndex &index) const;
-    TrackItem *getItemUnsafe(const QModelIndex &index);
-    TrackItem *getGroup(const QUuid &uuid) const;
+    PGTATrackItem *getItemSafe(const QModelIndex &index) const;
+    PGTATrackItem *getItemUnsafe(const QModelIndex &index);
+    PGTATrackItem *getGroup(const QUuid &uuid) const;
     void removeGroup(const QUuid &uuid);
 
 private:
-    QMap<QUuid, TrackItem*> m_groups;
+    QMap<QUuid, PGTATrackItem*> m_groups;
     QString m_filePath;
-    std::unique_ptr<TrackItem> m_rootItem;
+    std::unique_ptr<PGTATrackItem> m_rootItem;
     bool m_isDirty;
 };

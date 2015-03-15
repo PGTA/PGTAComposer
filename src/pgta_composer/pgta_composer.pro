@@ -21,8 +21,8 @@ FORMS +=    forms/mainwindow.ui
 HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackLoader.h \
             ./mainwindow.h \
-            ./TrackItem.h \
-            ./TrackTreeModel.h \
+            ./PGTATrackItem.h \
+            ./PGTATrackTreeModel.h \
             ./FlatbufferTrackWriter.h \
             ./PGTAProject.h \
             ./PGTALibraryModel.h \
@@ -32,8 +32,8 @@ SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \
             ./mainwindow.cpp \
-            ./TrackItem.cpp \
-            ./TrackTreeModel.cpp \
+            ./PGTATrackItem.cpp \
+            ./PGTATrackTreeModel.cpp \
             ./FlatbufferTrackWriter.cpp \
             ./PGTAProject.cpp \
             ./PGTALibraryModel.cpp \

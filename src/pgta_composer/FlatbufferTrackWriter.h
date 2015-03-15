@@ -4,9 +4,9 @@
 #include <string>
 #include <stddef.h>
 
-class TrackTreeModel;
+class PGTATrackTreeModel;
 
 namespace FlatBufferTrackWriter
 {
-    bool WriteTrack(const TrackTreeModel* trackModel, const std::string dest, bool binary = false);
+    bool WriteTrack(const PGTATrackTreeModel* trackModel, const std::string dest, bool binary = false);
 }
