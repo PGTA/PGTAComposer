@@ -26,7 +26,8 @@ HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackWriter.h \
             ./PGTAProject.h \
             ./PGTALibraryModel.h \
-            ./PGTALibraryItem.h
+            ./PGTALibraryItem.h \
+            ./PGTAConstants.h
 SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \

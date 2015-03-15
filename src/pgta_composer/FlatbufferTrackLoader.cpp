@@ -8,6 +8,7 @@
 #include <flatbuffers/idl.h>
 #include "FlatbufferTrackLoader.h"
 #include "TrackTreeModel.h"
+#include "PGTAConstants.h"
 
 static TrackTreeModel* LoadBinaryTrack(const uint8_t* src, const size_t length, TrackTreeModel* trackModel);
 static TrackTreeModel* LoadAsciiTrack(const char* src, TrackTreeModel* trackModel);
@@ -178,18 +179,18 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         sample[TrackTreeModel::SampleColumn_Name] = QString(sampleName.c_str());
 
         float sampleStartTime = schemaSample->startTime();
-        if (sampleStartTime < 0.0f)
+        if (sampleStartTime < PGTAConstants::MIN_START_TIME)
         {
             qWarning("Sample start time not valid (%f), setting to default value.", sampleStartTime);
-            sampleStartTime = 0;
+            sampleStartTime = PGTAConstants::MIN_START_TIME;
         }
         sample[TrackTreeModel::SampleColumn_StartTime] = sampleStartTime;
 
         float samplePeriod = schemaSample->period();
-        if (samplePeriod < 0.0f)
+        if (samplePeriod < PGTAConstants::MIN_PERIOD)
         {
             qWarning("Sample period not valid (%f), setting to default value.", samplePeriod);
-            samplePeriod = 0.0f;
+            samplePeriod = PGTAConstants::MIN_PERIOD;
         }
         sample[TrackTreeModel::SampleColumn_Period] = samplePeriod;
 
@@ -202,18 +203,19 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
         sample[TrackTreeModel::SampleColumn_PeriodDeviation] = samplePeriodDeviation;
 
         float sampleProbability = schemaSample->probability();
-        if (sampleProbability < 0.0f || sampleProbability > 1.0f)
+        if (sampleProbability < PGTAConstants::MIN_PROBABILITY || sampleProbability > PGTAConstants::MAX_PROBABILITY)
         {
             qWarning("Sample probability not valid (%f), setting to default value.", sampleProbability);
-            sampleProbability = (sampleProbability > 1.0f) ? 1.0f : 0.0f;
+            sampleProbability = (sampleProbability > PGTAConstants::MAX_PROBABILITY) ? PGTAConstants::MAX_PROBABILITY :
+                                                                                       PGTAConstants::MIN_PROBABILITY;
         }
         sample[TrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
         float sampleVolume = schemaSample->volume();
-        if(sampleVolume < -95.0f || sampleVolume > 6.0f)
+        if(sampleVolume < PGTAConstants::MIN_GAIN || sampleVolume > PGTAConstants::MAX_GAIN)
         {
             qWarning("Sample volume not valid (%f), setting to default value.", sampleVolume);
-            sampleVolume = (sampleVolume > 6.0f) ? 6.0f : -95.0f;
+            sampleVolume = (sampleVolume > PGTAConstants::MAX_GAIN) ? PGTAConstants::MAX_GAIN : PGTAConstants::MIN_GAIN;
         }
         sample[TrackTreeModel::SampleColumn_Volume] = sampleVolume;
 
@@ -231,7 +233,7 @@ static TrackTreeModel* InitTrackData(TrackTreeModel* const trackModel, const PGT
 
 static std::string AddUuidFormatting(const std::string &uuid)
 {
-    if (uuid.length() != 32)
+    if (uuid.length() != PGTAConstants::UUID_NUM_BYTES)
     {
         return "";
     }
@@ -259,6 +261,6 @@ static std::string GetFileNameFromPath(const std::string &filePath)
    {
        length = periodIndex - slashIndex - 1;
    }
-   return filePath.substr(slashIndex+1, length);
+   return filePath.substr(slashIndex + 1, length);
 }
 
