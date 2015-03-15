@@ -31,4 +31,5 @@ Makefile*
 # QtCreator
 
 *.autosave
-
+src/premake/*/
+**/Thumbs.db

@@ -50,7 +50,7 @@ namespace FileUtils
         return ReadBinaryFileToString(filename.c_str(), out);
     }
 
-    bool WriteBinaryToFile(const std::string &filename, const uint8_t *buffer, off_t size)
+    bool WriteBinaryToFile(const std::string &filename, const uint8_t *buffer, size_t size)
     {
         std::ofstream outFile(filename, std::ofstream::binary);
         if (!outFile)
