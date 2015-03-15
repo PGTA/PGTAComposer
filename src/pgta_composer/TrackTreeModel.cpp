@@ -1,6 +1,4 @@
 
-#include <fstream>
-#include <iostream>
 #include <QMimeData>
 #include <QIcon>
 #include <QVariant>
@@ -13,12 +11,11 @@ TrackTreeModel::TrackTreeModel(QObject *parent)
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Frequency" << "Probability"
              << "Volume Multiplier" << "UUID";
-    m_rootItem = new TrackItem(rootData, nullptr,  QUuid(), true);
+    m_rootItem.reset(new TrackItem(rootData, nullptr,  QUuid(), true));
 }
 
 TrackTreeModel::~TrackTreeModel()
 {
-    delete m_rootItem;
 }
 
 TrackItem *TrackTreeModel::getItemSafe(const QModelIndex &index) const
@@ -31,7 +28,7 @@ TrackItem *TrackTreeModel::getItemSafe(const QModelIndex &index) const
             return item;
         }
     }
-    return m_rootItem;
+    return m_rootItem.get();
 }
 
 TrackItem *TrackTreeModel::getItemUnsafe(const QModelIndex &index)
@@ -44,7 +41,7 @@ TrackItem *TrackTreeModel::getItemUnsafe(const QModelIndex &index)
             return item;
         }
     }
-    return m_rootItem;
+    return m_rootItem.get();
 }
 
 QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
@@ -78,16 +75,17 @@ QVariant TrackTreeModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags TrackTreeModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index) |  Qt::ItemIsEditable |
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index) | Qt::ItemIsEditable |
             Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if (index.isValid())
     {
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+        flags |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
     }
     else
     {
-        return Qt::ItemIsDropEnabled | defaultFlags;
+        flags |= Qt::ItemIsDropEnabled;
     }
+    return flags;
 }
 
 Qt::DropActions TrackTreeModel::supportedDropActions () const
@@ -114,9 +112,9 @@ QModelIndex TrackTreeModel::index(int row, int column,
     }
 
     TrackItem *parentItem;
-    if(!parent.isValid())
+    if (!parent.isValid())
     {
-        parentItem = m_rootItem;
+        parentItem = m_rootItem.get();
     }
     else
     {
@@ -143,7 +141,7 @@ QModelIndex TrackTreeModel::parent(const QModelIndex &index) const
 
     TrackItem *childItem = static_cast<TrackItem*>(index.internalPointer());
     TrackItem *parentItem = childItem->GetParent();
-    if (parentItem == m_rootItem)
+    if (parentItem == m_rootItem.get())
     {
         return QModelIndex();
     }
@@ -160,7 +158,7 @@ int TrackTreeModel::rowCount(const QModelIndex &parent) const
 
     if (!parent.isValid())
     {
-        parentItem = m_rootItem;
+        parentItem = m_rootItem.get();
     }
     else
     {
@@ -392,7 +390,7 @@ void TrackTreeModel::addGroup(const QVector<QVariant> &data, const QUuid &uuid)
     }
 
     TrackItem * group = getGroup(uuid);
-    if (group != m_rootItem)
+    if (group != m_rootItem.get())
     {
         // Group already exists
         return;
@@ -412,7 +410,7 @@ TrackItem* TrackTreeModel::getGroup(const QUuid &uuid) const
             return groupItr.value();
         }
     }
-    return m_rootItem;
+    return m_rootItem.get();
 }
 
 QUuid TrackTreeModel::getUuid(const QModelIndex &index) const
@@ -435,7 +433,7 @@ void TrackTreeModel::removeGroup(const QUuid &uuid)
 
 const TrackItem *TrackTreeModel::getRoot() const
 {
-    return m_rootItem;
+    return m_rootItem.get();
 }
 
 void TrackTreeModel::setFilePath(const QString &filePath)

@@ -3,11 +3,11 @@
 #include "TrackItem.h"
 
 TrackItem::TrackItem(const QVector<QVariant> &data, TrackItem *parent, const QUuid &uuid, const bool isGroup) :
+    m_itemData(data),
     m_uuid(uuid),
+    m_parent(parent),
     m_isGroup(isGroup)
 {
-    m_parent = parent;
-    m_itemData = data;
 }
 
 TrackItem::~TrackItem()
@@ -86,7 +86,7 @@ int TrackItem::GetRow() const
     {
         return m_parent->GetChildRow(const_cast<TrackItem*>(this));
     }
-    return 0;
+    return -1;
 }
 
 int TrackItem::GetChildRow(TrackItem *child) const
@@ -95,7 +95,7 @@ int TrackItem::GetChildRow(TrackItem *child) const
     {
         return m_childItems.indexOf(child);
     }
-    return 0;
+    return -1;
 }
 
 TrackItem *TrackItem::GetParent() const
