@@ -1,12 +1,4 @@
 
-function run_include(script, rel_dir)
-    local external_dir = path.getabsolute("../external")
-    local repo_dir = path.join(external_dir, rel_dir)
-    local script_full = external_dir.."/build-tools/premake_scripts/"..script
-    local output_dir = path.getabsolute("../premake/".._ACTION)
-    assert(loadfile(script_full))(repo_dir, output_dir)
-end
-
 include "qt.lua"
 local qt = premake.extensions.qt
 
