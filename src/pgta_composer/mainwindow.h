@@ -59,4 +59,5 @@ private:
     QTreeView *m_trackFullView;
     std::thread m_trackPlaybackThread;
     std::atomic<int> m_trackPlaybackControl;
+    std::string m_playbackMessage;
 };

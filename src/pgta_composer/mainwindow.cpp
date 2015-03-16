@@ -127,6 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    m_trackPlaybackControl = 2;
     if (m_trackPlaybackThread.joinable())
     {
         m_trackPlaybackThread.join();
@@ -138,15 +139,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl)
+static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl, std::string &message)
 {
     try
     {
-        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl);
+        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl, message);
+        qDebug("%s", message.c_str());
     }
     catch(...)
     {
-        qDebug("EXCEPTION");
     }
 }
 
@@ -173,14 +174,12 @@ void MainWindow::playTrack()
               break;
           case QMessageBox::Cancel:
               return;
-              break;
           default:
-              // should never be reached
               break;
         }
     }
     m_trackPlaybackThread = std::thread(PGTAPlayTrack, m_trackTreeModel->getFilePath().toStdString(),
-                std::ref(m_trackPlaybackControl));
+                std::ref(m_trackPlaybackControl), std::ref(m_playbackMessage));
 }
 
 void MainWindow::pauseTrack()
