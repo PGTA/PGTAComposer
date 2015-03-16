@@ -494,6 +494,10 @@
            <property name="text">
             <string/>
            </property>
+           <property name="icon">
+            <iconset resource="../images.qrc">
+             <normaloff>:/img/plus_24x24.png</normaloff>:/img/plus_24x24.png</iconset>
+           </property>
           </widget>
          </item>
          <item>
@@ -551,6 +555,10 @@
            </property>
            <property name="text">
             <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../images.qrc">
+             <normaloff>:/img/minus_24x24.png</normaloff>:/img/minus_24x24.png</iconset>
            </property>
           </widget>
          </item>
@@ -716,6 +724,10 @@
           <property name="text">
            <string/>
           </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/img/leftpanelselected_64x64.png</normaloff>:/img/leftpanelselected_64x64.png</iconset>
+          </property>
           <property name="iconSize">
            <size>
             <width>24</width>
@@ -754,6 +766,10 @@
           <property name="text">
            <string/>
           </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/img/play_64x64.png</normaloff>:/img/play_64x64.png</iconset>
+          </property>
           <property name="iconSize">
            <size>
             <width>24</width>
@@ -779,6 +795,10 @@
           <property name="text">
            <string/>
           </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/img/pause_64x64.png</normaloff>:/img/pause_64x64.png</iconset>
+          </property>
           <property name="iconSize">
            <size>
             <width>24</width>
@@ -803,6 +823,10 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/img/stop_64x64.png</normaloff>:/img/stop_64x64.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -917,6 +941,10 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/img/rightpanelselected_64x64.png</normaloff>:/img/rightpanelselected_64x64.png</iconset>
           </property>
           <property name="iconSize">
            <size>

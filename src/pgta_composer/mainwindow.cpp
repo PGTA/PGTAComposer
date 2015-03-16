@@ -123,15 +123,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TrackTreeView->setDropIndicatorShown(true);
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
-
-    ui->PlayButton->setIcon(QIcon(":/img/play_64x64.png"));
-    ui->PauseButton->setIcon(QIcon(":/img/pause_64x64.png"));
-    ui->StopButton->setIcon(QIcon(":/img/stop_64x64.png"));
-    ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
-    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
-    ui->addTrackItemButton->setIcon(QIcon(":/img/plus_24x24.png"));
-    ui->removeTrackItemButton->setIcon(QIcon(":/img/minus_24x24.png"));
-
 }
 
 MainWindow::~MainWindow()
