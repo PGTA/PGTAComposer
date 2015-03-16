@@ -64,3 +64,9 @@ QMessageBox{
     background: #1C1C1C;
 }
 
+QToolTip{
+    color: white;
+    background: #252526;
+    border: 1px solid white;
+}
+

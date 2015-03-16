@@ -1199,10 +1199,13 @@
             <enum>Qt::StrongFocus</enum>
            </property>
            <property name="minimum">
-            <number>-95</number>
+            <number>-950</number>
            </property>
            <property name="maximum">
-            <number>6</number>
+            <number>60</number>
+           </property>
+           <property name="singleStep">
+            <number>1</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

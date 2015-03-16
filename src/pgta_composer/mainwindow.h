@@ -44,6 +44,7 @@ private slots:
      void toggleRightPanel();
      void toggleLeftPanel();
      void viewFullModel();
+     void showSliderTooltip(int);
      void playTrack();
      void pauseTrack();
      void stopTrack();

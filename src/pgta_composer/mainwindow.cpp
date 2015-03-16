@@ -17,6 +17,7 @@
 #include <QFileSystemModel>
 #include <QDataWidgetMapper>
 #include <QMessageBox>
+#include <QToolTip>
 #include <QUuid>
 #include <QtCore>
 #include <atomic>
@@ -119,6 +120,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->PauseButton, SIGNAL(clicked()), this, SLOT(pauseTrack()));
     connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
 
+    // volume slider
+    connect(ui->EditVolume, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
+
 
     ui->TrackTreeView->setDropIndicatorShown(true);
     ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
@@ -137,6 +141,15 @@ MainWindow::~MainWindow()
     delete m_fileSystemModel;
     delete m_trackFullView;
     delete ui;
+}
+
+void MainWindow::showSliderTooltip(int position)
+{
+    QString toolTip;
+    toolTip = QString::fromStdString(std::to_string(position/10.0f)) + "db";
+    QPoint slider = ui->EditVolume->mapToGlobal(QPoint( 0, 0 ));
+    QPoint cursor = QCursor::pos();
+    QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip );
 }
 
 static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl, std::string &message)
