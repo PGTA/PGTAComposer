@@ -4,13 +4,16 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QTreeView>
+#include <QDockWidget>
 #include <thread>
 #include <atomic>
 
 class PGTATrackTreeModel;
+class PGTATrackView;
 class QFileSystemModel;
 class QDataWidgetMapper;
 class PGTATreeView;
+class PGTADockable;
 
 namespace Ui
 {
@@ -46,6 +49,7 @@ private slots:
      void toggleLeftPanel();
      void viewFullModel();
      void showSliderTooltip(int);
+private slots: // playback
      void playTrack();
      void pauseTrack();
      void stopTrack();
@@ -54,11 +58,17 @@ private:
     Ui::MainWindow *ui;
     void updateStatusBar(QString message, StatusBarState state);
 
-private:
+private: // dockables
+    PGTADockable *m_trackDock;
+    PGTATrackView *m_trackView;
+
+private: // models
     PGTATrackTreeModel *m_trackTreeModel;
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
     PGTATreeView *m_trackFullView;
+
+private: // playback
     std::thread m_trackPlaybackThread;
     std::atomic<int> m_trackPlaybackControl;
     std::string m_playbackMessage;

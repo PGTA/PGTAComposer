@@ -29,10 +29,14 @@
 #include "FlatbufferTrackWriter.h"
 #include "FileUtils.h"
 #include "PGTATreeView.h"
+#include "PGTATrackView.h"
+#include "PGTADockable.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    m_trackDock(nullptr),
+    m_trackView(nullptr),
     m_trackTreeModel(nullptr),
     m_fileSystemModel(nullptr),
     m_dataWidgetMapper(nullptr),
@@ -49,6 +53,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TopPanel->setTitleBarWidget(new QWidget());
     //ui->LeftPanel->setTitleBarWidget(new QWidget());
     //ui->RightPanel->setTitleBarWidget(new QWidget());
+
+
+    m_trackDock = new PGTADockable(tr("Track Definition"), this);
+    m_trackView = new PGTATrackView(this);
+    m_trackView->SetTreeViewModel(m_trackTreeModel);
+    m_trackDock->setWidget(m_trackView);
+    addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
 
     int dockableHeight = (this->rect().height() - ui->TopPanel->size().height() - ui->statusBar->size().height())/ 2;
 
@@ -141,6 +152,7 @@ MainWindow::~MainWindow()
     delete m_trackTreeModel;
     delete m_fileSystemModel;
     delete m_trackFullView;
+    delete m_trackDock;
     delete ui;
 }
 
@@ -505,6 +517,7 @@ void MainWindow::on_actionOpen_triggered()
         m_trackTreeModel->setFilePath(QString::fromStdString(fileName));
     }
 
+    m_trackView->SetTreeViewModel(m_trackTreeModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
     m_dataWidgetMapper->setModel(m_trackTreeModel);
     m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
