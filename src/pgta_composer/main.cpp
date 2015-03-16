@@ -37,9 +37,6 @@ int main(int argc, char *argv[])
     QApplication mainApp(argc, argv);
     MainWindow mainWindow;
 
-    QDir dir(QApplication::applicationDirPath());
-    QApplication::addLibraryPath(dir.absolutePath());
-
     // set stylesheet for application
     QFile stylesFile(":/styles/main.qss");
     stylesFile.open(QFile::ReadOnly);

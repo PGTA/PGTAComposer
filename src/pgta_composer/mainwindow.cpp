@@ -28,6 +28,7 @@
 #include "FlatbufferTrackLoader.h"
 #include "FlatbufferTrackWriter.h"
 #include "FileUtils.h"
+#include "PGTATreeView.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -209,7 +210,7 @@ void MainWindow::viewFullModel()
 {
     if (!m_trackFullView)
     {
-        m_trackFullView = new QTreeView();
+        m_trackFullView = new PGTATreeView();
     }
     m_trackFullView->setModel(m_trackTreeModel);
     m_trackFullView->show();

@@ -27,7 +27,8 @@ HEADERS +=  ./FileUtils.h \
             ./PGTAProject.h \
             ./PGTALibraryModel.h \
             ./PGTALibraryItem.h \
-            ./PGTAConstants.h
+            ./PGTAConstants.h \
+            ./PGTATreeView.h
 SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \
@@ -37,7 +38,8 @@ SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackWriter.cpp \
             ./PGTAProject.cpp \
             ./PGTALibraryModel.cpp \
-            ./PGTALibraryItem.cpp
+            ./PGTALibraryItem.cpp \
+            ./PGTATreeView.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/

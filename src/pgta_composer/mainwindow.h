@@ -10,6 +10,7 @@
 class PGTATrackTreeModel;
 class QFileSystemModel;
 class QDataWidgetMapper;
+class PGTATreeView;
 
 namespace Ui
 {
@@ -57,7 +58,7 @@ private:
     PGTATrackTreeModel *m_trackTreeModel;
     QFileSystemModel *m_fileSystemModel;
     QDataWidgetMapper *m_dataWidgetMapper;
-    QTreeView *m_trackFullView;
+    PGTATreeView *m_trackFullView;
     std::thread m_trackPlaybackThread;
     std::atomic<int> m_trackPlaybackControl;
     std::string m_playbackMessage;
