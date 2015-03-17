@@ -76,3 +76,8 @@ PGTATrackView{
     color: #FFFFFF;
 }
 
+PGTAPropertiesView{
+    background: #1C1C1C;
+    color: #FFFFFF;
+}
+

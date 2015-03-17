@@ -7,6 +7,11 @@
 PGTATreeView::PGTATreeView(QWidget *parent) :
     QTreeView(parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    setDragDropMode(QAbstractItemView::DragDrop);
+    setDefaultDropAction(Qt::MoveAction);
+    setDragEnabled(true);
+    setDropIndicatorShown(true);
 }
 
 PGTATreeView::~PGTATreeView()

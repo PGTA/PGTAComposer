@@ -7,6 +7,7 @@
 #include <QDockWidget>
 #include <thread>
 #include <atomic>
+#include <memory>
 
 class PGTATrackTreeModel;
 class PGTATrackView;
@@ -14,6 +15,7 @@ class QFileSystemModel;
 class QDataWidgetMapper;
 class PGTATreeView;
 class PGTADockable;
+class PGTAPropertiesView;
 
 namespace Ui
 {
@@ -39,7 +41,7 @@ public:
 private slots:
      void on_actionOpen_triggered();
      void on_actionSave_triggered();
-     void treeViewRowColChange(const QModelIndex &index);
+
      void insertSample();
      void removeTrackItem();
      void clearSampleProperties();
@@ -61,6 +63,8 @@ private:
 private: // dockables
     PGTADockable *m_trackDock;
     PGTATrackView *m_trackView;
+    PGTADockable *m_propertiesDock;
+    PGTAPropertiesView *m_propertiesView;
 
 private: // models
     PGTATrackTreeModel *m_trackTreeModel;

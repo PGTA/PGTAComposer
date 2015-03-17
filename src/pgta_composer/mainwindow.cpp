@@ -31,12 +31,15 @@
 #include "PGTATreeView.h"
 #include "PGTATrackView.h"
 #include "PGTADockable.h"
+#include "PGTAPropertiesView.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_trackDock(nullptr),
     m_trackView(nullptr),
+    m_propertiesDock(nullptr),
+    m_propertiesView(nullptr),
     m_trackTreeModel(nullptr),
     m_fileSystemModel(nullptr),
     m_dataWidgetMapper(nullptr),
@@ -44,32 +47,40 @@ MainWindow::MainWindow(QWidget *parent) :
     m_trackPlaybackThread(),
     m_trackPlaybackControl(0)
 {
+    ui->setupUi(this);
+
+    // setup models
     m_fileSystemModel= new QFileSystemModel(this);
     m_fileSystemModel->setRootPath("/Users/keeferdavies/dev/");
     m_trackTreeModel = new PGTATrackTreeModel(this);
 
-    ui->setupUi(this);
     // remove title bar from all dock widgets
     ui->TopPanel->setTitleBarWidget(new QWidget());
-    //ui->LeftPanel->setTitleBarWidget(new QWidget());
-    //ui->RightPanel->setTitleBarWidget(new QWidget());
 
+    // setup dockables
+    m_propertiesDock = new PGTADockable(tr("Properties"), this);
+    m_propertiesView = new PGTAPropertiesView(this);
+    m_propertiesDock->setWidget(m_propertiesView);
 
     m_trackDock = new PGTADockable(tr("Track Definition"), this);
     m_trackView = new PGTATrackView(this);
     m_trackView->SetTreeViewModel(m_trackTreeModel);
+    m_trackView->SetPropertiesView(m_propertiesView);
     m_trackDock->setWidget(m_trackView);
+
+    // add dockables
     addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
+    addDockWidget(Qt::RightDockWidgetArea, m_propertiesDock);
 
     int dockableHeight = (this->rect().height() - ui->TopPanel->size().height() - ui->statusBar->size().height())/ 2;
 
-    ui->RightPanel->setMinimumHeight(dockableHeight);
-    ui->LeftPanel->setMinimumHeight(dockableHeight);
+//    ui->RightPanel->setMinimumHeight(dockableHeight);
+//    ui->LeftPanel->setMinimumHeight(dockableHeight);
 
 
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
-    ui->TrackTreeView->setModel(m_trackTreeModel);
+    //ui->TrackTreeView->setModel(m_trackTreeModel);
 
     QModelIndex idx = m_fileSystemModel->index("/Users/keeferdavies/dev/tmp/Sample Project");
     ui->FileSystemView->setRootIndex(idx);
@@ -87,35 +98,24 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     // setup data widget mapper
-    m_dataWidgetMapper = new QDataWidgetMapper(this);
-    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-    m_dataWidgetMapper->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
-    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
-    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
-    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
-    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
+//    m_dataWidgetMapper = new QDataWidgetMapper(this);
+//    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+//    m_dataWidgetMapper->setModel(m_trackTreeModel);
+//    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
+//    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
+//    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
+//    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
+//    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
+//    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
+//    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
 
     // setup signals and slots
-    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-        this, SLOT(treeViewRowColChange(QModelIndex)));
     connect(ui->TrackTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(onCustomContextMenu(const QPoint &)));
     connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
     connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
     connect(ui->removeTrackItemButton, SIGNAL(clicked()), this, SLOT(removeTrackItem()));
-
-    // setup tool button context menu for add sample/group button
-    QMenu *menu = new QMenu();
-    QAction *addGroup = menu->addAction("Add Group");
-    connect(addGroup, SIGNAL(triggered()), this, SLOT(insertGroup()));
-    QAction *addSample = menu->addAction("Add Sample");
-    connect(addSample, SIGNAL(triggered()), this, SLOT(insertSample()));
-    ui->addTrackItemButton->setPopupMode(QToolButton::InstantPopup);
-    ui->addTrackItemButton->setMenu(menu);
 
     // right panel
     connect(ui->toggleRightPanelAction, SIGNAL(triggered()), this, SLOT(toggleRightPanel()));
@@ -133,7 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
 
     // volume slider
-    connect(ui->EditVolume, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
+    //connect(ui->EditVolume, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
 
 
     ui->TrackTreeView->setDropIndicatorShown(true);
@@ -143,26 +143,34 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    // stop playback thread if playing
     m_trackPlaybackControl = 2;
     if (m_trackPlaybackThread.joinable())
     {
         m_trackPlaybackThread.join();
     }
-    delete m_dataWidgetMapper;
+
+    // delete dockables
+    // TODO : remove order dependency
+    delete m_propertiesView;
+    delete m_propertiesDock;
+
+    delete m_trackView;
+    delete m_trackDock;
+
     delete m_trackTreeModel;
     delete m_fileSystemModel;
     delete m_trackFullView;
-    delete m_trackDock;
     delete ui;
 }
 
 void MainWindow::showSliderTooltip(int position)
 {
-    QString toolTip;
-    toolTip = QString::fromStdString(std::to_string(position/10.0f)) + "db";
-    QPoint slider = ui->EditVolume->mapToGlobal(QPoint( 0, 0 ));
-    QPoint cursor = QCursor::pos();
-    QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip );
+//    QString toolTip;
+//    toolTip = QString::fromStdString(std::to_string(position/10.0f)) + "db";
+//    QPoint slider = ui->EditVolume->mapToGlobal(QPoint( 0, 0 ));
+//    QPoint cursor = QCursor::pos();
+//    QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip );
 }
 
 static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl, std::string &message)
@@ -247,16 +255,16 @@ void MainWindow::updateStatusBar(QString message, StatusBarState state)
 
 void MainWindow::toggleRightPanel()
 {
-    if (ui->RightPanel->isHidden())
-    {
-        ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
-        ui->toggleRightPanelAction->setText("Hide Right Panel");
-        ui->RightPanel->show();
-        return;
-    }
-    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanel_64x64.png"));
-    ui->toggleRightPanelAction->setText("Show Right Panel");
-    ui->RightPanel->hide();
+//    if (ui->RightPanel->isHidden())
+//    {
+//        ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
+//        ui->toggleRightPanelAction->setText("Hide Right Panel");
+//        ui->RightPanel->show();
+//        return;
+//    }
+//    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanel_64x64.png"));
+//    ui->toggleRightPanelAction->setText("Show Right Panel");
+//    ui->RightPanel->hide();
     return;
 }
 
@@ -301,44 +309,6 @@ void MainWindow::onCustomContextMenu(const QPoint &point)
         connect(insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
     }
     myMenu.exec(globalPos);
-}
-
-void MainWindow::treeViewRowColChange(const QModelIndex &index)
-{
-    m_dataWidgetMapper->setRootIndex(index.parent());
-    m_dataWidgetMapper->setCurrentModelIndex(index);
-
-    if (m_trackTreeModel->isGroup(index))
-    {
-        // add these elements to own widget so the widget can be hidden instead
-        ui->LabelDefaultFile->hide();
-        ui->EditDefaultFile->hide();
-        ui->LabelStartTime->hide();
-        ui->EditStartTime->hide();
-        ui->LabelPeriod->hide();
-        ui->EditPeriod->hide();
-        ui->LabelDeviation->hide();
-        ui->EditDeviation->hide();
-        ui->LabelProbability->hide();
-        ui->EditProbability->hide();
-        ui->LabelVolume->hide();
-        ui->EditVolume->hide();
-    }
-    else
-    {
-        ui->LabelDefaultFile->show();
-        ui->EditDefaultFile->show();
-        ui->LabelStartTime->show();
-        ui->EditStartTime->show();
-        ui->LabelPeriod->show();
-        ui->EditPeriod->show();
-        ui->LabelDeviation->show();
-        ui->EditDeviation->show();
-        ui->LabelProbability->show();
-        ui->EditProbability->show();
-        ui->LabelVolume->show();
-        ui->EditVolume->show();
-    }
 }
 
 void MainWindow::insertGroup()
@@ -393,13 +363,13 @@ void MainWindow::removeTrackItem()
 
 void MainWindow::clearSampleProperties()
 {
-    ui->EditName->clear();
-    ui->EditDefaultFile->clear();
-    ui->EditStartTime->clear();
-    ui->EditPeriod->clear();
-    ui->EditDeviation->clear();
-    ui->EditProbability->clear();
-    ui->EditVolume->setValue(0);
+//    ui->EditName->clear();
+//    ui->EditDefaultFile->clear();
+//    ui->EditStartTime->clear();
+//    ui->EditPeriod->clear();
+//    ui->EditDeviation->clear();
+//    ui->EditProbability->clear();
+//    ui->EditVolume->setValue(0);
 }
 
 void MainWindow::insertSample()
@@ -519,15 +489,5 @@ void MainWindow::on_actionOpen_triggered()
 
     m_trackView->SetTreeViewModel(m_trackTreeModel);
     ui->TrackTreeView->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->setModel(m_trackTreeModel);
-    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
-    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
-    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
-    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
-    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
-    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
-    connect(ui->TrackTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-        this, SLOT(treeViewRowColChange(QModelIndex)));
 }
 
