@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <memory>
 
-//#include <QMediaPlayer>
+#include <QMediaPlayer>
 #include <PGTATestCommon.h>
 #include <QFileSystemModel>
 #include <QDataWidgetMapper>
@@ -40,19 +40,21 @@ MainWindow::MainWindow(QWidget *parent) :
     m_trackView(nullptr),
     m_propertiesDock(nullptr),
     m_propertiesView(nullptr),
-    m_trackTreeModel(nullptr),
-    m_fileSystemModel(nullptr),
-    m_dataWidgetMapper(nullptr),
+    m_libraryDock(nullptr),
+    m_libraryView(nullptr),
     m_trackFullView(nullptr),
+    m_trackTreeModel(nullptr),
+    m_libraryModel(nullptr),
+    m_dataWidgetMapper(nullptr),
+
     m_trackPlaybackThread(),
     m_trackPlaybackControl(0)
 {
     ui->setupUi(this);
 
     // setup models
-    m_fileSystemModel= new QFileSystemModel(this);
-    m_fileSystemModel->setRootPath("/Users/keeferdavies/dev/");
     m_trackTreeModel = new PGTATrackTreeModel(this);
+    m_libraryModel = new QFileSystemModel(this);
 
     // remove title bar from all dock widgets
     ui->TopPanel->setTitleBarWidget(new QWidget());
@@ -68,28 +70,25 @@ MainWindow::MainWindow(QWidget *parent) :
     m_trackView->SetPropertiesView(m_propertiesView);
     m_trackDock->setWidget(m_trackView);
 
+    m_libraryDock = new PGTADockable(tr("Library"), this);
+    m_libraryView = new QTreeView(this);
+    m_libraryView->setModel(m_libraryModel);
+    m_libraryDock->setWidget(m_libraryView);
+
     // add dockables
+    addDockWidget(Qt::LeftDockWidgetArea, m_libraryDock);
     addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
     addDockWidget(Qt::RightDockWidgetArea, m_propertiesDock);
 
-
-    // set modles
-    ui->FileSystemView->setModel(m_fileSystemModel);
-    //ui->TrackTreeView->setModel(m_trackTreeModel);
-
-    QModelIndex idx = m_fileSystemModel->index("/Users/keeferdavies/dev/tmp/Sample Project");
-    ui->FileSystemView->setRootIndex(idx);
+    m_libraryModel->setRootPath("/Users/keeferdavies/dev/");
+    QModelIndex idx = m_libraryModel->index("/Users/keeferdavies/dev/tmp/Sample Project");
+    m_libraryView->setRootIndex(idx);
+    m_libraryView->header()->hide();
 
     // only show first column file system view
-    for (int i = 1; i < m_fileSystemModel->columnCount(); ++i)
+    for (int i = 1; i < m_libraryModel->columnCount(); ++i)
     {
-        ui->FileSystemView->hideColumn(i);
-    }
-
-    // only show first column track tree view
-    for (int i = 1; i < m_trackTreeModel->columnCount(); ++i)
-    {
-        ui->TrackTreeView->hideColumn(i);
+        m_libraryView->hideColumn(i);
     }
 
     // setup signals and slots for track view
@@ -107,9 +106,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // gain slider
     //connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
 
-
-    ui->TrackTreeView->setDropIndicatorShown(true);
-    ui->TrackTreeView->setDefaultDropAction(Qt::MoveAction);
     ui->statusBar->showMessage("Ready");
 }
 
@@ -130,8 +126,11 @@ MainWindow::~MainWindow()
     delete m_trackView;
     delete m_trackDock;
 
+    delete m_libraryView;
+    delete m_libraryDock;
+
     delete m_trackTreeModel;
-    delete m_fileSystemModel;
+    delete m_libraryModel;
     delete m_trackFullView;
     delete ui;
 }
@@ -216,132 +215,6 @@ void MainWindow::updateStatusBar(QString message, StatusBarState state)
     ui->statusBar->showMessage(message);
 }
 
-void MainWindow::onCustomContextMenu(const QPoint &point)
-{
-    QModelIndex index = ui->TrackTreeView->indexAt(point);
-    QPoint globalPos = ui->TrackTreeView->mapToGlobal(point);
-    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
-    QMenu myMenu;
-
-    QAction *insertSampleAction = myMenu.addAction("Insert Sample");
-    connect(insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
-
-    if (index.isValid())
-    {
-        QString removeText = "Remove Sample";
-        if (model->isGroup(index))
-        {
-            removeText = "Remove Group";
-        }
-        QAction *removeTrackItemAction = myMenu.addAction(removeText);
-        connect(removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
-    }
-    else
-    {
-        QAction *insertGroupAction = myMenu.addAction("Insert Group");
-        connect(insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
-    }
-    myMenu.exec(globalPos);
-}
-
-void MainWindow::insertGroup()
-{
-    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
-    QModelIndex rootIndex = ui->TrackTreeView->rootIndex();
-    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
-    if (index.parent() != rootIndex)
-    {
-        index = rootIndex;
-    }
-
-    if (!model->insertRow(index.row()+1, index.parent()))
-    {
-        return;
-    }
-    QModelIndex child = model->index(index.row()+1, 0, index.parent());
-    model->setIsGroup(child);
-    for (int column = 0; column < model->columnCount(index.parent()); ++column)
-    {
-        child = model->index(index.row()+1, column, index.parent());
-        switch (column)
-        {
-            case PGTATrackTreeModel::GroupColumn_Name :
-                model->setData(child, QVariant("[Group Name]"), Qt::EditRole);
-                break;
-            case PGTATrackTreeModel::GroupColumn_UUID :
-                model->setData(child, model->getUuid(child), Qt::EditRole);
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-void MainWindow::removeTrackItem()
-{
-    QModelIndex index = ui->TrackTreeView->selectionModel()->currentIndex();
-
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
-    if(model->removeRow(index.row(), index.parent()))
-    {
-        ui->TrackTreeView->selectionModel()->clear();
-    }
-}
-
-void MainWindow::insertSample()
-{
-    QModelIndex selectedIndex = ui->TrackTreeView->selectionModel()->currentIndex();
-    PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(ui->TrackTreeView->model());
-
-    int position = 0;
-    // set column to column 0 otherwise inserting child doesn't work
-    QModelIndex index = model->index(selectedIndex.row(), 0, selectedIndex.parent());
-
-    // check if selection is on first level
-    if (!model->isGroup(index))
-    {
-        position = index.row() + 1; // index of current selection + 1
-        index = index.parent();
-    }
-
-    if (!model->insertRow(position, index))
-    {
-        return;
-    }
-
-    for (int column = 0; column < model->columnCount(index); ++column)
-    {
-        QModelIndex child = model->index(position, column, index);
-        switch (column)
-        {
-            case PGTATrackTreeModel::SampleColumn_Name :
-                model->setData(child, QVariant("[Sample Name]"), Qt::EditRole);
-                break;
-            case PGTATrackTreeModel::SampleColumn_GroupUUID :
-                model->setData(child, model->getUuid(index), Qt::EditRole);
-                break;
-            case PGTATrackTreeModel::SampleColumn_Gain :
-                model->setData(child, QVariant(0), Qt::EditRole);
-                break;
-            default:
-                model->setData(child, QVariant("[No data]"), Qt::EditRole);
-                break;
-        }
-
-        if (!model->headerData(column, Qt::Horizontal).isValid())
-        {
-            model->setHeaderData(column, Qt::Horizontal, QVariant("[No header]"), Qt::EditRole);
-        }
-    }
-    ui->TrackTreeView->selectionModel()->setCurrentIndex(model->index(position, 0, index),
-                                            QItemSelectionModel::ClearAndSelect);
-}
-
 void MainWindow::on_actionSave_triggered()
 {
     qDebug("Saving File");
@@ -409,6 +282,5 @@ void MainWindow::on_actionOpen_triggered()
     }
 
     m_trackView->SetTreeViewModel(m_trackTreeModel);
-    ui->TrackTreeView->setModel(m_trackTreeModel);
 }
 

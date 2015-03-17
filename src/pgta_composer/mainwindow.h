@@ -41,12 +41,8 @@ public:
 private slots:
      void on_actionOpen_triggered();
      void on_actionSave_triggered();
-
-     void insertSample();
-     void removeTrackItem();
-     void insertGroup();
-     void onCustomContextMenu(const QPoint &point);
      void viewFullModel();
+
 private slots: // playback
      void playTrack();
      void pauseTrack();
@@ -61,12 +57,15 @@ private: // dockables
     PGTATrackView *m_trackView;
     PGTADockable *m_propertiesDock;
     PGTAPropertiesView *m_propertiesView;
+    PGTADockable *m_libraryDock;
+    QTreeView *m_libraryView;
+private: // views
+    PGTATreeView *m_trackFullView;
 
 private: // models
     PGTATrackTreeModel *m_trackTreeModel;
-    QFileSystemModel *m_fileSystemModel;
+    QFileSystemModel *m_libraryModel;
     QDataWidgetMapper *m_dataWidgetMapper;
-    PGTATreeView *m_trackFullView;
 
 private: // playback
     std::thread m_trackPlaybackThread;

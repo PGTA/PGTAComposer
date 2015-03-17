@@ -12,7 +12,8 @@ TEMPLATE =  app
 
 QT +=       core \
             gui \
-            widgets
+            widgets \
+            multimedia
 
 TARGET =    "PGTAComposer"
 DESTDIR = 	$$PWD/../../bin/
