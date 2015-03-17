@@ -24,10 +24,11 @@ void PGTATreeView::mousePressEvent(QMouseEvent *event)
         bool selected = selectionModel()->isSelected(indexAt(event->pos()));
         QTreeView::mousePressEvent(event);
         Qt::MouseButton button = event->button();
-        if ((item.row() == -1 && item.column() == -1) || (selected && (button == Qt::LeftButton)))
+        if (item.row() == -1 && item.column() == -1)
         {
             clearSelection();
             const QModelIndex index;
             selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select);
         }
     }
+
