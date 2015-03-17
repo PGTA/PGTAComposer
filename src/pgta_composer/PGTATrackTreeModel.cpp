@@ -249,6 +249,8 @@ bool PGTATrackTreeModel::removeRows(int row, int count, const QModelIndex &paren
     {
         removeGroup(uuid);
     }
+
+    m_isDirty = true;
     return retVal;
 }
 

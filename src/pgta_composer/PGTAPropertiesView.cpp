@@ -1,6 +1,6 @@
 
 #include <QPainter>
-#include <QTooltip>
+#include <QToolTip>
 #include <limits>
 #include <math.h>
 #include <sstream>
@@ -57,6 +57,18 @@ void PGTAPropertiesView::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void PGTAPropertiesView::ClearProperyValues()
+{
+    ui->EditDefaultFile->clear();
+    ui->EditName->clear();
+    ui->EditDefaultFile->clear();
+    ui->EditStartTime->clear();
+    ui->EditPeriod->clear();
+    ui->EditDeviation->clear();
+    ui->EditProbability->clear();
+    ui->EditVolume->setValue(std::numeric_limits<int>::max()/2);
 }
 
 void PGTAPropertiesView::slotShowSliderTooltip(int position)

@@ -643,9 +643,6 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="toggleRightPanelAction"/>
-    <addaction name="toggleLeftPanelAction"/>
-    <addaction name="separator"/>
     <addaction name="viewFullModelAction"/>
    </widget>
    <addaction name="menuFile"/>
@@ -708,42 +705,44 @@
          <number>5</number>
         </property>
         <item>
-         <widget class="QToolButton" name="ToggleLeftPanel">
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>32</width>
-            <height>32</height>
+            <width>151</width>
+            <height>64</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>32</width>
-            <height>32</height>
+            <width>151</width>
+            <height>64</height>
            </size>
           </property>
           <property name="text">
            <string/>
           </property>
-          <property name="icon">
-           <iconset resource="../images.qrc">
-            <normaloff>:/img/leftpanelselected_64x64.png</normaloff>:/img/leftpanelselected_64x64.png</iconset>
+          <property name="pixmap">
+           <pixmap resource="../images.qrc">:/img/banner.png</pixmap>
           </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
+          <property name="scaledContents">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_3">
+         <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>30</width>
             <height>20</height>
            </size>
           </property>
@@ -837,50 +836,6 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>151</width>
-            <height>64</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>151</width>
-            <height>64</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="../images.qrc">:/img/banner.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -903,54 +858,24 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>151</width>
             <height>0</height>
-           </size>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>114</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QToolButton" name="ToggleRightPanel">
-          <property name="minimumSize">
-           <size>
-            <width>32</width>
-            <height>32</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>32</width>
-            <height>32</height>
+            <width>151</width>
+            <height>16777215</height>
            </size>
           </property>
-          <property name="text">
-           <string/>
+          <property name="maximum">
+           <number>100</number>
           </property>
-          <property name="icon">
-           <iconset resource="../images.qrc">
-            <normaloff>:/img/rightpanelselected_64x64.png</normaloff>:/img/rightpanelselected_64x64.png</iconset>
+          <property name="value">
+           <number>70</number>
           </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>

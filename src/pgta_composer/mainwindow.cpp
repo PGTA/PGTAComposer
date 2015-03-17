@@ -72,9 +72,6 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
     addDockWidget(Qt::RightDockWidgetArea, m_propertiesDock);
 
-//    ui->RightPanel->setMinimumHeight(dockableHeight);
-//    ui->LeftPanel->setMinimumHeight(dockableHeight);
-
 
     // set modles
     ui->FileSystemView->setModel(m_fileSystemModel);
@@ -95,33 +92,10 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->TrackTreeView->hideColumn(i);
     }
 
-    // setup data widget mapper
-//    m_dataWidgetMapper = new QDataWidgetMapper(this);
-//    m_dataWidgetMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-//    m_dataWidgetMapper->setModel(m_trackTreeModel);
-//    m_dataWidgetMapper->addMapping(ui->EditName, PGTATrackTreeModel::SampleColumn_Name);
-//    m_dataWidgetMapper->addMapping(ui->EditDefaultFile, PGTATrackTreeModel::SampleColumn_DefaultFile);
-//    m_dataWidgetMapper->addMapping(ui->EditStartTime, PGTATrackTreeModel::SampleColumn_StartTime);
-//    m_dataWidgetMapper->addMapping(ui->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
-//    m_dataWidgetMapper->addMapping(ui->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
-//    m_dataWidgetMapper->addMapping(ui->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
-//    m_dataWidgetMapper->addMapping(ui->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
-
-    // setup signals and slots
-    connect(ui->TrackTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-            SLOT(onCustomContextMenu(const QPoint &)));
-    connect(ui->insertSampleAction, SIGNAL(triggered()), this, SLOT(insertSample()));
-    connect(ui->insertGroupAction, SIGNAL(triggered()), this, SLOT(insertGroup()));
-    connect(ui->removeTrackItemAction, SIGNAL(triggered()), this, SLOT(removeTrackItem()));
-    connect(ui->removeTrackItemButton, SIGNAL(clicked()), this, SLOT(removeTrackItem()));
-
-    // right panel
-    connect(ui->toggleRightPanelAction, SIGNAL(triggered()), this, SLOT(toggleRightPanel()));
-    connect ( ui->ToggleRightPanel, SIGNAL(clicked()), this, SLOT(toggleRightPanel()));
-
-    // left panel
-    connect(ui->toggleLeftPanelAction, SIGNAL(triggered()), this, SLOT(toggleLeftPanel()));
-    connect ( ui->ToggleLeftPanel, SIGNAL(clicked()), this, SLOT(toggleLeftPanel()));
+    // setup signals and slots for track view
+    connect(ui->insertSampleAction, SIGNAL(triggered()), m_trackView, SLOT(slotInsertSample()));
+    connect(ui->insertGroupAction, SIGNAL(triggered()), m_trackView, SLOT(slotInsertGroup()));
+    connect(ui->removeTrackItemAction, SIGNAL(triggered()), m_trackView, SLOT(slotRemoveTrackItem()));
 
     connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
@@ -160,15 +134,6 @@ MainWindow::~MainWindow()
     delete m_fileSystemModel;
     delete m_trackFullView;
     delete ui;
-}
-
-void MainWindow::showSliderTooltip(int position)
-{
-//    QString toolTip;
-//    toolTip = QString::fromStdString(std::to_string(position/10.0f)) + "db";
-//    QPoint slider = ui->EditVolume->mapToGlobal(QPoint( 0, 0 ));
-//    QPoint cursor = QCursor::pos();
-//    QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip );
 }
 
 static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl, std::string &message)
@@ -251,36 +216,6 @@ void MainWindow::updateStatusBar(QString message, StatusBarState state)
     ui->statusBar->showMessage(message);
 }
 
-void MainWindow::toggleRightPanel()
-{
-//    if (ui->RightPanel->isHidden())
-//    {
-//        ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanelselected_64x64.png"));
-//        ui->toggleRightPanelAction->setText("Hide Right Panel");
-//        ui->RightPanel->show();
-//        return;
-//    }
-//    ui->ToggleRightPanel->setIcon(QIcon(":/img/rightpanel_64x64.png"));
-//    ui->toggleRightPanelAction->setText("Show Right Panel");
-//    ui->RightPanel->hide();
-    return;
-}
-
-void MainWindow::toggleLeftPanel()
-{
-    if (ui->LeftPanel->isHidden())
-    {
-        ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanelselected_64x64.png"));
-        ui->toggleLeftPanelAction->setText("Hide Left Panel");
-        ui->LeftPanel->show();
-        return;
-    }
-    ui->ToggleLeftPanel->setIcon(QIcon(":/img/leftpanel_64x64.png"));
-    ui->toggleLeftPanelAction->setText("Show Left Panel");
-    ui->LeftPanel->hide();
-    return;
-}
-
 void MainWindow::onCustomContextMenu(const QPoint &point)
 {
     QModelIndex index = ui->TrackTreeView->indexAt(point);
@@ -355,19 +290,7 @@ void MainWindow::removeTrackItem()
     if(model->removeRow(index.row(), index.parent()))
     {
         ui->TrackTreeView->selectionModel()->clear();
-        clearSampleProperties();
     }
-}
-
-void MainWindow::clearSampleProperties()
-{
-//    ui->EditName->clear();
-//    ui->EditDefaultFile->clear();
-//    ui->EditStartTime->clear();
-//    ui->EditPeriod->clear();
-//    ui->EditDeviation->clear();
-//    ui->EditProbability->clear();
-//    ui->EditVolume->setValue(0);
 }
 
 void MainWindow::insertSample()

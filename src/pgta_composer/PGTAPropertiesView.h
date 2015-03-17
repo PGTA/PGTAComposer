@@ -16,6 +16,7 @@ public:
     ~PGTAPropertiesView();
     Ui::PGTAPropertiesView *GetUi() const;
     void SetSamplePropertiesShown(bool shown);
+    void ClearProperyValues();
 
 private slots:
     void slotShowSliderTooltip(int position);

@@ -44,13 +44,9 @@ private slots:
 
      void insertSample();
      void removeTrackItem();
-     void clearSampleProperties();
      void insertGroup();
      void onCustomContextMenu(const QPoint &point);
-     void toggleRightPanel();
-     void toggleLeftPanel();
      void viewFullModel();
-     void showSliderTooltip(int);
 private slots: // playback
      void playTrack();
      void pauseTrack();

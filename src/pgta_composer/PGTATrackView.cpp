@@ -280,7 +280,10 @@ void PGTATrackView::slotRemoveTrackItem()
     if(model->removeRow(index.row(), index.parent()))
     {
         m_treeView->selectionModel()->clear();
-        //clearSampleProperties();
+        if (m_propertiesView)
+        {
+            m_propertiesView->ClearProperyValues();
+        }
     }
 }
 
