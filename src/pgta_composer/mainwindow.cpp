@@ -73,6 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_libraryDock = new PGTADockable(tr("Library"), this);
     m_libraryView = new QTreeView(this);
+    //m_libraryModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    QStringList filters;
+        filters << "*.wav" << "*.track";
+    m_libraryModel->setNameFilters(filters);
+    m_libraryModel->setNameFilterDisables(false);
     m_libraryView->setModel(m_libraryModel);
     m_libraryDock->setWidget(m_libraryView);
 
@@ -81,8 +86,10 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
     addDockWidget(Qt::RightDockWidgetArea, m_propertiesDock);
 
-    m_libraryModel->setRootPath("/Users/keeferdavies/dev/");
-    QModelIndex idx = m_libraryModel->index("/Users/keeferdavies/dev/tmp/Sample Project");
+    m_libraryModel->setRootPath(QDir::currentPath());
+
+
+    QModelIndex idx = m_libraryModel->index(QDir::currentPath());
     m_libraryView->setRootIndex(idx);
     m_libraryView->header()->hide();
 
@@ -96,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->insertSampleAction, SIGNAL(triggered()), m_trackView, SLOT(slotInsertSample()));
     connect(ui->insertGroupAction, SIGNAL(triggered()), m_trackView, SLOT(slotInsertGroup()));
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), m_trackView, SLOT(slotRemoveTrackItem()));
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(slotNewTrack()));
 
     connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
@@ -160,8 +168,21 @@ void MainWindow::PlaySample(const QString &filePath)
 void MainWindow::slotLibraryMediaClicked(QModelIndex index)
 {
     QFileSystemModel *model = static_cast<QFileSystemModel*>(m_libraryView->model());
+
+    const QString type = model->type(index);
     const QString filePath = model->filePath(index);
-    PlaySample(filePath);
+
+    if (type == "track File")
+    {
+        if (SaveTrack())
+        {
+            OpenTrack(filePath.toStdString());
+        }
+    }
+    else if (type == "wav File")
+    {
+        PlaySample(filePath);
+    }
 }
 
 void MainWindow::slotUpdateVolumeMultiplier(int value)
@@ -200,24 +221,9 @@ void MainWindow::playTrack()
         m_trackPlaybackThread.join();
     }
     m_trackPlaybackControl = PlaybackControl::Play;
-    if (m_trackTreeModel->getIsDirty())
+    if (!SaveTrack())
     {
-        QMessageBox msgBox;
-        msgBox.setText("The track has been modified.");
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setIconPixmap(QPixmap(":/icons/icon.icns"));
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        int ret = msgBox.exec();
-        switch (ret) {
-          case QMessageBox::Save:
-              on_actionSave_triggered();
-              break;
-          case QMessageBox::Cancel:
-              return;
-          default:
-              break;
-        }
+        return;
     }
     m_trackPlaybackThread = std::thread(PGTAPlayTrack, m_trackTreeModel->getFilePath().toStdString(),
                 std::ref(m_trackPlaybackControl), std::ref(m_volumeMultiplier), std::ref(m_playbackMessage));
@@ -267,10 +273,11 @@ void MainWindow::on_actionSave_triggered()
 
     if (filePath.length() == 0)
     {
-        QString file = QFileDialog::getSaveFileName(this, tr("Save Track File"), "",tr("Track files (*.track)"));
+        QString file = QFileDialog::getSaveFileName(this, tr("Save Track File"), QDir::current().absolutePath(),
+                                                    tr("Track files (*.track)"));
         if (file.isEmpty())
         {
-            updateStatusBar("Error saving track file.", StatusBarState_ERROR);
+            updateStatusBar("Track file was not saved.", StatusBarState_ERROR);
             return;
         }
         filePath = file.toStdString();
@@ -284,16 +291,8 @@ void MainWindow::on_actionSave_triggered()
     }
 }
 
-void MainWindow::on_actionOpen_triggered()
+void MainWindow::OpenTrack(const std::string &fileName)
 {
-    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
-    if (fileList.isEmpty())
-    {
-        ui->statusBar->showMessage("Error opening file.");
-        return;
-    }
-    std::string fileName = fileList.first().toStdString();
-
     if (m_trackTreeModel)
     {
         delete m_trackTreeModel;
@@ -325,6 +324,62 @@ void MainWindow::on_actionOpen_triggered()
         updateStatusBar("File opened successfully.", StatusBarState_OK);
         m_trackTreeModel->setFilePath(QString::fromStdString(fileName));
     }
+
+    m_trackView->SetTreeViewModel(m_trackTreeModel);
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open Track File"),"",tr("Track files (*.track)"));
+    if (fileList.isEmpty())
+    {
+        ui->statusBar->showMessage("Error opening file.");
+        return;
+    }
+    std::string fileName = fileList.first().toStdString();
+    OpenTrack(fileName);
+}
+
+bool MainWindow::SaveTrack()
+{
+    if (m_trackTreeModel->getIsDirty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The track has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setIconPixmap(QPixmap(":/icons/icon.icns"));
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret) {
+          case QMessageBox::Save:
+              on_actionSave_triggered();
+              break;
+          case QMessageBox::Cancel:
+              return false;
+          default:
+              break;
+        }
+    }
+    return true;
+}
+
+void MainWindow::slotNewTrack()
+{
+    SaveTrack();
+
+    if (m_trackTreeModel)
+    {
+        delete m_trackTreeModel;
+    }
+
+    if (m_dataWidgetMapper)
+    {
+        delete m_dataWidgetMapper;
+    }
+
+    m_trackTreeModel = new PGTATrackTreeModel(this);
+    m_dataWidgetMapper = new QDataWidgetMapper(this);
 
     m_trackView->SetTreeViewModel(m_trackTreeModel);
 }

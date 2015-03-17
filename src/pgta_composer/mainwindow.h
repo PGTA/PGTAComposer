@@ -45,6 +45,7 @@ private slots:
      void on_actionSave_triggered();
      void viewFullModel();
      void slotLibraryMediaClicked(QModelIndex index);
+     void slotNewTrack();
 
 private slots: // playback
      void playTrack();
@@ -56,6 +57,8 @@ private:
     Ui::MainWindow *ui;
     void updateStatusBar(QString message, StatusBarState state);
     void PlaySample(const QString &filePath);
+    void OpenTrack(const std::string &filePath);
+    bool SaveTrack();
 
 private: // dockables
     PGTADockable *m_trackDock;
