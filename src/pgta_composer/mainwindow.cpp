@@ -48,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dataWidgetMapper(nullptr),
     m_trackPlaybackThread(),
     m_trackPlaybackControl(PlaybackControl::Stop),
-    m_volumeMultiplier(70)
+    m_volumeMultiplier(70),
+    m_mediaPlayer(nullptr)
 {
     ui->setupUi(this);
 
@@ -104,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
 
     // volume slider
-    connect(ui->VolumeSlider, SIGNAL(sliderMoved(int)), this, SLOT(slotUpdateVolumeMultiplier(int)));
+    connect(ui->VolumeSlider, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateVolumeMultiplier(int)));
 
     // library
     connect(m_libraryView, SIGNAL(clicked(QModelIndex)), this, SLOT(slotLibraryMediaClicked(QModelIndex)));
@@ -135,22 +136,41 @@ MainWindow::~MainWindow()
     delete m_trackTreeModel;
     delete m_libraryModel;
     delete m_trackFullView;
+    delete m_mediaPlayer;
     delete ui;
+}
+
+void MainWindow::PlaySample(const QString &filePath)
+{
+    if (!m_mediaPlayer)
+    {
+        m_mediaPlayer = new QMediaPlayer();
+    }
+    m_mediaPlayer->stop();
+    QUrl url = QUrl::fromLocalFile(filePath);
+    if (m_mediaPlayer->currentMedia().canonicalUrl() == url)
+    {
+        m_mediaPlayer->setMedia(QMediaContent());
+        return;
+    }
+    m_mediaPlayer->setMedia(url);
+    m_mediaPlayer->play();
 }
 
 void MainWindow::slotLibraryMediaClicked(QModelIndex index)
 {
     QFileSystemModel *model = static_cast<QFileSystemModel*>(m_libraryView->model());
     const QString filePath = model->filePath(index);
-    QMediaPlayer *player = new QMediaPlayer();
-    player->setMedia(QUrl::fromLocalFile(filePath));
-    player->setVolume(ui->VolumeSlider->value());
-    player->play();
+    PlaySample(filePath);
 }
 
 void MainWindow::slotUpdateVolumeMultiplier(int value)
 {
     m_volumeMultiplier = static_cast<uint8_t>(value);
+    if (m_mediaPlayer)
+    {
+        m_mediaPlayer->setVolume(value);
+    }
 }
 
 static void PGTAPlayTrack(const std::string trackFile, const std::atomic<PlaybackControl> &trackPlaybackControl,

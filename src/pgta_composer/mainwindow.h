@@ -17,6 +17,7 @@ class QDataWidgetMapper;
 class PGTATreeView;
 class PGTADockable;
 class PGTAPropertiesView;
+class QMediaPlayer;
 
 namespace Ui
 {
@@ -54,6 +55,7 @@ private slots: // playback
 private:
     Ui::MainWindow *ui;
     void updateStatusBar(QString message, StatusBarState state);
+    void PlaySample(const QString &filePath);
 
 private: // dockables
     PGTADockable *m_trackDock;
@@ -75,4 +77,5 @@ private: // playback
     std::atomic<PlaybackControl> m_trackPlaybackControl;
     std::atomic<uint8_t> m_volumeMultiplier;
     std::string m_playbackMessage;
+    QMediaPlayer *m_mediaPlayer;
 };
