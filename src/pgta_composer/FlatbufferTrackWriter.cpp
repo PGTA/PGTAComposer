@@ -4,6 +4,8 @@
 #include <QByteArray>
 #include <QUuid>
 #include <string>
+#include <limits>
+#include <math.h>
 #include <PGTA/schema/track_generated.h>
 #include <PGTA/schema/track.fbs.h>
 #include "flatbuffers/flatbuffers.h"
@@ -20,6 +22,7 @@ using Builder = flatbuffers::FlatBufferBuilder;
 
 static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups);
 static void RemoveUuidFormatting(std::string &uuid);
+static float IntToGain(int intGain);
 
 bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, const std::string dest, bool binary)
 {
@@ -103,7 +106,7 @@ static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples 
             sampleBuilder.add_period(child->GetData(PGTATrackTreeModel::SampleColumn_Period).toFloat());
             sampleBuilder.add_periodDeviation(child->GetData(PGTATrackTreeModel::SampleColumn_PeriodDeviation).toFloat());
             sampleBuilder.add_probability(child->GetData(PGTATrackTreeModel::SampleColumn_Probability).toFloat());
-            sampleBuilder.add_volume(child->GetData(PGTATrackTreeModel::SampleColumn_Volume).toFloat());
+            sampleBuilder.add_volume(IntToGain(child->GetData(PGTATrackTreeModel::SampleColumn_Volume).toInt()));
             sampleBuilder.add_group(fbbUuid);
             auto sample = sampleBuilder.Finish();
 
@@ -117,5 +120,12 @@ static void RemoveUuidFormatting(std::string &uuid)
     uuid.erase(std::remove(uuid.begin(), uuid.end(), '{'), uuid.end());
     uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
     uuid.erase(std::remove(uuid.begin(), uuid.end(), '}'), uuid.end());
+}
+
+static float IntToGain(int intGain)
+{
+    double gain = 20.0f * log10(intGain/(std::numeric_limits<int>::max()/2.0f));
+    gain = int(gain * 10)/10.0f;
+    return gain;
 }
 

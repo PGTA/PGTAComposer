@@ -16,10 +16,13 @@ public:
     ~PGTAPropertiesView();
     Ui::PGTAPropertiesView *GetUi() const;
     void SetSamplePropertiesShown(bool shown);
+
 private slots:
+    void slotShowSliderTooltip(int position);
 
 private:
     void paintEvent(QPaintEvent *) override;
+    void ConnectSignals();
 
 private:
     Ui::PGTAPropertiesView *ui;

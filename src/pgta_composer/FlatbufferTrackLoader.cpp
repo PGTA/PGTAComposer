@@ -3,6 +3,8 @@
 #include <QByteArray>
 #include <QString>
 #include <sstream>
+#include <limits>
+#include <math.h>
 #include <PGTA/schema/track_generated.h>
 #include <PGTA/schema/track.fbs.h>
 #include <flatbuffers/idl.h>
@@ -15,6 +17,7 @@ static PGTATrackTreeModel* LoadAsciiTrack(const char* src, PGTATrackTreeModel* t
 static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, const PGTASchema::Track* trackSchema);
 static std::string AddUuidFormatting(const std::string &uuid);
 static std::string GetFileNameFromPath(const std::string &filePath);
+static int GainToInt(float gain);
 
 static const size_t MAX_TRACK_LEN = (1 << 16);
 const static int UUID_NUM_BYTES = 32;
@@ -217,7 +220,7 @@ static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, c
             qWarning("Sample volume not valid (%f), setting to default value.", sampleVolume);
             sampleVolume = (sampleVolume > PGTAConstants::MAX_GAIN) ? PGTAConstants::MAX_GAIN : PGTAConstants::MIN_GAIN;
         }
-        sample[PGTATrackTreeModel::SampleColumn_Volume] = sampleVolume;
+        sample[PGTATrackTreeModel::SampleColumn_Volume] = GainToInt(sampleVolume);
 
         QUuid groupUuid;
         const flatbuffers::String* schemaUuid = schemaSample->group();
@@ -262,5 +265,11 @@ static std::string GetFileNameFromPath(const std::string &filePath)
        length = periodIndex - slashIndex - 1;
    }
    return filePath.substr(slashIndex + 1, length);
+}
+
+static int GainToInt(float gain)
+{
+    int intGain = int(pow(10.0f, gain/20.0f) * (std::numeric_limits<int>::max()/2.0f));
+    return intGain;
 }
 

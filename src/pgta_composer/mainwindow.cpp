@@ -72,8 +72,6 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, m_trackDock);
     addDockWidget(Qt::RightDockWidgetArea, m_propertiesDock);
 
-    int dockableHeight = (this->rect().height() - ui->TopPanel->size().height() - ui->statusBar->size().height())/ 2;
-
 //    ui->RightPanel->setMinimumHeight(dockableHeight);
 //    ui->LeftPanel->setMinimumHeight(dockableHeight);
 

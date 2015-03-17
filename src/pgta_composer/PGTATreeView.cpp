@@ -19,14 +19,14 @@ PGTATreeView::~PGTATreeView()
 }
 
 void PGTATreeView::mousePressEvent(QMouseEvent *event)
+{
+    QModelIndex item = indexAt(event->pos());
+    QTreeView::mousePressEvent(event);
+    if (item.row() == -1 && item.column() == -1)
     {
-        QModelIndex item = indexAt(event->pos());
-        QTreeView::mousePressEvent(event);
-        if (item.row() == -1 && item.column() == -1)
-        {
-            clearSelection();
-            const QModelIndex index;
-            selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select);
-        }
+        clearSelection();
+        const QModelIndex index;
+        selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select);
     }
+}
 
