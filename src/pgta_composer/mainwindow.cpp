@@ -168,6 +168,12 @@ static void PGTAPlayTrack(const std::string trackFile, const std::atomic<Playbac
 
 void MainWindow::playTrack()
 {
+    if (m_trackPlaybackControl == PlaybackControl::Pause)
+    {
+        m_trackPlaybackControl = PlaybackControl::Play;
+        return;
+    }
+
     m_trackPlaybackControl = PlaybackControl::Stop;
     if (m_trackPlaybackThread.joinable())
     {
