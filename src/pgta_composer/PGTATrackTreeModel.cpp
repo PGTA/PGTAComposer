@@ -11,7 +11,7 @@ PGTATrackTreeModel::PGTATrackTreeModel(QObject *parent)
 {
     QVector<QVariant> rootData;
     rootData << "Sample Name" << "Default File" << "Start Time" << "Period" << "Period Deviation" << "Probability"
-             << "Volume" << "UUID";
+             << "Gain" << "UUID";
     m_rootItem.reset(new PGTATrackItem(rootData, nullptr,  QUuid(), true));
 }
 

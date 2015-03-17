@@ -214,13 +214,13 @@ static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, c
         }
         sample[PGTATrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
-        float sampleVolume = schemaSample->volume();
-        if(sampleVolume < PGTAConstants::MIN_GAIN || sampleVolume > PGTAConstants::MAX_GAIN)
+        float sampleGain = schemaSample->gain();
+        if(sampleGain < PGTAConstants::MIN_GAIN || sampleGain > PGTAConstants::MAX_GAIN)
         {
-            qWarning("Sample volume not valid (%f), setting to default value.", sampleVolume);
-            sampleVolume = (sampleVolume > PGTAConstants::MAX_GAIN) ? PGTAConstants::MAX_GAIN : PGTAConstants::MIN_GAIN;
+            qWarning("Sample gain not valid (%f), setting to default value.", sampleGain);
+            sampleGain = (sampleGain > PGTAConstants::MAX_GAIN) ? PGTAConstants::MAX_GAIN : PGTAConstants::MIN_GAIN;
         }
-        sample[PGTATrackTreeModel::SampleColumn_Volume] = GainToInt(sampleVolume);
+        sample[PGTATrackTreeModel::SampleColumn_Gain] = GainToInt(sampleGain);
 
         QUuid groupUuid;
         const flatbuffers::String* schemaUuid = schemaSample->group();

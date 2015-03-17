@@ -114,7 +114,7 @@ void PGTATrackView::ConnectDataWidgetMapper(QAbstractItemModel *model)
     m_dataWidgetMapper->addMapping(propertiesUi->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
     m_dataWidgetMapper->addMapping(propertiesUi->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
     m_dataWidgetMapper->addMapping(propertiesUi->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
-    m_dataWidgetMapper->addMapping(propertiesUi->EditVolume, PGTATrackTreeModel::SampleColumn_Volume);
+    m_dataWidgetMapper->addMapping(propertiesUi->EditGain, PGTATrackTreeModel::SampleColumn_Gain);
     connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));
 }
@@ -246,7 +246,7 @@ void PGTATrackView::slotInsertSample()
             case PGTATrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
-            case PGTATrackTreeModel::SampleColumn_Volume :
+            case PGTATrackTreeModel::SampleColumn_Gain :
                 model->setData(child, QVariant(0), Qt::EditRole);
                 break;
             default:

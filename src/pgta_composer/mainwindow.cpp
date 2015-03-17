@@ -104,8 +104,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->PauseButton, SIGNAL(clicked()), this, SLOT(pauseTrack()));
     connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
 
-    // volume slider
-    //connect(ui->EditVolume, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
+    // gain slider
+    //connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
 
 
     ui->TrackTreeView->setDropIndicatorShown(true);
@@ -325,7 +325,7 @@ void MainWindow::insertSample()
             case PGTATrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
-            case PGTATrackTreeModel::SampleColumn_Volume :
+            case PGTATrackTreeModel::SampleColumn_Gain :
                 model->setData(child, QVariant(0), Qt::EditRole);
                 break;
             default:

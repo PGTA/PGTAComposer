@@ -167,7 +167,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="LabelVolume">
+           <widget class="QLabel" name="LabelGain">
             <property name="minimumSize">
              <size>
               <width>75</width>
@@ -175,12 +175,12 @@
              </size>
             </property>
             <property name="text">
-             <string>Volume:</string>
+             <string>Gain:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSlider" name="EditVolume">
+           <widget class="QSlider" name="EditGain">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>

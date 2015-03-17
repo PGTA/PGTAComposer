@@ -15,10 +15,10 @@ PGTAPropertiesView::PGTAPropertiesView(QWidget *parent) :
     // We want the slider to be centered on 0db with max value 6db and min -96db
     // range for slider is thus 17017 to max int. When the value is saved to the model it will
     // be converted using the following equation 20*log_10(slidervalue/(maxint/2)).
-    float minSliderValue = pow(10.0f, -96.0f/20.0f) * std::numeric_limits<int>::max()/2.0f;
-    ui->EditVolume->setMinimum(minSliderValue);
-    ui->EditVolume->setMaximum(std::numeric_limits<int>::max());
-    ui->EditVolume->setValue(std::numeric_limits<int>::max()/2);
+    static float minSliderValue = pow(10.0f, -96.0f/20.0f) * std::numeric_limits<int>::max()/2.0f;
+	ui->EditGain->setMinimum(minSliderValue);
+	ui->EditGain->setMaximum(std::numeric_limits<int>::max());
+	ui->EditGain->setValue(std::numeric_limits<int>::max() / 2);
     ConnectSignals();
 }
 
@@ -29,8 +29,8 @@ PGTAPropertiesView::~PGTAPropertiesView()
 
 void PGTAPropertiesView::ConnectSignals()
 {
-    // volume slider
-    connect(ui->EditVolume, SIGNAL(sliderMoved(int)), this, SLOT(slotShowSliderTooltip(int)));
+    // gain slider
+    connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(slotShowSliderTooltip(int)));
 }
 
 
@@ -68,7 +68,7 @@ void PGTAPropertiesView::ClearProperyValues()
     ui->EditPeriod->clear();
     ui->EditDeviation->clear();
     ui->EditProbability->clear();
-    ui->EditVolume->setValue(std::numeric_limits<int>::max()/2);
+    ui->EditGain->setValue(std::numeric_limits<int>::max()/2);
 }
 
 void PGTAPropertiesView::slotShowSliderTooltip(int position)
@@ -85,7 +85,7 @@ void PGTAPropertiesView::slotShowSliderTooltip(int position)
 
     // display tooltip
     toolTip = QString::fromStdString(ss.str());
-    QPoint slider = ui->EditVolume->mapToGlobal(QPoint( 0, 0 ));
+    QPoint slider = ui->EditGain->mapToGlobal(QPoint( 0, 0 ));
     QPoint cursor = QCursor::pos();
     QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip);
 }

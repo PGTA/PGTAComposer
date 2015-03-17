@@ -131,7 +131,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_8">
        <item>
-        <widget class="QLabel" name="LabelVolumeMultiplier">
+        <widget class="QLabel" name="LabelGainMultiplier">
          <property name="minimumSize">
           <size>
            <width>75</width>
@@ -139,12 +139,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Volume:</string>
+          <string>Gain:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="EditVolumeMultiplier">
+        <widget class="QSlider" name="EditGainMultiplier">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
