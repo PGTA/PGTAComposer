@@ -8,6 +8,7 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <PGTATestCommon.h>
 
 class PGTATrackTreeModel;
 class PGTATrackView;
@@ -42,11 +43,13 @@ private slots:
      void on_actionOpen_triggered();
      void on_actionSave_triggered();
      void viewFullModel();
+     void slotLibraryMediaClicked(QModelIndex index);
 
 private slots: // playback
      void playTrack();
      void pauseTrack();
      void stopTrack();
+     void slotUpdateVolumeMultiplier(int value);
     
 private:
     Ui::MainWindow *ui;
@@ -69,6 +72,7 @@ private: // models
 
 private: // playback
     std::thread m_trackPlaybackThread;
-    std::atomic<int> m_trackPlaybackControl;
+    std::atomic<PlaybackControl> m_trackPlaybackControl;
+    std::atomic<uint8_t> m_volumeMultiplier;
     std::string m_playbackMessage;
 };

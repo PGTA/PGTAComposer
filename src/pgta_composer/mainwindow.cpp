@@ -46,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_trackTreeModel(nullptr),
     m_libraryModel(nullptr),
     m_dataWidgetMapper(nullptr),
-
     m_trackPlaybackThread(),
-    m_trackPlaybackControl(0)
+    m_trackPlaybackControl(PlaybackControl::Stop),
+    m_volumeMultiplier(70)
 {
     ui->setupUi(this);
 
@@ -103,8 +103,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->PauseButton, SIGNAL(clicked()), this, SLOT(pauseTrack()));
     connect(ui->StopButton, SIGNAL(clicked()), this, SLOT(stopTrack()));
 
-    // gain slider
-    //connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(showSliderTooltip(int)));
+    // volume slider
+    connect(ui->VolumeSlider, SIGNAL(sliderMoved(int)), this, SLOT(slotUpdateVolumeMultiplier(int)));
+
+    // library
+    connect(m_libraryView, SIGNAL(clicked(QModelIndex)), this, SLOT(slotLibraryMediaClicked(QModelIndex)));
 
     ui->statusBar->showMessage("Ready");
 }
@@ -112,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     // stop playback thread if playing
-    m_trackPlaybackControl = 2;
+    m_trackPlaybackControl = PlaybackControl::Stop;
     if (m_trackPlaybackThread.joinable())
     {
         m_trackPlaybackThread.join();
@@ -135,11 +138,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlaybackControl, std::string &message)
+void MainWindow::slotLibraryMediaClicked(QModelIndex index)
+{
+    QFileSystemModel *model = static_cast<QFileSystemModel*>(m_libraryView->model());
+    const QString filePath = model->filePath(index);
+    QMediaPlayer *player = new QMediaPlayer();
+    player->setMedia(QUrl::fromLocalFile(filePath));
+    player->setVolume(ui->VolumeSlider->value());
+    player->play();
+}
+
+void MainWindow::slotUpdateVolumeMultiplier(int value)
+{
+    m_volumeMultiplier = static_cast<uint8_t>(value);
+}
+
+static void PGTAPlayTrack(const std::string trackFile, const std::atomic<PlaybackControl> &trackPlaybackControl,
+                          const std::atomic<uint8_t> &volumeMultiplier, std::string &message)
 {
     try
     {
-        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl, message);
+        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl, volumeMultiplier, message);
         qDebug("%s", message.c_str());
     }
     catch(...)
@@ -149,12 +168,12 @@ static void PGTAPlayTrack(std::string trackFile, std::atomic<int> &trackPlayback
 
 void MainWindow::playTrack()
 {
-    m_trackPlaybackControl = 2;
+    m_trackPlaybackControl = PlaybackControl::Stop;
     if (m_trackPlaybackThread.joinable())
     {
         m_trackPlaybackThread.join();
     }
-    m_trackPlaybackControl = 0;
+    m_trackPlaybackControl = PlaybackControl::Play;
     if (m_trackTreeModel->getIsDirty())
     {
         QMessageBox msgBox;
@@ -175,17 +194,17 @@ void MainWindow::playTrack()
         }
     }
     m_trackPlaybackThread = std::thread(PGTAPlayTrack, m_trackTreeModel->getFilePath().toStdString(),
-                std::ref(m_trackPlaybackControl), std::ref(m_playbackMessage));
+                std::ref(m_trackPlaybackControl), std::ref(m_volumeMultiplier), std::ref(m_playbackMessage));
 }
 
 void MainWindow::pauseTrack()
 {
-    m_trackPlaybackControl = 1;
+    m_trackPlaybackControl = PlaybackControl::Pause;
 }
 
 void MainWindow::stopTrack()
 {
-    m_trackPlaybackControl = 2;
+    m_trackPlaybackControl = PlaybackControl::Stop;
 }
 
 void MainWindow::viewFullModel()
