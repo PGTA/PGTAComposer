@@ -84,6 +84,9 @@ public:
     bool getIsDirty() const;
     void setIsDirty(bool isDirty);
 
+    bool getIsMeasuredInBeats() const;
+    void setIsMeasuredInBeats(bool isMeasuredInBeats);
+
 private:
     PGTATrackItem *getItemSafe(const QModelIndex &index) const;
     PGTATrackItem *getItemUnsafe(const QModelIndex &index);
@@ -94,5 +97,6 @@ private:
     QMap<QUuid, PGTATrackItem*> m_groups;
     QString m_filePath;
     std::unique_ptr<PGTATrackItem> m_rootItem;
+    bool m_isMeasuredInBeats;
     bool m_isDirty;
 };

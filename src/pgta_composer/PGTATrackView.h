@@ -32,6 +32,7 @@ private slots:
     void slotInsertGroup();
     void slotInsertSample();
     void slotRemoveTrackItem();
+    void slotMeasuredInBeats(bool isChecked);
 
 private:
     void paintEvent(QPaintEvent *) override;

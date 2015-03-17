@@ -37,7 +37,7 @@ bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, con
     auto fbSamples = fbb.CreateVector(samples);
     auto fbGroups = fbb.CreateVector(groups);
     auto fbRestrictions = fbb.CreateVector(restrictions);
-    auto track = PGTASchema::CreateTrack(fbb,fbSamples, fbGroups, fbRestrictions);
+    auto track = PGTASchema::CreateTrack(fbb,fbSamples, fbGroups, fbRestrictions, trackModel->getIsMeasuredInBeats());
     fbb.Finish(track);
 
     if (binary)

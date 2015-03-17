@@ -19,6 +19,7 @@ QStatusBar {
 
  QToolButton {
      border: 1px solid #8f8f91;
+     color: white;
      border-radius: 2px;
      background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                        stop: 0 #1c1c1c, stop: 1 #252526);
@@ -51,6 +52,10 @@ QToolButton:hover{
 QDockWidget {
    color: white;
    background: #1C1C1C;
+}
+
+QCheckBox {
+    color: white;
 }
 
  QDockWidget::title {

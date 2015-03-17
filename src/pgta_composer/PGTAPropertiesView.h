@@ -20,6 +20,7 @@ public:
 
 private slots:
     void slotShowSliderTooltip(int position);
+    void slotShowFileBrowser();
 
 private:
     void paintEvent(QPaintEvent *) override;

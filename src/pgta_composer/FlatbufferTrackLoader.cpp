@@ -231,6 +231,9 @@ static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, c
         }
         trackModel->addSample(sample, groupUuid);
     }
+
+    trackModel->setIsMeasuredInBeats(trackSchema->isMeasuredInBeats());
+
     return trackModel;
 }
 

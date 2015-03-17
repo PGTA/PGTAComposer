@@ -79,6 +79,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_libraryModel->setNameFilters(filters);
     m_libraryModel->setNameFilterDisables(false);
     m_libraryView->setModel(m_libraryModel);
+    m_libraryView->setDragEnabled(true);
+    m_libraryView->setDragDropMode(QAbstractItemView::DragDrop);
+    m_libraryView->setDefaultDropAction(Qt::CopyAction);
     m_libraryDock->setWidget(m_libraryView);
 
     // add dockables

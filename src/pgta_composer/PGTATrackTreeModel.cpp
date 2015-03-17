@@ -7,6 +7,7 @@
 
 PGTATrackTreeModel::PGTATrackTreeModel(QObject *parent)
     : QAbstractItemModel(parent),
+      m_isMeasuredInBeats(false),
       m_isDirty(false)
 {
     QVector<QVariant> rootData;
@@ -460,3 +461,13 @@ void PGTATrackTreeModel::setIsDirty(bool isDirty)
     m_isDirty = isDirty;
 }
 
+
+bool PGTATrackTreeModel::getIsMeasuredInBeats() const
+{
+    return m_isMeasuredInBeats;
+}
+
+void PGTATrackTreeModel::setIsMeasuredInBeats(bool isMeasuredInBeats)
+{
+    m_isMeasuredInBeats = isMeasuredInBeats;
+}

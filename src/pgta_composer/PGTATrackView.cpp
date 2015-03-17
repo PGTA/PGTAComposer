@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QMenu>
 #include <QPoint>
+#include <limits>
 #include "PGTATrackView.h"
 #include "ui_PGTATrackView.h"
 #include "PGTATreeView.h"
@@ -38,6 +39,7 @@ void PGTATrackView::ConnectSignals()
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this,
             SLOT(onCustomContextMenu(const QPoint &)));
     connect(ui->removeTrackItemButton, SIGNAL(clicked()), this, SLOT(slotRemoveTrackItem()));
+    connect(ui->BeatsCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotMeasuredInBeats(bool)));
 }
 
 void PGTATrackView::SetupAddButtonMenu()
@@ -74,6 +76,9 @@ void PGTATrackView::SetTreeViewModel(QAbstractItemModel *model)
         m_treeView->hideColumn(i);
     }
 
+    //HACKHACKHACK
+    PGTATrackTreeModel *model1 = static_cast<PGTATrackTreeModel*>(model);
+    ui->BeatsCheckBox->setChecked(model1->getIsMeasuredInBeats());
     ConnectDataWidgetMapper(model);
 }
 
@@ -247,7 +252,7 @@ void PGTATrackView::slotInsertSample()
                 model->setData(child, model->getUuid(index), Qt::EditRole);
                 break;
             case PGTATrackTreeModel::SampleColumn_Gain :
-                model->setData(child, QVariant(0), Qt::EditRole);
+                model->setData(child, QVariant(std::numeric_limits<int>::max()/2.0f), Qt::EditRole);
                 break;
             default:
                 model->setData(child, QVariant("[No data]"), Qt::EditRole);
@@ -287,6 +292,9 @@ void PGTATrackView::slotRemoveTrackItem()
     }
 }
 
-
-
+void PGTATrackView::slotMeasuredInBeats(bool isChecked)
+{
+     PGTATrackTreeModel *model = static_cast<PGTATrackTreeModel*>(m_treeView->model());
+     model->setIsMeasuredInBeats(isChecked);
+}
 

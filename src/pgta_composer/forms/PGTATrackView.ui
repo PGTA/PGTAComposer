@@ -112,6 +112,13 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QCheckBox" name="BeatsCheckBox">
+       <property name="text">
+        <string>Beats</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

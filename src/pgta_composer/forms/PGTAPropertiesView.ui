@@ -82,6 +82,13 @@
           <item>
            <widget class="QLineEdit" name="EditDefaultFile"/>
           </item>
+          <item>
+           <widget class="QToolButton" name="Browse">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -115,7 +122,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Period:</string>
+             <string>Periods:</string>
             </property>
            </widget>
           </item>
@@ -160,7 +167,20 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="EditProbability"/>
+           <widget class="QDoubleSpinBox" name="EditProbability">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

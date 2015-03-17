@@ -1,6 +1,7 @@
 
 #include <QPainter>
 #include <QToolTip>
+#include <QFileDialog>
 #include <limits>
 #include <math.h>
 #include <sstream>
@@ -31,6 +32,8 @@ void PGTAPropertiesView::ConnectSignals()
 {
     // gain slider
     connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(slotShowSliderTooltip(int)));
+    // file browser
+    connect(ui->Browse, SIGNAL(clicked()),this, SLOT(slotShowFileBrowser()));
 }
 
 
@@ -88,4 +91,15 @@ void PGTAPropertiesView::slotShowSliderTooltip(int position)
     QPoint slider = ui->EditGain->mapToGlobal(QPoint( 0, 0 ));
     QPoint cursor = QCursor::pos();
     QToolTip::showText(QPoint(cursor.x(), slider.y()), toolTip);
+}
+
+void PGTAPropertiesView::slotShowFileBrowser()
+{
+    QString directory = QFileDialog::getOpenFileName(this,
+                                tr("Find Files"), QDir::currentPath());
+    if (!directory.isEmpty())
+    {
+        ui->EditDefaultFile->setText(directory);
+        ui->EditDefaultFile->setFocus();
+    }
 }
