@@ -17,7 +17,7 @@ solution "PGTAComposer"
         "NoEditAndContinue",
         "MultiProcessorCompile"
     }
-    warnings "Extra"
+    --warnings "Extra"
 
     filter "action:vs*"
         defines
@@ -39,6 +39,7 @@ solution "PGTAComposer"
         optimize "Full"
     filter {}
     
+    --include "QtPropertyBrowser"
     project "PGTAComposer"
         debugdir "../.."
         debugcommand "%{cfg.buildtarget.directory}../../../bin/%{cfg.buildtarget.name}"
@@ -57,8 +58,7 @@ solution "PGTAComposer"
         configuration {}
         includedirs
         {
-            "../external/PGTA/src/PGTA/",
-            "../external/PGTA/src/PGTA/public",
+            "../external/PGTA/src/PGTA/include",
             "../external/PGTA/src/external/flatbuffers/include/",
             "../external/PGTA/src/tests/PGTATestCommon/"
         }
@@ -77,6 +77,7 @@ solution "PGTAComposer"
         {
             "../pgta_composer/**.h",
             "../pgta_composer/**.cpp",
+            "../pgta_composer/**.ui",
             "../pgta_composer/**.qrc"
         }
         configuration "Debug"
