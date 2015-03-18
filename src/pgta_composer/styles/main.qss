@@ -52,13 +52,20 @@ QToolButton:hover{
 QDockWidget {
    color: white;
    background: #1C1C1C;
+   border: 1px solid lightgray;
+}
+
+QMainWindow::separator {
+    background: #252526;
+    width: 2x;
+    height: 2px;
 }
 
 QCheckBox {
     color: white;
 }
 
- QDockWidget::title {
+QDockWidget::title {
      text-align: center;
      background: #1C1C1C;
      color: #FFFFFF;

@@ -13,13 +13,25 @@ PGTAPropertiesView::PGTAPropertiesView(QWidget *parent) :
     ui(new Ui::PGTAPropertiesView)
 {
     ui->setupUi(this);
+
     // We want the slider to be centered on 0db with max value 6db and min -96db
     // range for slider is thus 17017 to max int. When the value is saved to the model it will
     // be converted using the following equation 20*log_10(slidervalue/(maxint/2)).
-    static float minSliderValue = pow(10.0f, -96.0f/20.0f) * std::numeric_limits<int>::max()/2.0f;
-	ui->EditGain->setMinimum(minSliderValue);
-	ui->EditGain->setMaximum(std::numeric_limits<int>::max());
-	ui->EditGain->setValue(std::numeric_limits<int>::max() / 2);
+    static int32_t minInt = std::numeric_limits<int>::min();
+    static int32_t maxInt = std::numeric_limits<int>::max();
+    static float minSliderValue = pow(10.0f, -96.0f/20.0f) * maxInt/2.0f;
+    ui->EditGain->setMinimum(minSliderValue);
+    ui->EditGain->setMaximum(maxInt);
+    ui->EditGain->setValue(maxInt / 2);
+
+    // Set spinner bounds
+    ui->EditStartTime->setMinimum(0);
+    ui->EditStartTime->setMaximum(maxInt);
+    ui->EditPeriod->setMinimum(0);
+    ui->EditPeriod->setMaximum(maxInt);
+    ui->EditDeviation->setMinimum(minInt);
+    ui->EditDeviation->setMaximum(maxInt);
+
     ConnectSignals();
 }
 

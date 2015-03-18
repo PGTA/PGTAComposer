@@ -107,7 +107,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="EditStartTime"/>
+           <widget class="QDoubleSpinBox" name="EditStartTime">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -122,12 +138,25 @@
              </size>
             </property>
             <property name="text">
-             <string>Periods:</string>
+             <string>Period:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="EditPeriod"/>
+           <widget class="QDoubleSpinBox" name="EditPeriod">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -147,7 +176,20 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="EditDeviation"/>
+           <widget class="QDoubleSpinBox" name="EditDeviation">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -173,6 +215,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="maximum">
              <double>1.000000000000000</double>
