@@ -45,7 +45,7 @@ PGTAPropertiesView::~PGTAPropertiesView()
 void PGTAPropertiesView::ConnectSignals()
 {
     // gain slider
-    connect(ui->EditGain, SIGNAL(valueChanged(int)), this, SLOT(slotShowSliderTooltip(int)));
+    connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(slotShowSliderTooltip(int)));
     // file browser
     connect(ui->Browse, SIGNAL(clicked()),this, SLOT(slotShowFileBrowser()));
 }
