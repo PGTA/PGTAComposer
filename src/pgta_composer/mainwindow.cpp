@@ -198,11 +198,12 @@ void MainWindow::slotUpdateVolumeMultiplier(int value)
 }
 
 static void PGTAPlayTrack(const std::string trackFile, const std::atomic<PlaybackControl> &trackPlaybackControl,
-                          const std::atomic<uint8_t> &volumeMultiplier, std::string &message)
+                          const std::atomic<uint8_t> &volumeMultiplier, const uint16_t beatsPerMinute,
+                          std::string &message)
 {
     try
     {
-        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl, volumeMultiplier, message);
+        PGTATestCommon::PlayTrack(trackFile, trackPlaybackControl, volumeMultiplier, beatsPerMinute, message);
         qDebug("%s", message.c_str());
     }
     catch(...)
@@ -228,8 +229,10 @@ void MainWindow::playTrack()
     {
         return;
     }
+    const uint16_t beatsPerMinute =  static_cast<uint16_t>(ui->BeatsPerMin->value());
     m_trackPlaybackThread = std::thread(PGTAPlayTrack, m_trackTreeModel->getFilePath().toStdString(),
-                std::ref(m_trackPlaybackControl), std::ref(m_volumeMultiplier), std::ref(m_playbackMessage));
+                                        std::ref(m_trackPlaybackControl), std::ref(m_volumeMultiplier), beatsPerMinute,
+                                        std::ref(m_playbackMessage));
 }
 
 void MainWindow::pauseTrack()

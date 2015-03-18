@@ -83,6 +83,21 @@ QToolTip{
     border: 1px solid white;
 }
 
+QLineEdit {
+   background-color: #252526;
+   color: #FFFFFF;
+}
+
+QSpinBox {
+   background-color: #252526;
+   color: #FFFFFF;
+}
+
+QDoubleSpinBox {
+   background-color: #252526;
+   color: #FFFFFF;
+}
+
 PGTATrackView{
     background: #1C1C1C;
     color: #FFFFFF;
