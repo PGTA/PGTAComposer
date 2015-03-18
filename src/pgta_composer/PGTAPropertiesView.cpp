@@ -23,6 +23,8 @@ PGTAPropertiesView::PGTAPropertiesView(QWidget *parent) :
     ui->EditGain->setMinimum(minSliderValue);
     ui->EditGain->setMaximum(maxInt);
     ui->EditGain->setValue(maxInt / 2);
+    ui->EditGain->setSingleStep(0); // force users to use mouse
+    ui->EditGain->setPageStep(0);
 
     // Set spinner bounds
     ui->EditStartTime->setMinimum(0);
@@ -43,7 +45,7 @@ PGTAPropertiesView::~PGTAPropertiesView()
 void PGTAPropertiesView::ConnectSignals()
 {
     // gain slider
-    connect(ui->EditGain, SIGNAL(sliderMoved(int)), this, SLOT(slotShowSliderTooltip(int)));
+    connect(ui->EditGain, SIGNAL(valueChanged(int)), this, SLOT(slotShowSliderTooltip(int)));
     // file browser
     connect(ui->Browse, SIGNAL(clicked()),this, SLOT(slotShowFileBrowser()));
 }

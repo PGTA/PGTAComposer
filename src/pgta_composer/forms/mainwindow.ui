@@ -546,7 +546,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>595</width>
+     <width>636</width>
      <height>80</height>
     </size>
    </property>
@@ -601,13 +601,13 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>151</width>
+            <width>205</width>
             <height>64</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>151</width>
+            <width>160</width>
             <height>64</height>
            </size>
           </property>
@@ -745,13 +745,13 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>151</width>
+            <width>115</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>151</width>
+            <width>105</width>
             <height>16777215</height>
            </size>
           </property>
@@ -763,6 +763,47 @@
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>BPM</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox">
+          <property name="minimumSize">
+           <size>
+            <width>35</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="showGroupSeparator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="minimum">
+           <number>5</number>
+          </property>
+          <property name="maximum">
+           <number>990</number>
+          </property>
+          <property name="value">
+           <number>120</number>
           </property>
          </widget>
         </item>
