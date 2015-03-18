@@ -245,8 +245,23 @@ void PGTATrackView::slotInsertSample()
         QModelIndex child = model->index(position, column, index);
         switch (column)
         {
-            case PGTATrackTreeModel::SampleColumn_Name :
+            case PGTATrackTreeModel::SampleColumn_Name:
                 model->setData(child, QVariant("[Sample Name]"), Qt::EditRole);
+                break;
+            case PGTATrackTreeModel::SampleColumn_DefaultFile:
+                model->setData(child, QVariant(), Qt::EditRole);
+                break;
+            case PGTATrackTreeModel::SampleColumn_StartTime:
+                model->setData(child, QVariant(0), Qt::EditRole);
+                break;
+            case PGTATrackTreeModel::SampleColumn_Period:
+                model->setData(child, QVariant(0), Qt::EditRole);
+                break;
+            case PGTATrackTreeModel::SampleColumn_PeriodDeviation:
+                model->setData(child, QVariant(0), Qt::EditRole);
+                break;
+            case PGTATrackTreeModel::SampleColumn_Probability:
+                model->setData(child, QVariant(1), Qt::EditRole);
                 break;
             case PGTATrackTreeModel::SampleColumn_GroupUUID :
                 model->setData(child, model->getUuid(index), Qt::EditRole);
@@ -255,7 +270,6 @@ void PGTATrackView::slotInsertSample()
                 model->setData(child, QVariant(std::numeric_limits<int>::max()/2.0f), Qt::EditRole);
                 break;
             default:
-                model->setData(child, QVariant("[No data]"), Qt::EditRole);
                 break;
         }
 
