@@ -18,6 +18,11 @@ premake.extensions.qt = {
 			include = "QtGui",
 			defines = { "QT_GUI_LIB" }
 		},
+		multimedia = {
+			name = "Multimedia",
+			include = "QtMultimedia",
+			defines = { "QT_MULTIMEDIA_LIB" }
+		},
 		network = {
 			name = "Network",
 			include = "QtNetwork",

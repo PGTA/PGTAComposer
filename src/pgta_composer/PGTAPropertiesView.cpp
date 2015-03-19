@@ -5,6 +5,7 @@
 #include <limits>
 #include <math.h>
 #include <sstream>
+#include <stdint.h>
 #include "PGTAPropertiesView.h"
 #include "ui_PGTAPropertiesView.h"
 
