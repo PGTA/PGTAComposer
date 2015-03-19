@@ -22,6 +22,12 @@ pushd "../external/qt-solutions-mirror/qtpropertybrowser"
     call nmake
 popd
 
+pushd "../external/qanava-mirror"
+    set QTPROPERTYBROWSER="../../../qt-solutions-mirror/qtpropertybrowser"
+    call %qmake%
+    call nmake
+popd
+
 echo "--Building PGTA Composer Application--"
 
 call "premake5" clean --file=PGTAComposer.lua

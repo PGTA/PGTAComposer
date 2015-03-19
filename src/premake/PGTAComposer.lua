@@ -74,7 +74,7 @@ solution "PGTAComposer"
             "PGTALib",
             "PGTATestCommon_x64",
             "SDL2",
-            "Qt5Solutions_PropertyBrowser-head"
+            "libqtpropertybrowser"
         }
         files
         {
@@ -98,7 +98,7 @@ solution "PGTAComposer"
                 "{COPY} %{cfg.qtpath}/bin/Qt5Widgetsd.dll ../../../bin",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/SDL2.dll ../../../bin",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin",
-                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/Qt5Solutions_PropertyBrowser-headd.dll ../../../bin"
+                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
             }
 
         configuration "Release"
@@ -116,6 +116,6 @@ solution "PGTAComposer"
                 "{COPY} %{cfg.qtpath}/bin/Qt5Widgets.dll ../../../bin",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/SDL2.dll ../../../bin/",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin",
-                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/Qt5Solutions_PropertyBrowser-head.dll ../../../bin"
+                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
             }
         configuration {}
