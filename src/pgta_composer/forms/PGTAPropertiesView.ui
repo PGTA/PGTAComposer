@@ -251,7 +251,7 @@
           <item>
            <widget class="QLabel" name="LabelTransitionWeight">
             <property name="text">
-             <string>Transition Weight</string>
+             <string>Transition Weight:s</string>
             </property>
            </widget>
           </item>

@@ -79,6 +79,13 @@ void PGTATrackView::SetTreeViewModel(QAbstractItemModel *model)
     //HACKHACKHACK
     PGTATrackTreeModel *model1 = static_cast<PGTATrackTreeModel*>(model);
     ui->BeatsCheckBox->setChecked(model1->getIsMeasuredInBeats());
+
+    if (m_propertiesView)
+    {
+        m_propertiesView->ClearProperyValues();
+        m_propertiesView->GetUi()->SampleProperties->show();
+    }
+
     ConnectDataWidgetMapper(model);
 }
 
