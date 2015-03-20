@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QWidget>
-#include <QmodelIndex>
+#include <QModelIndex>
 #include <QPaintEvent>
 #include <QFileSystemModel>
 #include "PGTATreeView.h"
