@@ -92,4 +92,5 @@ RESOURCES += \
     images.qrc
 
 macx:ICON = $${PWD}/icons/icon.icns
+macx:CONFIG-=app_bundle
 

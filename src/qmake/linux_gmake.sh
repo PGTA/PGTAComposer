@@ -12,7 +12,7 @@ runCommand()
 export QMAKEDIR=$(pwd)
 
 # setup build directories
-export BIN="$QMAKEDIR/../bin/"
+export BIN="$QMAKEDIR/../../bin/"
 export BUILD="$QMAKEDIR/gmake/"
 
 # dependencies
@@ -46,3 +46,12 @@ echo "--Building PGTA Composer Application--"
 runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
 runCommand 'make'
+
+echo "--Copying libPGTA--"
+runCommand "cp -rf $BUILD/libPGTALib.so $BIN/"
+
+echo "--Generate Run Script--"
+pushd $BIN/
+echo "#!/bin/sh\nexport LD_LIBRARY_PATH=.\n./PGTAComposer\n" > run.sh
+chmod +x run.sh
+popd

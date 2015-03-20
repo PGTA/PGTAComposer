@@ -12,7 +12,7 @@ runCommand()
 qmakedir=$(pwd)
 
 # setup build directories
-bin="$qmakedir/../bin/"
+bin="$qmakedir/../../bin/"
 build="$qmakedir/gmake/"
 
 # dependencies
@@ -33,7 +33,6 @@ pushd $build
 popd
 
 echo "--Copying PGTA Binaries--"
-
 runCommand "cp -rf $pgta_premake/gmake/libPGTALib.dylib $build/"
 runCommand "cp -rf $pgta_premake/gmake/libSDL2.dylib $build/"
 runCommand "cp -rf $pgta_premake/gmake/libSDL2-2.0.0.dylib $build/"
@@ -42,3 +41,13 @@ echo "--Building PGTA Composer Application--"
 runCommand 'qmake appsuite.pro'
 runCommand 'make clean'
 runCommand 'make'
+
+echo "--Copying libPGTA--"
+runCommand "cp -rf $build/libPGTALib.dylib $bin/"
+
+echo "--Generate Run Script--"
+pushd $bin/
+echo "#!/bin/sh\nexport LD_DYLIB_PATH=.\n./PGTAComposer\n" > run.sh
+chmod +x run.sh
+popd
+
