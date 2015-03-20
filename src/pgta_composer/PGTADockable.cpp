@@ -7,6 +7,9 @@ PGTADockable::PGTADockable(const QString &title, QWidget *parent, Qt::WindowFlag
 {
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     setFeatures(QDockWidget::DockWidgetMovable);
+    // TODO: remove hard coded values
+    setMaximumWidth(400);
+    setMinimumWidth(200);
 }
 
 PGTADockable::~PGTADockable()
