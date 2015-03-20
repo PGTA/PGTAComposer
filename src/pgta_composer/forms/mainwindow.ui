@@ -656,6 +656,9 @@
             <height>32</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Play</string>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -685,6 +688,9 @@
             <height>32</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Pause</string>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -713,6 +719,9 @@
             <width>32</width>
             <height>32</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Stop</string>
           </property>
           <property name="text">
            <string/>
@@ -769,6 +778,9 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Master Volume</string>
+          </property>
           <property name="maximum">
            <number>100</number>
           </property>
@@ -806,6 +818,9 @@
             <width>35</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Beats Per Minute</string>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
