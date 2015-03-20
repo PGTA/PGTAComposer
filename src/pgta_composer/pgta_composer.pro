@@ -20,7 +20,8 @@ DESTDIR = 	$$PWD/../../bin/
 
 FORMS +=    forms/mainwindow.ui \ 
             forms/PGTATrackView.ui \
-    forms/PGTAPropertiesView.ui
+            forms/PGTAPropertiesView.ui \
+            forms/PGTALibraryView.ui
 HEADERS +=  ./FileUtils.h \
             ./FlatbufferTrackLoader.h \
             ./mainwindow.h \
@@ -34,7 +35,8 @@ HEADERS +=  ./FileUtils.h \
             ./PGTATreeView.h \
             ./PGTATrackView.h \
             ./PGTADockable.h \
-            ./PGTAPropertiesView.h
+            ./PGTAPropertiesView.h \
+            ./PGTALibraryView.h
 SOURCES +=  ./FileUtils.cpp \
             ./FlatbufferTrackLoader.cpp \
             ./main.cpp \
@@ -48,7 +50,8 @@ SOURCES +=  ./FileUtils.cpp \
             ./PGTATreeView.cpp \
             ./PGTATrackView.cpp \
             ./PGTADockable.cpp \
-            ./PGTAPropertiesView.cpp
+            ./PGTAPropertiesView.cpp \
+            ./PGTALibraryView.cpp
 
 INCLUDEPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
 DEPENDPATH +=  $$PWD/../external/PGTA/src/external/flatbuffers/include/
