@@ -86,6 +86,7 @@ void PGTAPropertiesView::ClearProperyValues()
     ui->EditPeriod->clear();
     ui->EditDeviation->clear();
     ui->EditProbability->clear();
+    ui->EditTransitionWeight->clear();
     ui->EditGain->setValue(std::numeric_limits<int>::max()/2);
 }
 
