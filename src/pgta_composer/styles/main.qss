@@ -108,3 +108,7 @@ PGTAPropertiesView{
     color: #FFFFFF;
 }
 
+QGroupBox{
+    border: 1px solid white;
+}
+
