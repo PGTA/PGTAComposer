@@ -122,6 +122,7 @@ static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples 
             sampleBuilder.add_period(child->GetData(PGTATrackTreeModel::SampleColumn_Period).toFloat());
             sampleBuilder.add_periodDeviation(child->GetData(PGTATrackTreeModel::SampleColumn_PeriodDeviation).toFloat());
             sampleBuilder.add_probability(child->GetData(PGTATrackTreeModel::SampleColumn_Probability).toFloat());
+            sampleBuilder.add_transitionWeight(child->GetData(PGTATrackTreeModel::SampleColumn_TransitionWeight).toFloat());
             sampleBuilder.add_gain(IntToGain(child->GetData(PGTATrackTreeModel::SampleColumn_Gain).toInt()));
             sampleBuilder.add_group(fbbUuid);
             auto sample = sampleBuilder.Finish();

@@ -119,6 +119,7 @@ void PGTATrackView::ConnectDataWidgetMapper(QAbstractItemModel *model)
     m_dataWidgetMapper->addMapping(propertiesUi->EditPeriod, PGTATrackTreeModel::SampleColumn_Period);
     m_dataWidgetMapper->addMapping(propertiesUi->EditDeviation, PGTATrackTreeModel::SampleColumn_PeriodDeviation);
     m_dataWidgetMapper->addMapping(propertiesUi->EditProbability, PGTATrackTreeModel::SampleColumn_Probability);
+    m_dataWidgetMapper->addMapping(propertiesUi->EditTransitionWeight, PGTATrackTreeModel::SampleColumn_TransitionWeight);
     m_dataWidgetMapper->addMapping(propertiesUi->EditGain, PGTATrackTreeModel::SampleColumn_Gain);
     connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
         this, SLOT(treeViewRowColChange(QModelIndex)));

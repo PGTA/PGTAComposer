@@ -30,6 +30,7 @@ public:
         SampleColumn_Period,
         SampleColumn_PeriodDeviation,
         SampleColumn_Probability,
+        SampleColumn_TransitionWeight,
         SampleColumn_Gain,
         SampleColumn_GroupUUID,
         SampleColumn_Size

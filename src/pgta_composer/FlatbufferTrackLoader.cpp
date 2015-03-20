@@ -214,6 +214,15 @@ static PGTATrackTreeModel* InitTrackData(PGTATrackTreeModel* const trackModel, c
         }
         sample[PGTATrackTreeModel::SampleColumn_Probability] = sampleProbability;
 
+        float sampleTransitionWeight = schemaSample->transitionWeight();
+        if (sampleTransitionWeight < PGTAConstants::MIN_TW || sampleTransitionWeight > PGTAConstants::MAX_TW)
+        {
+            qWarning("Sample transition weight not valid (%f), setting to default value.", sampleTransitionWeight);
+            sampleTransitionWeight = (sampleTransitionWeight > PGTAConstants::MAX_TW) ? PGTAConstants::MAX_TW :
+                                                                                       PGTAConstants::MIN_TW;
+        }
+        sample[PGTATrackTreeModel::SampleColumn_TransitionWeight] = sampleTransitionWeight;
+
         float sampleGain = schemaSample->gain();
         if(sampleGain < PGTAConstants::MIN_GAIN || sampleGain > PGTAConstants::MAX_GAIN)
         {

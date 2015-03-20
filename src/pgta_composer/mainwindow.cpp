@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), m_trackView, SLOT(slotRemoveTrackItem()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(slotNewTrack()));
 
-    connect(ui->ue4ExportAction, SIGNAL(triggered()), this, SLOT(slotUe4Expoet()));
+    connect(ui->ue4ExportAction, SIGNAL(triggered()), this, SLOT(slotUe4Export()));
 
     connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
