@@ -2,7 +2,7 @@
   samples: [
     {
       name: "Guitar Overlay 6",
-      defaultFile: "./guitarOverlay6.wav",
+      defaultFile: "media/guitarOverlay6.wav",
       startTime: 16,
       period: 12,
       probability: 0.2,
@@ -10,7 +10,7 @@
     },
     {
       name: "Guitar Overlay 5",
-      defaultFile: "./guitarOverlay5.wav",
+      defaultFile: "media/guitarOverlay5.wav",
       startTime: 20,
       period: 24,
       probability: 0.2,
@@ -18,7 +18,7 @@
     },
     {
       name: "Guitar Overlay",
-      defaultFile: "./guitarOverlay1.wav",
+      defaultFile: "media/guitarOverlay1.wav",
       startTime: 16,
       period: 12,
       probability: 0.2,
@@ -26,7 +26,7 @@
     },
     {
       name: "Guitar Overlay 2",
-      defaultFile: "./guitarOverlay2.wav",
+      defaultFile: "media/guitarOverlay2.wav",
       startTime: 16,
       period: 12,
       probability: 0.2,
@@ -34,16 +34,16 @@
     },
     {
       name: "Guitar Overlay 3",
-      defaultFile: "./guitarOverlay3.wav",
+      defaultFile: "media/guitarOverlay3.wav",
       startTime: 16,
       period: 12,
       probability: 0.2,
-      gain: -4,
+      gain: -3.9,
       group: "8d519c0d49c24b9db3d8768ab7addd9d"
     },
     {
       name: "Guitar Overlay 4",
-      defaultFile: "./guitarOverlay4.wav",
+      defaultFile: "media/guitarOverlay4.wav",
       startTime: 28,
       period: 12,
       probability: 0.2,
@@ -51,7 +51,7 @@
     },
     {
       name: "Bass Overlay 2",
-      defaultFile: "./bassOverlay2.wav",
+      defaultFile: "media/bassOverlay2.wav",
       startTime: 4,
       period: 12,
       probability: 1,
@@ -60,7 +60,7 @@
     },
     {
       name: "Bass Overlay 3",
-      defaultFile: "./bassOverlay3.wav",
+      defaultFile: "media/bassOverlay3.wav",
       startTime: 4,
       period: 12,
       probability: 1,
@@ -69,7 +69,7 @@
     },
     {
       name: "Bass Overlay",
-      defaultFile: "./bassOverlay1.wav",
+      defaultFile: "media/bassOverlay1.wav",
       startTime: 4,
       period: 12,
       probability: 1,
@@ -78,21 +78,21 @@
     },
     {
       name: "Melody Loop",
-      defaultFile: "./melodyLoop.wav",
+      defaultFile: "media/melodyLoop.wav",
       probability: 1,
       group: ""
     },
     {
       name: "Drum Overlay",
-      defaultFile: "./drumOverlay1.wav",
+      defaultFile: "media/drumOverlay1.wav",
       period: 28,
       probability: 1,
-      gain: -4,
+      gain: -3.9,
       group: ""
     },
     {
       name: "Drum Loop",
-      defaultFile: "./drumLoop1.wav",
+      defaultFile: "media/drumLoop1.wav",
       startTime: 28,
       probability: 1,
       group: ""
