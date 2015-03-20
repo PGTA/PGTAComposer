@@ -108,6 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->removeTrackItemAction, SIGNAL(triggered()), m_trackView, SLOT(slotRemoveTrackItem()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(slotNewTrack()));
 
+    connect(ui->ue4ExportAction, SIGNAL(triggered()), this, SLOT(slotUe4Expoet()));
+
     connect(ui->viewFullModelAction, SIGNAL(triggered()), this, SLOT(viewFullModel()));
 
     // playback controls
@@ -166,6 +168,23 @@ void MainWindow::PlaySample(const QString &filePath)
     }
     m_mediaPlayer->setMedia(url);
     m_mediaPlayer->play();
+}
+
+void MainWindow::slotUe4Export()
+{
+    QString file = QFileDialog::getSaveFileName(this, tr("Save Track File"), QDir::current().absolutePath(),
+                                                tr("Track files (*.track)"));
+    if (file.isEmpty())
+    {
+        updateStatusBar("Track file was not saved.", StatusBarState_ERROR);
+        return;
+    }
+    std::string filePath = file.toStdString();
+
+    if (FlatBufferTrackWriter::WriteTrack(m_trackTreeModel, filePath, true))
+    {
+        updateStatusBar("Track file exported for UE4 successfully.", StatusBarState_OK);
+    }
 }
 
 void MainWindow::slotLibraryMediaClicked(QModelIndex index)

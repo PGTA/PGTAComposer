@@ -46,6 +46,7 @@ private slots:
      void viewFullModel();
      void slotLibraryMediaClicked(QModelIndex index);
      void slotNewTrack();
+     void slotUe4Export();
 
 private slots: // playback
      void playTrack();

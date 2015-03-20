@@ -20,11 +20,13 @@ using SchemaGroups = std::vector<flatbuffers::Offset<PGTASchema::Group>>;
 using SchemaRestrictions = std::vector<flatbuffers::Offset<PGTASchema::Restriction>>;
 using Builder = flatbuffers::FlatBufferBuilder;
 
-static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups);
+static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups, bool ue4);
+static std::string GetFileNameFromPath(const std::string &filePath);
 static void RemoveUuidFormatting(std::string &uuid);
 static float IntToGain(int intGain);
 
-bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, const std::string dest, bool binary)
+bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, const std::string dest, bool ue4,
+                                       bool binary)
 {
     Builder fbb;
     SchemaSamples samples;
@@ -32,7 +34,7 @@ bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, con
     SchemaRestrictions restrictions;
 
     const PGTATrackItem *root = trackModel->getRoot();
-    AddTrackItem(root, fbb, samples, groups);
+    AddTrackItem(root, fbb, samples, groups, ue4);
 
     auto fbSamples = fbb.CreateVector(samples);
     auto fbGroups = fbb.CreateVector(groups);
@@ -55,7 +57,8 @@ bool FlatBufferTrackWriter::WriteTrack(const PGTATrackTreeModel* trackModel, con
     return FileUtils::WriteAsciiToFile(dest, jsongen);
 }
 
-static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups)
+static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples &samples, SchemaGroups &groups,
+                         bool ue4)
 {
     int numChildren = root->ChildCount();
 
@@ -64,7 +67,7 @@ static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples 
         const PGTATrackItem *child = root->GetChild(i);
         if (child->IsGroup())
         {
-            AddTrackItem(child, fbb, samples, groups);
+            AddTrackItem(child, fbb, samples, groups, ue4);
             // Add Group (Gorup Builder)
             auto fbbName = fbb.CreateString(child->GetData(PGTATrackTreeModel::GroupColumn_Name).toString().toStdString());
             QUuid qUuid(child->GetData(PGTATrackTreeModel::GroupColumn_UUID).toString());
@@ -86,8 +89,21 @@ static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples 
         }
         else
         {
-            auto fbbDefaultFile = fbb.CreateString(
-                        child->GetData(PGTATrackTreeModel::SampleColumn_DefaultFile).toString().toStdString());
+            flatbuffers::Offset<flatbuffers::String> fbbDefaultFile;
+
+            if (ue4)
+            {
+                std::string defaultFile = "/Game/PGTATest/Audio/" +
+                        GetFileNameFromPath(child->GetData(PGTATrackTreeModel::SampleColumn_DefaultFile).toString().toStdString());
+                fbbDefaultFile = fbb.CreateString(defaultFile);
+            }
+            else
+            {
+                fbbDefaultFile = fbb.CreateString(
+                            child->GetData(PGTATrackTreeModel::SampleColumn_DefaultFile).toString().toStdString());
+            }
+
+
             auto fbbName = fbb.CreateString(child->GetData(PGTATrackTreeModel::SampleColumn_Name).toString().toStdString());
             QUuid qUuid(child->GetData(PGTATrackTreeModel::SampleColumn_GroupUUID).toString());
             std::string  uuid;
@@ -113,6 +129,18 @@ static void AddTrackItem(const PGTATrackItem *root, Builder &fbb, SchemaSamples 
             samples.push_back(sample);
         }
     }
+}
+
+static std::string GetFileNameFromPath(const std::string &filePath)
+{
+   const std::size_t slashIndex = filePath.find_last_of("\\/");
+   const std::size_t periodIndex = filePath.find_last_of(".");
+   std::size_t length = 0;
+   if (periodIndex > slashIndex)
+   {
+       length = periodIndex - slashIndex - 1;
+   }
+   return filePath.substr(slashIndex + 1, length);
 }
 
 static void RemoveUuidFormatting(std::string &uuid)
