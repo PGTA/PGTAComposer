@@ -65,16 +65,16 @@ solution "PGTAComposer"
         }
         libdirs
         {
-            "../external/PGTA/src/premake/vs2013",
-            "../external/qt-solutions-mirror/qtpropertybrowser/lib"
+            "../external/PGTA/src/premake/vs2013"
+            --"../external/qt-solutions-mirror/qtpropertybrowser/lib"
         }
         links
         {
             "_FlatBuffers",
             "PGTALib",
             "PGTATestCommon_x64",
-            "SDL2",
-            "libqtpropertybrowser"
+            "SDL2"
+            --"libqtpropertybrowser"
         }
         files
         {
@@ -97,8 +97,8 @@ solution "PGTAComposer"
                 "{COPY} %{cfg.qtpath}/bin/Qt5Networkd.dll ../../../bin",
                 "{COPY} %{cfg.qtpath}/bin/Qt5Widgetsd.dll ../../../bin",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/SDL2.dll ../../../bin",
-                "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin",
-                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
+                "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin"
+                --"{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
             }
 
         configuration "Release"
@@ -115,7 +115,7 @@ solution "PGTAComposer"
                 "{COPY} %{cfg.qtpath}/bin/Qt5Network.dll ../../../bin",
                 "{COPY} %{cfg.qtpath}/bin/Qt5Widgets.dll ../../../bin",
                 "{COPY} ../../external/PGTA/src/premake/vs2013/SDL2.dll ../../../bin/",
-                "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin",
-                "{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
+                "{COPY} ../../external/PGTA/src/premake/vs2013/PGTALib.dll ../../../bin"
+                --"{COPY} ../../external/qt-solutions-mirror/qtpropertybrowser/lib/libqtpropertybrowser.dll ../../../bin"
             }
         configuration {}

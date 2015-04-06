@@ -16,17 +16,17 @@ pushd "../external/PGTA/src/premake"
     popd
 popd
 
-pushd "../external/qt-solutions-mirror/qtpropertybrowser"
-    call configure.bat -library
-    call %qmake%
-    call nmake
-popd
+:: pushd "../external/qt-solutions-mirror/qtpropertybrowser"
+::     call configure.bat -library
+::     call %qmake%
+::     call nmake
+:: popd
 
-pushd "../external/qanava-mirror"
-    set QTPROPERTYBROWSER="../../../qt-solutions-mirror/qtpropertybrowser"
-    call %qmake%
-    call nmake
-popd
+:: pushd "../external/qanava-mirror"
+::     set QTPROPERTYBROWSER="../../../qt-solutions-mirror/qtpropertybrowser"
+::     call %qmake%
+::     call nmake
+:: popd
 
 echo "--Building PGTA Composer Application--"
 
